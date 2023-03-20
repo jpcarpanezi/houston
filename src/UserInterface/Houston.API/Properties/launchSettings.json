@@ -1,0 +1,44 @@
+{
+  "profiles": {
+    "Houston.API": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7265;http://localhost:5228"
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+      "environmentVariables": {
+        "ConnectionStrings__MongoDB": "mongodb://root:luo4Xo7Eepeeng1OoGe6ouxi8qua3kievu6EiTo5@mongo:27017/",
+        "ConnectionStrings__RabbitMQ": "amqp://root:Abcd1234@rabbitmq:5672/",
+        "ConnectionStrings__Redis": "redis:6379,password=re3oeg8Shaiyao0aisojieTh7miethu0pheepohx"
+      },
+      "publishAllPorts": true,
+      "useSSL": true,
+      "DockerfileRunArguments": "--network=debug"
+    }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:52102",
+      "sslPort": 44328
+    }
+  }
+}
