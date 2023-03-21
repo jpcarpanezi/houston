@@ -20,7 +20,7 @@ namespace Houston.Core.Entities.MongoDB {
 
 		public PipelineLogs() { }
 
-		public PipelineLogs(ObjectId pipelineId, long exitCode, string stdout, ObjectId? instructionWithError, ObjectId? triggeredBy, DateTime startTime, TimeSpan duration) {
+		public PipelineLogs(ObjectId id, ObjectId pipelineId, long exitCode, string stdout, ObjectId? instructionWithError, ObjectId? triggeredBy, DateTime startTime, TimeSpan duration) : base(id) {
 			PipelineId = pipelineId;
 			ExitCode = exitCode;
 			Stdout = stdout ?? throw new ArgumentNullException(nameof(stdout));

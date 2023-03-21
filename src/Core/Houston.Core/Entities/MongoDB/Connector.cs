@@ -32,7 +32,7 @@ namespace Houston.Core.Entities.MongoDB {
 
 		public Connector() { }
 
-		public Connector(string name, string? description, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) {
+		public Connector(ObjectId id, string name, string? description, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) : base(id) {
 			Name = name ?? throw new ArgumentNullException(nameof(name));
 			Description = description;
 			CreatedBy = createdBy;

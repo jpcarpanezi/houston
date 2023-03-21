@@ -41,7 +41,7 @@ namespace Houston.Core.Entities.MongoDB {
 
 		public User() { }
 
-		public User(string name, string email, string password, bool isActive, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) {
+		public User(ObjectId id, string name, string email, string password, bool isActive, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) : base(id) {
 			Name = name ?? throw new ArgumentNullException(nameof(name));
 			Email = email ?? throw new ArgumentNullException(nameof(email));
 			Password = password ?? throw new ArgumentNullException(nameof(password));

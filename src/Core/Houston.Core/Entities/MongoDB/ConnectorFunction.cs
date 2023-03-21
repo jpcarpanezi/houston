@@ -55,7 +55,7 @@ namespace Houston.Core.Entities.MongoDB {
 
 		public ConnectorFunction() { }
 
-		public ConnectorFunction(string name, string? description, ObjectId connectorId, List<ObjectId>? dependencies, string version, List<ConnectorFunctionInput>? inputs, List<string> script, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) {
+		public ConnectorFunction(ObjectId id, string name, string? description, ObjectId connectorId, List<ObjectId>? dependencies, string version, List<ConnectorFunctionInput>? inputs, List<string> script, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) : base(id) {
 			Name = name ?? throw new ArgumentNullException(nameof(name));
 			Description = description;
 			ConnectorId = connectorId;

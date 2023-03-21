@@ -56,7 +56,7 @@ namespace Houston.Core.Entities.MongoDB {
 
 		public ConnectorFunctionInput() { }
 
-		public ConnectorFunctionInput(string name, InputTypeEnum inputType, string placeholder, string replace, string defaultValue, List<string>? values, bool advancedOption, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) {
+		public ConnectorFunctionInput(ObjectId id, string name, InputTypeEnum inputType, string placeholder, string replace, string defaultValue, List<string>? values, bool advancedOption, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) : base(id) {
 			Name = name ?? throw new ArgumentNullException(nameof(name));
 			InputType = inputType;
 			Placeholder = placeholder ?? throw new ArgumentNullException(nameof(placeholder));
