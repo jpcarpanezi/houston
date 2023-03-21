@@ -19,9 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Houston.API", "src\UserInte
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventBus", "EventBus", "{8CC4AC03-DE0C-4446-BE69-E93057750D18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus", "src\Core\EventBus\EventBus\EventBus.csproj", "{8292D92D-C585-4664-9E8B-5773EF0349B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventBus", "src\Core\EventBus\EventBus\EventBus.csproj", "{8292D92D-C585-4664-9E8B-5773EF0349B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBusRabbitMQ", "src\Core\EventBus\EventBusRabbitMQ\EventBusRabbitMQ.csproj", "{69AEBAE2-DC2C-4B6F-9AAE-B8159C9AE079}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventBusRabbitMQ", "src\Core\EventBus\EventBusRabbitMQ\EventBusRabbitMQ.csproj", "{69AEBAE2-DC2C-4B6F-9AAE-B8159C9AE079}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
