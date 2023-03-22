@@ -10,16 +10,16 @@ namespace Houston.API.AuthConfigurations {
 
 		public SigningConfigurations() {
 			using RSACryptoServiceProvider provider = new();
-			provider.ImportFromPem(File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/AuthConfigurations/Private.pem"));
+			provider.ImportFromPem(File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/AuthConfigurations/PrivateKey.pem"));
 
 			Key = new RsaSecurityKey(provider.ExportParameters(true));
 
 			SigningCredentials = new SigningCredentials(Key, SecurityAlgorithms.RsaSha512Signature);
 		}
 
-		public SigningConfigurations(string fileLocation) {
+		public SigningConfigurations(string pemFile) {
 			using RSACryptoServiceProvider provider = new();
-			provider.ImportFromPem(File.ReadAllText(fileLocation));
+			provider.ImportFromPem(pemFile);
 
 			Key = new RsaSecurityKey(provider.ExportParameters(true));
 
