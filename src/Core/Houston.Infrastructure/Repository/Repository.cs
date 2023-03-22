@@ -19,7 +19,7 @@ namespace Houston.Infrastructure.Repository
 			await DbSet.InsertOneAsync(obj);
 		}
 
-		public virtual async Task<TEntity> FindByIdAsync(ObjectId id) {
+		public virtual async Task<TEntity?> FindByIdAsync(ObjectId id) {
 			var data = await DbSet.FindAsync(Builders<TEntity>.Filter.Eq("_id", id));
 			return data.FirstOrDefault();
 		}

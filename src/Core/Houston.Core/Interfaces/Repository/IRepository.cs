@@ -7,7 +7,7 @@ namespace Houston.Core.Interfaces.Repository
     public interface IRepository<TEntity> where TEntity : EntityBase {
 		Task InsertOneAsync(TEntity obj);
 
-		Task<TEntity> FindByIdAsync(ObjectId id);
+		Task<TEntity?> FindByIdAsync(ObjectId id);
 
 		Task ReplaceOneAsync(TEntity document);
 

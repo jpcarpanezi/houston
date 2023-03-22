@@ -52,7 +52,7 @@ namespace Houston.Core.Entities.MongoDB {
 
 		public PipelineInstruction() { }
 
-		public PipelineInstruction(ObjectId connectorFunctionId, string? comments, uint interfaceId, List<uint>? connections, uint posX, uint posY, List<PipelineInstructionInput>? inputs, List<string> script, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) {
+		public PipelineInstruction(ObjectId id, ObjectId connectorFunctionId, string? comments, uint interfaceId, List<uint>? connections, uint posX, uint posY, List<PipelineInstructionInput>? inputs, List<string> script, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) : base(id) {
 			ConnectorFunctionId = connectorFunctionId;
 			Comments = comments;
 			InterfaceId = interfaceId;

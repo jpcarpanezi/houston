@@ -7,5 +7,11 @@ namespace Houston.Core.Entities.MongoDB {
 		[BsonRequired]
 		[BsonRepresentation(BsonType.ObjectId)]
 		public ObjectId Id { get; set; }
+
+		protected EntityBase() { }
+
+		protected EntityBase(ObjectId id) {
+			Id = id;
+		}
 	}
 }

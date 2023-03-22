@@ -65,7 +65,7 @@ namespace Houston.Core.Entities.MongoDB {
 
 		public Pipeline() { }
 
-		public Pipeline(string name, string? description, PipelineStatusEnum pipelineStatus, ObjectId repositoryHostConfig, string sourceCode, string? deployKey, string? secret, DateTime? lastRun, List<PipelineTrigger> triggers, List<PipelineInstruction>? instructions, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) {
+		public Pipeline(ObjectId id, string name, string? description, PipelineStatusEnum pipelineStatus, ObjectId repositoryHostConfig, string sourceCode, string? deployKey, string? secret, DateTime? lastRun, List<PipelineTrigger> triggers, List<PipelineInstruction>? instructions, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) : base(id) {
 			Name = name ?? throw new ArgumentNullException(nameof(name));
 			Description = description;
 			PipelineStatus = pipelineStatus;
