@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using System.Reflection;
+using Newtonsoft.Json.Linq;
 
 namespace Houston.API.UnitTests.Auth {
 	[TestFixture]
@@ -20,7 +20,7 @@ namespace Houston.API.UnitTests.Auth {
 		}
 
 		[Test]
-		public async Task SignIn_WhenCalledWithValidCredentials_ReturnsOk() {
+		public async Task SignIn_WithValidCredentials_ReturnsOk() {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "password");
 			var userId = ObjectId.GenerateNewId();
@@ -32,14 +32,15 @@ namespace Houston.API.UnitTests.Auth {
 
 			// Assert
 			Assert.That(result, Is.Not.Null);
+			Assert.That(result.Value, Is.Not.Null);
 			Assert.Multiple(() => {
-				Assert.That(result.Value, Is.Not.Null);
 				Assert.That(result.StatusCode, Is.EqualTo(200));
+				Assert.That(result.Value, Is.TypeOf<BearerTokenViewModel>());
 			});
 		}
 
 		[Test]
-		public async Task SignIn_WhenCalledWithInvalidCredentials_ReturnsForbidden() {
+		public async Task SignIn_WithInvalidCredentials_ReturnsForbidden() {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "password");
 			var userId = ObjectId.GenerateNewId();
@@ -54,12 +55,13 @@ namespace Houston.API.UnitTests.Auth {
 			Assert.That(result.Value, Is.Not.Null);
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(403));
+				Assert.That(result.Value, Is.TypeOf<MessageViewModel>());
 				Assert.That(((MessageViewModel)result.Value).Message, Is.EqualTo("invalidCredentials"));
 			});
 		}
 
 		[Test]
-		public async Task SignIn_WhenCalledWithInactiveUser_ReturnsForbidden() {
+		public async Task SignIn_WithInactiveUser_ReturnsForbidden() {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "password");
 			var userId = ObjectId.GenerateNewId();
@@ -74,12 +76,13 @@ namespace Houston.API.UnitTests.Auth {
 			Assert.That(result.Value, Is.Not.Null);
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(403));
+				Assert.That(result.Value, Is.TypeOf<MessageViewModel>());
 				Assert.That(((MessageViewModel)result.Value).Message, Is.EqualTo("userInactive"));
 			});
 		}
 
 		[Test]
-		public async Task RefreshToken_WhenCalledWithValidToken_ReturnsOk() {
+		public async Task RefreshToken_WithValidToken_ReturnsOk() {
 			// Arrange
 			ObjectId userId = ObjectId.GenerateNewId();
 			var token = Guid.NewGuid().ToString("N");
@@ -92,14 +95,15 @@ namespace Houston.API.UnitTests.Auth {
 
 			// Assert
 			Assert.That(result, Is.Not.Null);
+			Assert.That(result.Value, Is.Not.Null);
 			Assert.Multiple(() => {
-				Assert.That(result.Value, Is.Not.Null);
+				Assert.That(result.Value, Is.TypeOf<BearerTokenViewModel>());
 				Assert.That(result.StatusCode, Is.EqualTo(200));
 			});
 		}
 
 		[Test]
-		public async Task RefreshToken_WhenCalledWithInvalidToken_ReturnsForbidden() {
+		public async Task RefreshToken_WithInvalidToken_ReturnsForbidden() {
 			// Arrange
 			string token = "";
 
@@ -111,12 +115,13 @@ namespace Houston.API.UnitTests.Auth {
 			Assert.That(result.Value, Is.Not.Null);
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(403));
+				Assert.That(result.Value, Is.TypeOf<MessageViewModel>());
 				Assert.That(((MessageViewModel)result.Value).Message, Is.EqualTo("invalidToken"));
 			});
 		}
 
 		[Test]
-		public async Task RefreshToken_WhenCalledWithExpiredToken_ReturnsForbidden() {
+		public async Task RefreshToken_WithExpiredToken_ReturnsForbidden() {
 			// Arrange
 			string token = Guid.NewGuid().ToString("N");
 
@@ -128,12 +133,13 @@ namespace Houston.API.UnitTests.Auth {
 			Assert.That(result.Value, Is.Not.Null);
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(403));
+				Assert.That(result.Value, Is.TypeOf<MessageViewModel>());
 				Assert.That(((MessageViewModel)result.Value).Message, Is.EqualTo("tokenExpired"));
 			});
 		}
 
 		[Test]
-		public async Task RefreshToken_WhenCalledWithValidTokenAndUserNotFound_ReturnsForbidden() {
+		public async Task RefreshToken_WithValidTokenAndUserNotFound_ReturnsForbidden() {
 			// Arrange
 			ObjectId userId = ObjectId.GenerateNewId();
 			string token = Guid.NewGuid().ToString("N");
@@ -148,12 +154,13 @@ namespace Houston.API.UnitTests.Auth {
 			Assert.That(result.Value, Is.Not.Null);
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(403));
+				Assert.That(result.Value, Is.TypeOf<MessageViewModel>());
 				Assert.That(((MessageViewModel)result.Value).Message, Is.EqualTo("userNotFound"));
 			});
 		}
 
 		[Test]
-		public async Task RefreshToken_WhenCalledWithValidTokenAndInactiveUser_ReturnsForbidden() {
+		public async Task RefreshToken_WithValidTokenAndInactiveUser_ReturnsForbidden() {
 			// Arrange
 			ObjectId userId = ObjectId.GenerateNewId();
 			string token = Guid.NewGuid().ToString("N");
@@ -169,6 +176,7 @@ namespace Houston.API.UnitTests.Auth {
 			Assert.That(result.Value, Is.Not.Null);
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(403));
+				Assert.That(result.Value, Is.TypeOf<MessageViewModel>());
 				Assert.That(((MessageViewModel)result.Value).Message, Is.EqualTo("userInactive"));
 			});
 		}
