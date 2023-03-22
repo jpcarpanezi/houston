@@ -60,7 +60,7 @@ namespace Houston.API.Controllers {
 		/// <returns>A new JWT and refresh token</returns>
 		/// <response code="200">Return a new JWT with refresh token</response>
 		/// <response code="403">If token or user are invalid</response>
-		[HttpPost("{token}")]
+		[HttpGet("{token}")]
 		[AllowAnonymous]
 		[ProducesResponseType(typeof(BearerTokenViewModel), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
@@ -90,7 +90,7 @@ namespace Houston.API.Controllers {
 
 			await _cache.RemoveAsync(token);
 
-			return Ok(TokenService.GenerateToken(user, _signingConfigurations, _tokenConfigurations, _cache));
+			return Ok(await TokenService.GenerateToken(user, _signingConfigurations, _tokenConfigurations, _cache));
 		}
 	}
 }
