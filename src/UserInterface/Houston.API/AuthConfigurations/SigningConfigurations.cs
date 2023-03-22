@@ -10,7 +10,7 @@ namespace Houston.API.AuthConfigurations {
 
 		public SigningConfigurations() {
 			using RSACryptoServiceProvider provider = new();
-			provider.FromXmlString(File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/AuthConfigurations/PrivateKey.xml"));
+			provider.ImportFromPem(File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/AuthConfigurations/Private.pem"));
 
 			Key = new RsaSecurityKey(provider.ExportParameters(true));
 
@@ -19,7 +19,7 @@ namespace Houston.API.AuthConfigurations {
 
 		public SigningConfigurations(string fileLocation) {
 			using RSACryptoServiceProvider provider = new();
-			provider.FromXmlString(File.ReadAllText(fileLocation));
+			provider.ImportFromPem(File.ReadAllText(fileLocation));
 
 			Key = new RsaSecurityKey(provider.ExportParameters(true));
 

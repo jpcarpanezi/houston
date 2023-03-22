@@ -6,6 +6,7 @@ using Houston.Core.Converters;
 using Houston.Core.Interfaces.Repository;
 using Houston.Infrastructure.Context;
 using Houston.Infrastructure.Repository;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -14,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-builder.Services.AddControllers().AddJsonOptions(opts => {
+builder.Services.AddControllers(opts => opts.Filters.Add(new ProducesAttribute("application/json"))).AddJsonOptions(opts => {
 	opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 	opts.JsonSerializerOptions.Converters.Add(new ObjectIdConverter());
 });
