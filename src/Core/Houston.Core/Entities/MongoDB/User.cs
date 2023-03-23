@@ -23,6 +23,11 @@ namespace Houston.Core.Entities.MongoDB {
 		public UserRoleEnum UserRole { get; set; }
 
 		[BsonRequired]
+		[BsonElement("is_first_access")]
+		[BsonDefaultValue(true)]
+		public bool IsFirstAccess { get; set; }
+
+		[BsonRequired]
 		[BsonElement("is_active")]
 		public bool IsActive { get; set; }
 
@@ -46,10 +51,11 @@ namespace Houston.Core.Entities.MongoDB {
 
 		public User() { }
 
-		public User(ObjectId id, string name, string email, string password, UserRoleEnum userRole, bool isActive, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) : base(id) {
+		public User(ObjectId id, string name, string email, string password, bool isFirstAccess, UserRoleEnum userRole, bool isActive, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) : base(id) {
 			Name = name ?? throw new ArgumentNullException(nameof(name));
 			Email = email ?? throw new ArgumentNullException(nameof(email));
 			Password = password ?? throw new ArgumentNullException(nameof(password));
+			IsFirstAccess = isFirstAccess;
 			UserRole = userRole;
 			IsActive = isActive;
 			CreatedBy = createdBy;

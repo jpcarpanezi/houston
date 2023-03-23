@@ -48,6 +48,7 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 				Name = request.UserName,
 				Email = request.UserEmail,
 				Password = PasswordService.HashPassword(request.UserPassword),
+				IsFirstAccess = true,
 				IsActive = true,
 				CreatedBy = userId,
 				CreationDate = DateTime.UtcNow,
