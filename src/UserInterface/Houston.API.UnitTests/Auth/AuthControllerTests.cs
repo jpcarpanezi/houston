@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Houston.Core.Services;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 
@@ -24,7 +25,7 @@ namespace Houston.API.UnitTests.Auth {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "password");
 			var userId = ObjectId.GenerateNewId();
-			var user = new User(userId, "Test User", "test@test.com", "password", true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
@@ -42,9 +43,9 @@ namespace Houston.API.UnitTests.Auth {
 		[Test]
 		public async Task SignIn_WithInvalidCredentials_ReturnsForbidden() {
 			// Arrange
-			var command = new GeneralSignInCommand("test@test.com", "password");
+			var command = new GeneralSignInCommand("test@test.com", "wrongpassword");
 			var userId = ObjectId.GenerateNewId();
-			var user = new User(userId, "Test User", "test@test.com", "wrongpassword", true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
@@ -65,7 +66,7 @@ namespace Houston.API.UnitTests.Auth {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "password");
 			var userId = ObjectId.GenerateNewId();
-			var user = new User(userId, "Test User", "test@test.com", "password", false, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), false, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act

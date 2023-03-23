@@ -3,6 +3,7 @@ using Houston.Application.ViewModel;
 using Houston.Core.Commands.AuthCommands;
 using Houston.Core.Entities.Redis;
 using Houston.Core.Interfaces.Repository;
+using Houston.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
@@ -42,7 +43,7 @@ namespace Houston.API.Controllers {
 			var user = await _unitOfWork.UserRepository.FindByEmail(command.Email);
 
 			// TODO: Mudar para validar senha criptografada
-			if (user is null || user.Password != command.Password) {
+			if (user is null || !PasswordService.VerifyHashedPassword(command.Password, user.Password)) {
 				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("invalidCredentials"));
 			}
 
