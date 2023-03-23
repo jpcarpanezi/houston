@@ -1,4 +1,6 @@
-﻿using Houston.Core.Interfaces.Repository;
+﻿using Houston.Application.ViewModel;
+using Houston.Core.Commands.UserCommands;
+using Houston.Core.Interfaces.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
@@ -21,7 +23,6 @@ namespace Houston.API.Controllers {
 		/// <summary>
 		/// Checks if initial configurations were made
 		/// </summary>
-		/// <returns></returns>
 		/// <response code="200">Initial configurations were made</response>
 		/// <response code="404">Initial configurations not found</response>
 		[HttpGet("is-first-access")]
@@ -33,6 +34,26 @@ namespace Houston.API.Controllers {
 			if (configurations is null) { 
 				return NotFound();
 			}
+
+			return Ok();
+		}
+
+		/// <summary>
+		/// Defines the first user and set Docker Hub credentials
+		/// </summary>
+		/// <param name="command">First user informations and Docker Hub credentials</param>
+		/// <response code="200">User created with success</response>
+		/// <responde code="400">Error with user informations</responde>
+		/// <response code="403">First access ever made</response>
+		[HttpPost("first-access")]
+		[ProducesResponseType((int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
+		public async Task<IActionResult> FirstAccess([FromBody] CreateFirstAccessCommand command) {
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.Created)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
 
 			return Ok();
 		}
