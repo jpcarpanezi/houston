@@ -11,7 +11,7 @@ using System.Net;
 using System.Text.Json;
 
 namespace Houston.Application.CommandHandlers.UserCommandHandlers {
-	public class CreateFirstAccessCommandHandler : IRequestHandler<CreateFirstAccessCommand, ResultCommand<SystemConfiguration>> {
+	public class CreateFirstAccessCommandHandler : IRequestHandler<CreateFirstAccessCommand, ResultCommand<User>> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IDistributedCache _cache;
 
@@ -24,17 +24,22 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 			_cache = cache ?? throw new ArgumentNullException(nameof(cache));
 		}
 
-		public async Task<ResultCommand<SystemConfiguration>> Handle(CreateFirstAccessCommand request, CancellationToken cancellationToken) {
+		public async Task<ResultCommand<User>> Handle(CreateFirstAccessCommand request, CancellationToken cancellationToken) {
 			var configurations = await _cache.GetStringAsync(ConfigurationKey);
 			if (configurations is not null) {
-				return new ResultCommand<SystemConfiguration>(HttpStatusCode.Forbidden, "alreadyConfigured", null);
+				return new ResultCommand<User>(HttpStatusCode.Forbidden, "alreadyConfigured", null);
 			}
 
 			var systemConfiguration = new SystemConfiguration(request.RegistryAddress, request.RegistryEmail, request.RegistryUsername, request.RegistryPassword, DefaultOs, DefaultOsVersion, false);
 			await _cache.SetStringAsync("configurations", JsonSerializer.Serialize(systemConfiguration));
 
 			if (!PasswordService.IsPasswordStrong(request.UserPassword)) {
-				return new ResultCommand<SystemConfiguration>(HttpStatusCode.BadRequest, "passwordNotStrong", null);
+				return new ResultCommand<User>(HttpStatusCode.BadRequest, "passwordNotStrong", null);
+			}
+
+			var anyUser = await _unitOfWork.UserRepository.AnyUser();
+			if (anyUser) {
+				return new ResultCommand<User>(HttpStatusCode.Forbidden, "userAlreadyRegistered", null);
 			}
 
 			var userId = ObjectId.GenerateNewId();
@@ -51,7 +56,7 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 			};
 			await _unitOfWork.UserRepository.InsertOneAsync(user);
 
-			return new ResultCommand<SystemConfiguration>(HttpStatusCode.Created, null, JsonSerializer.Deserialize<SystemConfiguration>(configurations));
+			return new ResultCommand<User>(HttpStatusCode.Created, null, user);
 		}
 	}
 }

@@ -25,7 +25,7 @@ namespace Houston.API.UnitTests.Auth {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "password");
 			var userId = ObjectId.GenerateNewId();
-			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), Core.Enums.UserRoleEnum.Admin, true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
@@ -45,7 +45,7 @@ namespace Houston.API.UnitTests.Auth {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "wrongpassword");
 			var userId = ObjectId.GenerateNewId();
-			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), Core.Enums.UserRoleEnum.Admin, true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
@@ -66,7 +66,7 @@ namespace Houston.API.UnitTests.Auth {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "password");
 			var userId = ObjectId.GenerateNewId();
-			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), false, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), Core.Enums.UserRoleEnum.Admin, false, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
@@ -88,7 +88,7 @@ namespace Houston.API.UnitTests.Auth {
 			ObjectId userId = ObjectId.GenerateNewId();
 			var token = Guid.NewGuid().ToString("N");
 			await InsertTokenData(token, userId);
-			var user = new User(userId, "Test User", "test@test.com", "password", true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User(userId, "Test User", "test@test.com", "password", Core.Enums.UserRoleEnum.Admin, true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByIdAsync(It.IsAny<ObjectId>())).ReturnsAsync(user);
 
 			// Act
@@ -166,7 +166,7 @@ namespace Houston.API.UnitTests.Auth {
 			ObjectId userId = ObjectId.GenerateNewId();
 			string token = Guid.NewGuid().ToString("N");
 			await InsertTokenData(token, userId);
-			var user = new User(userId, "Test User", "test@test.com", "password", false, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User(userId, "Test User", "test@test.com", "password", Core.Enums.UserRoleEnum.Admin, false, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByIdAsync(userId)).ReturnsAsync(user);
 
 			// Act

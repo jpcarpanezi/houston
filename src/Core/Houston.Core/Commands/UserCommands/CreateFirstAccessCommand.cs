@@ -1,8 +1,8 @@
-﻿using Houston.Core.Entities.Redis;
+﻿using Houston.Core.Entities.MongoDB;
 using MediatR;
 
 namespace Houston.Core.Commands.UserCommands {
-	public class CreateFirstAccessCommand : IRequest<ResultCommand<SystemConfiguration>> {
+	public class CreateFirstAccessCommand : IRequest<ResultCommand<User>> {
 		public string RegistryAddress { get; set; } = null!;
 
 		public string RegistryEmail { get; set; } = null!;

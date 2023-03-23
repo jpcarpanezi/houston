@@ -7,6 +7,10 @@ namespace Houston.Infrastructure.Repository {
 	public class UserRepository : Repository<User>, IUserRepository {
 		public UserRepository(IMongoContext context) : base(context) { }
 
+		public async Task<bool> AnyUser() {
+			return await DbSet.AsQueryable().AnyAsync();
+		}
+
 		public async Task<User?> FindByEmail(string email) {
 			return await DbSet.AsQueryable().Where(x => x.Email == email).FirstOrDefaultAsync();
 		}

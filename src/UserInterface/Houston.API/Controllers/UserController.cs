@@ -1,4 +1,6 @@
-﻿using Houston.Application.ViewModel;
+﻿using AutoMapper;
+using Houston.Application.ViewModel;
+using Houston.Application.ViewModel.UserViewModels;
 using Houston.Core.Commands.UserCommands;
 using Houston.Core.Interfaces.Repository;
 using MediatR;
@@ -13,11 +15,13 @@ namespace Houston.API.Controllers {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IDistributedCache _cache;
 		private readonly IMediator _mediator;
+		private readonly IMapper _mapper;
 
-		public UserController(IUnitOfWork unitOfWork, IDistributedCache cache, IMediator mediator) {
+		public UserController(IUnitOfWork unitOfWork, IDistributedCache cache, IMediator mediator, IMapper mapper) {
 			_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			_cache = cache ?? throw new ArgumentNullException(nameof(cache));
 			_mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 		}
 
 		/// <summary>
@@ -55,7 +59,9 @@ namespace Houston.API.Controllers {
 			if (response.StatusCode != HttpStatusCode.Created)
 				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
 
-			return Ok();
+			var view = _mapper.Map<FirstUserViewModel>(response.Response);
+
+			return Ok(view);
 		}
 	}
 }

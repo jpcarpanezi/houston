@@ -1,4 +1,5 @@
 ﻿using Houston.Core.Attributes;
+using Houston.Core.Enums;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -16,6 +17,10 @@ namespace Houston.Core.Entities.MongoDB {
 		[BsonRequired]
 		[BsonElement("password")]
 		public string Password { get; set; } = null!;
+
+		[BsonRequired]
+		[BsonElement("user_role")]
+		public UserRoleEnum UserRole { get; set; }
 
 		[BsonRequired]
 		[BsonElement("is_active")]
@@ -41,10 +46,11 @@ namespace Houston.Core.Entities.MongoDB {
 
 		public User() { }
 
-		public User(ObjectId id, string name, string email, string password, bool isActive, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) : base(id) {
+		public User(ObjectId id, string name, string email, string password, UserRoleEnum userRole, bool isActive, ObjectId createdBy, DateTime creationDate, ObjectId updatedBy, DateTime lastUpdate) : base(id) {
 			Name = name ?? throw new ArgumentNullException(nameof(name));
 			Email = email ?? throw new ArgumentNullException(nameof(email));
 			Password = password ?? throw new ArgumentNullException(nameof(password));
+			UserRole = userRole;
 			IsActive = isActive;
 			CreatedBy = createdBy;
 			CreationDate = creationDate;
