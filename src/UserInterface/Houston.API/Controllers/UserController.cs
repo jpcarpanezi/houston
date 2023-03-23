@@ -4,6 +4,7 @@ using Houston.Application.ViewModel.UserViewModels;
 using Houston.Core.Commands.UserCommands;
 using Houston.Core.Interfaces.Repository;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Net;
@@ -46,11 +47,11 @@ namespace Houston.API.Controllers {
 		/// Defines the first user and set Docker Hub credentials
 		/// </summary>
 		/// <param name="command">First user informations and Docker Hub credentials</param>
-		/// <response code="200">User created with success</response>
+		/// <response code="201">User created with success</response>
 		/// <responde code="400">Error with user informations</responde>
 		/// <response code="403">First access ever made</response>
 		[HttpPost("first-access")]
-		[ProducesResponseType((int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(FirstUserViewModel), (int)HttpStatusCode.Created)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> FirstAccess([FromBody] CreateFirstAccessCommand command) {
@@ -61,7 +62,31 @@ namespace Houston.API.Controllers {
 
 			var view = _mapper.Map<FirstUserViewModel>(response.Response);
 
-			return Ok(view);
+			return CreatedAtAction(nameof(FirstAccess), view);
+		}
+
+		/// <summary>
+		/// Creates a new user in the system
+		/// </summary>
+		/// <param name="command">New user basic informations</param>
+		/// <returns>A newly created user</returns>
+		/// <response code="201">New user created with success</response>
+		/// <response code="400">Error with user informations</response>
+		/// <response code="403">User already exists</response>
+		[HttpPost]
+		[Authorize(Roles = "Admin")]
+		[ProducesResponseType(typeof(FirstUserViewModel), (int)HttpStatusCode.Created)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
+		public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command) {
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.Created)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			var view = _mapper.Map<FirstUserViewModel>(response.Response);
+
+			return CreatedAtAction(nameof(CreateUser), view);
 		}
 	}
 }

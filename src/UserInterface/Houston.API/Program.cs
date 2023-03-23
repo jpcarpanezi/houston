@@ -1,11 +1,12 @@
-using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using Houston.API.Setups;
 using Houston.Application.CommandHandlers.ConnectorCommandHandlers;
 using Houston.Core.Converters;
 using Houston.Core.Interfaces.Repository;
+using Houston.Core.Interfaces.Services;
 using Houston.Infrastructure.Context;
 using Houston.Infrastructure.Repository;
+using Houston.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -38,8 +39,10 @@ builder.Services.AddStackExchangeRedisCache(options => {
 	options.InstanceName = "houston-";
 });
 builder.Services.AddEventBus(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IMongoContext, MongoContext>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddTransient<IUserClaimsService, UserClaimsService>();
 
 var app = builder.Build();
 
