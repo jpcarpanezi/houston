@@ -24,7 +24,7 @@ namespace Houston.API.UnitTests.Auth {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "password");
 			var userId = ObjectId.GenerateNewId();
-			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, Core.Enums.UserRoleEnum.Admin, true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), false, Core.Enums.UserRoleEnum.Admin, true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
@@ -36,6 +36,26 @@ namespace Houston.API.UnitTests.Auth {
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(200));
 				Assert.That(result.Value, Is.TypeOf<BearerTokenViewModel>());
+			});
+		}
+
+		[Test]
+		public async Task SignIn_WithValidCredentialsFirstAccess_ReturnsUnauthorized() {
+			// Arrange
+			var command = new GeneralSignInCommand("test@test.com", "password");
+			var userId = ObjectId.GenerateNewId();
+			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, Core.Enums.UserRoleEnum.Admin, true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
+
+			// Act
+			var result = await _authController.SignIn(command) as UnauthorizedObjectResult;
+
+			// Assert
+			Assert.That(result, Is.Not.Null);
+			Assert.That(result.Value, Is.Not.Null);
+			Assert.Multiple(() => {
+				Assert.That(result.StatusCode, Is.EqualTo(401));
+				Assert.That(result.Value, Is.TypeOf<FirstAccessViewModel>());
 			});
 		}
 

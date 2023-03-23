@@ -2,7 +2,7 @@
 using MediatR;
 
 namespace Houston.Core.Commands.UserCommands {
-	public class CreateFirstAccessCommand : IRequest<ResultCommand<User>> {
+	public class CreateFirstSetupCommand : IRequest<ResultCommand<User>> {
 		public string RegistryAddress { get; set; } = null!;
 
 		public string RegistryEmail { get; set; } = null!;
@@ -17,9 +17,9 @@ namespace Houston.Core.Commands.UserCommands {
 
 		public string UserPassword { get; set; } = null!;
 
-		public CreateFirstAccessCommand() { }
+		public CreateFirstSetupCommand() { }
 
-		public CreateFirstAccessCommand(string registryAddress, string registryEmail, string registryUsername, string registryPassword, string userName, string userEmail, string userPassword) {
+		public CreateFirstSetupCommand(string registryAddress, string registryEmail, string registryUsername, string registryPassword, string userName, string userEmail, string userPassword) {
 			RegistryAddress = registryAddress ?? throw new ArgumentNullException(nameof(registryAddress));
 			RegistryEmail = registryEmail ?? throw new ArgumentNullException(nameof(registryEmail));
 			RegistryUsername = registryUsername ?? throw new ArgumentNullException(nameof(registryUsername));

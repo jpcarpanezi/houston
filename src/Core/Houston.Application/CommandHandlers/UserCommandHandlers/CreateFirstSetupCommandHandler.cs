@@ -11,7 +11,7 @@ using System.Net;
 using System.Text.Json;
 
 namespace Houston.Application.CommandHandlers.UserCommandHandlers {
-	public class CreateFirstAccessCommandHandler : IRequestHandler<CreateFirstAccessCommand, ResultCommand<User>> {
+	public class CreateFirstSetupCommandHandler : IRequestHandler<CreateFirstSetupCommand, ResultCommand<User>> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IDistributedCache _cache;
 
@@ -19,12 +19,12 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 		private const string DefaultOs = "debian";
 		private const string DefaultOsVersion = "11.6";
 
-		public CreateFirstAccessCommandHandler(IUnitOfWork unitOfWork, IDistributedCache cache) {
+		public CreateFirstSetupCommandHandler(IUnitOfWork unitOfWork, IDistributedCache cache) {
 			_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			_cache = cache ?? throw new ArgumentNullException(nameof(cache));
 		}
 
-		public async Task<ResultCommand<User>> Handle(CreateFirstAccessCommand request, CancellationToken cancellationToken) {
+		public async Task<ResultCommand<User>> Handle(CreateFirstSetupCommand request, CancellationToken cancellationToken) {
 			var configurations = await _cache.GetStringAsync(ConfigurationKey);
 			if (configurations is not null) {
 				return new ResultCommand<User>(HttpStatusCode.Forbidden, "alreadyConfigured", null);
@@ -48,7 +48,7 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 				Name = request.UserName,
 				Email = request.UserEmail,
 				Password = PasswordService.HashPassword(request.UserPassword),
-				IsFirstAccess = true,
+				IsFirstAccess = false,
 				IsActive = true,
 				CreatedBy = userId,
 				CreationDate = DateTime.UtcNow,

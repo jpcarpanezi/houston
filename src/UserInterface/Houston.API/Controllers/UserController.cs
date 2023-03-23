@@ -54,7 +54,7 @@ namespace Houston.API.Controllers {
 		[ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.Created)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
-		public async Task<IActionResult> FirstSetup([FromBody] CreateFirstAccessCommand command) {
+		public async Task<IActionResult> FirstSetup([FromBody] CreateFirstSetupCommand command) {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.Created)
@@ -63,6 +63,26 @@ namespace Houston.API.Controllers {
 			var view = _mapper.Map<UserViewModel>(response.Response);
 
 			return CreatedAtAction(nameof(FirstSetup), view);
+		}
+
+		/// <summary>
+		/// Changes the user password and grants system access
+		/// </summary>
+		/// <param name="command">Password and change token</param>
+		/// <response code="204">Password changed with success</response>
+		/// <response code="400">Password not strong</response>
+		/// <response code="403">Invalid first access token</response>
+		[HttpPatch("firstAccess")]
+		[ProducesResponseType((int)HttpStatusCode.NoContent)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		public async Task<IActionResult> UpdateFirstAccessPassword([FromBody] UpdateFirstAccessPasswordCommand command) {
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.NoContent)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			return NoContent();
 		}
 
 		/// <summary>

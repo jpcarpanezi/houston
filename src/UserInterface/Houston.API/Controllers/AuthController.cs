@@ -1,6 +1,7 @@
 ﻿using Houston.API.AuthConfigurations;
 using Houston.Application.ViewModel;
 using Houston.Core.Commands.AuthCommands;
+using Houston.Core.Converters;
 using Houston.Core.Entities.Redis;
 using Houston.Core.Interfaces.Repository;
 using Houston.Core.Services;
@@ -34,10 +35,12 @@ namespace Houston.API.Controllers {
 		/// <param name="command">JSON containing authentication fields</param>
 		/// <returns>A JWT with refresh token to send in header for authorization from API endpoints</returns>
 		/// <response code="200">Return a JWT</response>
+		/// <response code="401">User need to change password</response>
 		/// <response code="403">If user is inactive or with invalid credentials</response>
 		[HttpPost]
 		[AllowAnonymous]
 		[ProducesResponseType(typeof(BearerTokenViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(FirstAccessViewModel), (int)HttpStatusCode.Unauthorized)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
 		public async Task<IActionResult> SignIn([FromBody] GeneralSignInCommand command) {
 			var user = await _unitOfWork.UserRepository.FindByEmail(command.Email);
@@ -47,8 +50,21 @@ namespace Houston.API.Controllers {
 				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("invalidCredentials"));
 			}
 
-			if (user.IsActive == false) {
+			if (!user.IsActive) {
 				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("userInactive"));
+			}
+
+			if (user.IsFirstAccess) {
+				var passwordToken = await _cache.GetStringAsync(user.Id.ToString());
+
+				if (passwordToken is null) {
+					passwordToken = Guid.NewGuid().ToString("N");
+					DistributedCacheEntryOptions cacheOptions = new();
+					cacheOptions.SetAbsoluteExpiration(TimeSpan.FromMinutes(15));
+					await _cache.SetStringAsync(user.Id.ToString(), passwordToken, cacheOptions);
+				}
+				
+				return Unauthorized(new FirstAccessViewModel(passwordToken, "firstAccess"));
 			}
 
 			return Ok(await TokenService.GenerateToken(user, _signingConfigurations, _tokenConfigurations, _cache));
