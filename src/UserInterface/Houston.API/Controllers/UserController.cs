@@ -30,10 +30,10 @@ namespace Houston.API.Controllers {
 		/// </summary>
 		/// <response code="200">Initial configurations were made</response>
 		/// <response code="404">Initial configurations not found</response>
-		[HttpGet("is-first-access")]
+		[HttpGet("isFirstSetup")]
 		[ProducesResponseType((int)HttpStatusCode.OK)]
 		[ProducesResponseType((int)HttpStatusCode.NotFound)]
-		public async Task<IActionResult> IsFirstAccess() {
+		public async Task<IActionResult> IsFirstSetup() {
 			var configurations = await _cache.GetStringAsync("configurations");
 
 			if (configurations is null) { 
@@ -50,19 +50,19 @@ namespace Houston.API.Controllers {
 		/// <response code="201">User created with success</response>
 		/// <responde code="400">Error with user informations</responde>
 		/// <response code="403">First access ever made</response>
-		[HttpPost("first-access")]
-		[ProducesResponseType(typeof(FirstUserViewModel), (int)HttpStatusCode.Created)]
+		[HttpPost("firstSetup")]
+		[ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.Created)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
-		public async Task<IActionResult> FirstAccess([FromBody] CreateFirstAccessCommand command) {
+		public async Task<IActionResult> FirstSetup([FromBody] CreateFirstAccessCommand command) {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.Created)
 				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
 
-			var view = _mapper.Map<FirstUserViewModel>(response.Response);
+			var view = _mapper.Map<UserViewModel>(response.Response);
 
-			return CreatedAtAction(nameof(FirstAccess), view);
+			return CreatedAtAction(nameof(FirstSetup), view);
 		}
 
 		/// <summary>
@@ -75,7 +75,7 @@ namespace Houston.API.Controllers {
 		/// <response code="403">User already exists</response>
 		[HttpPost]
 		[Authorize(Roles = "Admin")]
-		[ProducesResponseType(typeof(FirstUserViewModel), (int)HttpStatusCode.Created)]
+		[ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.Created)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command) {
@@ -84,7 +84,7 @@ namespace Houston.API.Controllers {
 			if (response.StatusCode != HttpStatusCode.Created)
 				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
 
-			var view = _mapper.Map<FirstUserViewModel>(response.Response);
+			var view = _mapper.Map<UserViewModel>(response.Response);
 
 			return CreatedAtAction(nameof(CreateUser), view);
 		}

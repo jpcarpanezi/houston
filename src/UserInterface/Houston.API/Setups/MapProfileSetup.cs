@@ -5,7 +5,7 @@ using Houston.Core.Entities.MongoDB;
 namespace Houston.API.Setups {
 	public class MapProfileSetup : Profile {
 		public MapProfileSetup() {
-			CreateMap<User, FirstUserViewModel>();
+			CreateMap<User, UserViewModel>();
 		}
 	}
 }
