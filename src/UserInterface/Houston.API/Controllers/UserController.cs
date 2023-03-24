@@ -7,6 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using MongoDB.Bson;
 using System.Net;
 
 namespace Houston.API.Controllers {
@@ -122,6 +123,32 @@ namespace Houston.API.Controllers {
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> ChangePassword([FromBody] UpdatePasswordCommand command) {
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.NoContent)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			return NoContent();
+		}
+
+		/// <summary>
+		/// Toggle user status
+		/// </summary>
+		/// <param name="userId">User ID</param>
+		/// <response code="204">User status toggled successfully</response>
+		/// <response code="400">Invalid user ID</response>
+		/// <response code="404">User not found in database</response>
+		[HttpPatch("toggleStatus/{userId}")]
+		[Authorize(Roles = "Admin")]
+		[ProducesResponseType((int)HttpStatusCode.NoContent)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
+		public async Task<IActionResult> ToggleUserStatus(string userId) {
+			if (!ObjectId.TryParse(userId, out ObjectId id)) {
+				return BadRequest(new MessageViewModel("invalidUserId"));
+			}
+
+			var command = new ToggleUserStatusCommand(id);
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.NoContent)
