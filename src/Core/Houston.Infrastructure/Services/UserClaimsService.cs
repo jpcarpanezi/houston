@@ -1,4 +1,5 @@
-﻿using Houston.Core.Interfaces.Services;
+﻿using Houston.Core.Enums;
+using Houston.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
 using System.Security.Claims;
@@ -12,6 +13,8 @@ namespace Houston.Infrastructure.Services {
 		public string Name { get => GetUserName(); }
 
 		public string Email { get => GetUserEmail(); }
+
+		public List<UserRoleEnum> Roles { get => GetUserRoles(); }
 
 		public UserClaimsService(IHttpContextAccessor context) {
 			_context = context;
@@ -29,6 +32,10 @@ namespace Houston.Infrastructure.Services {
 
 		public string GetUserName() {
 			return _context.HttpContext?.User.FindFirst(ClaimTypes.Name)?.Value ?? throw new ArgumentNullException(nameof(ClaimTypes.Name), "Cannot get user name from JWT.");
+		}
+
+		public List<UserRoleEnum> GetUserRoles() {
+			return _context.HttpContext?.User.FindAll(ClaimTypes.Role).Select(x => (UserRoleEnum) Enum.Parse(typeof(UserRoleEnum), x.Value)).ToList() ?? throw new ArgumentNullException(nameof(ClaimTypes.Role), "Cannot get user roles from JWT.");
 		}
 	}
 }

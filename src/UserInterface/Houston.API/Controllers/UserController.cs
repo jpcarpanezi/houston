@@ -108,5 +108,26 @@ namespace Houston.API.Controllers {
 
 			return CreatedAtAction(nameof(CreateUser), view);
 		}
+
+		/// <summary>
+		/// Changes the user password
+		/// </summary>
+		/// <param name="command">Old and new password with optional user id for admin roles</param>
+		/// <response code="204">Password changed successfully</response>
+		/// <response code="400">Error with request body</response>
+		/// <response code="403">You don't have permission to access this resource</response>
+		[HttpPatch("changePassword")]
+		[Authorize]
+		[ProducesResponseType((int)HttpStatusCode.NoContent)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
+		public async Task<IActionResult> ChangePassword([FromBody] UpdatePasswordCommand command) {
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.NoContent)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			return NoContent();
+		}
 	}
 }
