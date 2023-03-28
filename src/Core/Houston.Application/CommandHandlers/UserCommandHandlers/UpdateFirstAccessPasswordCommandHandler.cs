@@ -24,6 +24,10 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 				return new ResultCommand<User>(HttpStatusCode.Forbidden, "invalidToken", null);
 			}
 
+			if (!user.IsFirstAccess || !user.IsActive) {
+				return new ResultCommand<User>(HttpStatusCode.Forbidden, "invalidToken", null);
+			}
+
 			var token = await _cache.GetStringAsync(user.Id.ToString());
 			if (token is null) {
 				return new ResultCommand<User>(HttpStatusCode.Forbidden, "invalidToken", null);
@@ -34,7 +38,7 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 			}
 
 			if (!PasswordService.IsPasswordStrong(request.Password)) {
-				return new ResultCommand<User>(HttpStatusCode.BadRequest, "passwordNotStrong", null);
+				return new ResultCommand<User>(HttpStatusCode.BadRequest, "weakPassword", null);
 			}
 
 			if (PasswordService.VerifyHashedPassword(request.Password, user.Password)) {

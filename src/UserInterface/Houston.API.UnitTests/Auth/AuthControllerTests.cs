@@ -1,6 +1,4 @@
 ﻿using Houston.Core.Services;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
 
 namespace Houston.API.UnitTests.Auth {
 	[TestFixture]

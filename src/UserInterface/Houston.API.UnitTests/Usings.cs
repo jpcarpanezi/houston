@@ -11,3 +11,5 @@ global using Moq;
 global using Houston.Core.Entities.Redis;
 global using MongoDB.Bson;
 global using System.Text.Json;
+global using Microsoft.Extensions.Caching.Memory;
+global using Microsoft.Extensions.Options;

@@ -30,17 +30,17 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 				return new ResultCommand<User>(HttpStatusCode.Forbidden, "alreadyConfigured", null);
 			}
 
-			var systemConfiguration = new SystemConfiguration(request.RegistryAddress, request.RegistryEmail, request.RegistryUsername, request.RegistryPassword, DefaultOs, DefaultOsVersion, false);
-			await _cache.SetStringAsync("configurations", JsonSerializer.Serialize(systemConfiguration));
-
 			if (!PasswordService.IsPasswordStrong(request.UserPassword)) {
-				return new ResultCommand<User>(HttpStatusCode.BadRequest, "passwordNotStrong", null);
+				return new ResultCommand<User>(HttpStatusCode.BadRequest, "weakPassword", null);
 			}
 
 			var anyUser = await _unitOfWork.UserRepository.AnyUser();
 			if (anyUser) {
 				return new ResultCommand<User>(HttpStatusCode.Forbidden, "userAlreadyRegistered", null);
 			}
+
+			var systemConfiguration = new SystemConfiguration(request.RegistryAddress, request.RegistryEmail, request.RegistryUsername, request.RegistryPassword, DefaultOs, DefaultOsVersion, false);
+			await _cache.SetStringAsync("configurations", JsonSerializer.Serialize(systemConfiguration));
 
 			var userId = ObjectId.GenerateNewId();
 			var user = new User {

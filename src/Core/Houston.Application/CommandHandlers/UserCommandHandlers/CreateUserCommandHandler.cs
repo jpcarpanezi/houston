@@ -24,7 +24,7 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 			}
 
 			if (!PasswordService.IsPasswordStrong(request.TempPassword)) {
-				return new ResultCommand<User>(HttpStatusCode.BadRequest, "passwordNotStrong", null);
+				return new ResultCommand<User>(HttpStatusCode.BadRequest, "weakPassword", null);
 			}
 
 			var user = new User {

@@ -5,7 +5,6 @@ using Houston.Core.Interfaces.Repository;
 using Houston.Core.Interfaces.Services;
 using MediatR;
 using System.Net;
-using System.Security.Claims;
 
 namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 	public class ToggleUserStatusCommandHandler : IRequestHandler<ToggleUserStatusCommand, ResultCommand<User>> {
@@ -24,7 +23,7 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 
 			var user = await _unitOfWork.UserRepository.FindByIdAsync(request.UserId);
 			if (user is null) {
-				return new ResultCommand<User>(HttpStatusCode.NoContent, "userNotFound", null);
+				return new ResultCommand<User>(HttpStatusCode.NotFound, "userNotFound", null);
 			}
 
 			user.IsActive = !user.IsActive;

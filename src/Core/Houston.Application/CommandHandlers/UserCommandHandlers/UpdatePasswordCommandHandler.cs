@@ -29,12 +29,16 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 				return new ResultCommand<User>(HttpStatusCode.Forbidden, "invalidUser", null);
 			}
 
+			if (!user.IsActive) {
+				return new ResultCommand<User>(HttpStatusCode.Forbidden, "inactiveUser", null);
+			}
+
 			if (request.UserId is null && request.OldPassword is not null && !PasswordService.VerifyHashedPassword(request.OldPassword, user.Password)) {
 				return new ResultCommand<User>(HttpStatusCode.Forbidden, "incorrectOldPassword", null);
 			}
 
 			if (!PasswordService.IsPasswordStrong(request.NewPassword)) {
-				return new ResultCommand<User>(HttpStatusCode.BadRequest, "passwordNotStrong", null);
+				return new ResultCommand<User>(HttpStatusCode.BadRequest, "weakPassword", null);
 			}
 
 			user.Password = PasswordService.HashPassword(request.NewPassword);
