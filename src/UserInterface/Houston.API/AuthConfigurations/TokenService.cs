@@ -22,6 +22,7 @@ namespace Projeta.API.Infrastructure {
 					new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
 					new Claim(ClaimTypes.Email, user.Email),
 					new Claim(ClaimTypes.Name, user.Name),
+					new Claim(ClaimTypes.Role, user.UserRole.ToString())
 				}),
 				Issuer = tokenConfigurations.Issuer,
 				Audience = tokenConfigurations.Audience,

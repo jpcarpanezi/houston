@@ -1,13 +1,18 @@
-using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Houston.API.Setups;
 using Houston.Application.CommandHandlers.ConnectorCommandHandlers;
 using Houston.Core.Converters;
 using Houston.Core.Interfaces.Repository;
+using Houston.Core.Interfaces.Services;
 using Houston.Infrastructure.Context;
 using Houston.Infrastructure.Repository;
+using Houston.Infrastructure.Services;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Swagger;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -19,6 +24,8 @@ builder.Services.AddControllers(opts => opts.Filters.Add(new ProducesAttribute("
 	opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 	opts.JsonSerializerOptions.Converters.Add(new ObjectIdConverter());
 });
+builder.Services.AddFluentValidationAutoValidation().AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddBearerAuthentication(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
@@ -27,18 +34,21 @@ builder.Services.AddSwaggerGen(options => {
 		Title = "Houston CI",
 		Description = "An easy CI pipeline creator using scratch concepts.",
 	});
-
 	var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 	options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
+builder.Services.AddFluentValidationRulesToSwagger();
+builder.Services.AddAutoMapper(typeof(MapProfileSetup));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateConnectorCommandHandler>());
 builder.Services.AddStackExchangeRedisCache(options => {
 	options.Configuration = builder.Configuration.GetConnectionString("Redis");
 	options.InstanceName = "houston-";
 });
 builder.Services.AddEventBus(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IMongoContext, MongoContext>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddTransient<IUserClaimsService, UserClaimsService>();
 
 var app = builder.Build();
 

@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
+﻿using Houston.Core.Services;
 
 namespace Houston.API.UnitTests.Auth {
 	[TestFixture]
@@ -24,7 +22,7 @@ namespace Houston.API.UnitTests.Auth {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "password");
 			var userId = ObjectId.GenerateNewId();
-			var user = new User(userId, "Test User", "test@test.com", "password", true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), false, Core.Enums.UserRoleEnum.Admin, true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
@@ -40,11 +38,31 @@ namespace Houston.API.UnitTests.Auth {
 		}
 
 		[Test]
-		public async Task SignIn_WithInvalidCredentials_ReturnsForbidden() {
+		public async Task SignIn_WithValidCredentialsFirstAccess_ReturnsUnauthorized() {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "password");
 			var userId = ObjectId.GenerateNewId();
-			var user = new User(userId, "Test User", "test@test.com", "wrongpassword", true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, Core.Enums.UserRoleEnum.Admin, true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
+
+			// Act
+			var result = await _authController.SignIn(command) as UnauthorizedObjectResult;
+
+			// Assert
+			Assert.That(result, Is.Not.Null);
+			Assert.That(result.Value, Is.Not.Null);
+			Assert.Multiple(() => {
+				Assert.That(result.StatusCode, Is.EqualTo(401));
+				Assert.That(result.Value, Is.TypeOf<FirstAccessViewModel>());
+			});
+		}
+
+		[Test]
+		public async Task SignIn_WithInvalidCredentials_ReturnsForbidden() {
+			// Arrange
+			var command = new GeneralSignInCommand("test@test.com", "wrongpassword");
+			var userId = ObjectId.GenerateNewId();
+			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, Core.Enums.UserRoleEnum.Admin, true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
@@ -65,7 +83,7 @@ namespace Houston.API.UnitTests.Auth {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "password");
 			var userId = ObjectId.GenerateNewId();
-			var user = new User(userId, "Test User", "test@test.com", "password", false, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, Core.Enums.UserRoleEnum.Admin, false, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
@@ -87,7 +105,7 @@ namespace Houston.API.UnitTests.Auth {
 			ObjectId userId = ObjectId.GenerateNewId();
 			var token = Guid.NewGuid().ToString("N");
 			await InsertTokenData(token, userId);
-			var user = new User(userId, "Test User", "test@test.com", "password", true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, Core.Enums.UserRoleEnum.Admin, true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByIdAsync(It.IsAny<ObjectId>())).ReturnsAsync(user);
 
 			// Act
@@ -165,7 +183,7 @@ namespace Houston.API.UnitTests.Auth {
 			ObjectId userId = ObjectId.GenerateNewId();
 			string token = Guid.NewGuid().ToString("N");
 			await InsertTokenData(token, userId);
-			var user = new User(userId, "Test User", "test@test.com", "password", false, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, Core.Enums.UserRoleEnum.Admin, false, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByIdAsync(userId)).ReturnsAsync(user);
 
 			// Act
