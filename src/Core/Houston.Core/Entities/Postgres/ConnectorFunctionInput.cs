@@ -50,18 +50,18 @@ public partial class ConnectorFunctionInput {
 	[Column("last_update", TypeName = "timestamp(3) without time zone")]
 	public DateTime LastUpdate { get; set; }
 
-	[ForeignKey("ConnectorFunctionId")]
-	[InverseProperty("ConnectorFunctionInput")]
+	[ForeignKey(nameof(ConnectorFunctionId))]
+	[InverseProperty(nameof(Postgres.ConnectorFunction.ConnectorFunctionInputs))]
 	public virtual ConnectorFunction ConnectorFunction { get; set; } = null!;
 
-	[ForeignKey("CreatedBy")]
-	[InverseProperty("ConnectorFunctionInputCreatedByNavigation")]
+	[ForeignKey(nameof(CreatedBy))]
+	[InverseProperty(nameof(User.ConnectorFunctionInputCreatedByNavigation))]
 	public virtual User CreatedByNavigation { get; set; } = null!;
 
-	[InverseProperty("Input")]
-	public virtual ICollection<PipelineInstructionInput> PipelineInstructionInput { get; } = new List<PipelineInstructionInput>();
+	[InverseProperty(nameof(PipelineInstructionInput.ConnectorFunctionInput))]
+	public virtual ICollection<PipelineInstructionInput> PipelineInstructionInputs { get; } = new List<PipelineInstructionInput>();
 
-	[ForeignKey("UpdatedBy")]
-	[InverseProperty("ConnectorFunctionInputUpdatedByNavigation")]
+	[ForeignKey(nameof(UpdatedBy))]
+	[InverseProperty(nameof(User.ConnectorFunctionInputUpdatedByNavigation))]
 	public virtual User UpdatedByNavigation { get; set; } = null!;
 }

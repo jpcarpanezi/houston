@@ -23,7 +23,7 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
-        "ConnectionStrings__Postgres": "Server=127.0.0.1;port=54322;DataBase=houston;Uid=postgres;Pwd=eicetaih6EetheiTie4ii",
+        "ConnectionStrings__Postgres": "Server=postgres;port=5432;DataBase=houston;Uid=postgres;Pwd=eicetaih6EetheiTie4ii",
         "ConnectionStrings__RabbitMQ": "amqp://root:Abcd1234@rabbitmq:5672/",
         "ConnectionStrings__Redis": "redis:6379,password=re3oeg8Shaiyao0aisojieTh7miethu0pheepohx"
       },

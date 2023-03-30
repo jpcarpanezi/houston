@@ -30,28 +30,28 @@ public partial class PipelineInstruction {
 	[Column("last_update", TypeName = "timestamp(3) without time zone")]
 	public DateTime LastUpdate { get; set; }
 
-	[ForeignKey("Connection")]
-	[InverseProperty("InverseConnectionNavigation")]
+	[ForeignKey(nameof(Connection))]
+	[InverseProperty(nameof(InverseConnectionNavigation))]
 	public virtual PipelineInstruction? ConnectionNavigation { get; set; }
 
-	[ForeignKey("CreatedBy")]
-	[InverseProperty("PipelineInstructionCreatedByNavigation")]
+	[ForeignKey(nameof(CreatedBy))]
+	[InverseProperty(nameof(User.PipelineInstructionCreatedByNavigation))]
 	public virtual User CreatedByNavigation { get; set; } = null!;
 
-	[InverseProperty("ConnectionNavigation")]
+	[InverseProperty(nameof(ConnectionNavigation))]
 	public virtual ICollection<PipelineInstruction> InverseConnectionNavigation { get; } = new List<PipelineInstruction>();
 
-	[ForeignKey("PipelineId")]
-	[InverseProperty("PipelineInstruction")]
+	[ForeignKey(nameof(PipelineId))]
+	[InverseProperty(nameof(Postgres.Pipeline.PipelineInstructions))]
 	public virtual Pipeline Pipeline { get; set; } = null!;
 
-	[InverseProperty("Instruction")]
-	public virtual ICollection<PipelineInstructionInput> PipelineInstructionInput { get; } = new List<PipelineInstructionInput>();
+	[InverseProperty(nameof(PipelineInstructionInput.PipelineInstruction))]
+	public virtual ICollection<PipelineInstructionInput> PipelineInstructionInputs { get; } = new List<PipelineInstructionInput>();
 
-	[ForeignKey("UpdatedBy")]
-	[InverseProperty("PipelineInstructionUpdatedByNavigation")]
+	[ForeignKey(nameof(UpdatedBy))]
+	[InverseProperty(nameof(User.PipelineInstructionUpdatedByNavigation))]
 	public virtual User UpdatedByNavigation { get; set; } = null!;
 
-	[InverseProperty("InstructionWithErrorNavigation")]
-	public virtual ICollection<PipelineLog> PipelineLogInstructionWithErrorNavigation { get; } = new List<PipelineLog>();
+	[InverseProperty(nameof(PipelineLog.PipelineInstruction))]
+	public virtual ICollection<PipelineLog> PipelineLogs { get; } = new List<PipelineLog>();
 }

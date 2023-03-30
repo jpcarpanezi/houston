@@ -45,62 +45,62 @@ public partial class User {
 	[Column("last_update", TypeName = "timestamp without time zone")]
 	public DateTime LastUpdate { get; set; }
 
-	[InverseProperty("CreatedByNavigation")]
+	[InverseProperty(nameof(Connector.CreatedByNavigation))]
 	public virtual ICollection<Connector> ConnectorCreatedByNavigation { get; } = new List<Connector>();
 
-	[InverseProperty("CreatedByNavigation")]
+	[InverseProperty(nameof(ConnectorFunction.CreatedByNavigation))]
 	public virtual ICollection<ConnectorFunction> ConnectorFunctionCreatedByNavigation { get; } = new List<ConnectorFunction>();
 
-	[InverseProperty("CreatedByNavigation")]
+	[InverseProperty(nameof(ConnectorFunctionInput.CreatedByNavigation))]
 	public virtual ICollection<ConnectorFunctionInput> ConnectorFunctionInputCreatedByNavigation { get; } = new List<ConnectorFunctionInput>();
 
-	[InverseProperty("UpdatedByNavigation")]
+	[InverseProperty(nameof(ConnectorFunctionInput.UpdatedByNavigation))]
 	public virtual ICollection<ConnectorFunctionInput> ConnectorFunctionInputUpdatedByNavigation { get; } = new List<ConnectorFunctionInput>();
 
-	[InverseProperty("UpdatedByNavigation")]
+	[InverseProperty(nameof(ConnectorFunction.UpdatedByNavigation))]
 	public virtual ICollection<ConnectorFunction> ConnectorFunctionUpdatedByNavigation { get; } = new List<ConnectorFunction>();
 
-	[InverseProperty("UpdatedByNavigation")]
+	[InverseProperty(nameof(Connector.UpdatedByNavigation))]
 	public virtual ICollection<Connector> ConnectorUpdatedByNavigation { get; } = new List<Connector>();
 
-	[ForeignKey("CreatedBy")]
-	[InverseProperty("InverseCreatedByNavigation")]
+	[ForeignKey(nameof(CreatedBy))]
+	[InverseProperty(nameof(InverseCreatedByNavigation))]
 	public virtual User CreatedByNavigation { get; set; } = null!;
 
-	[InverseProperty("CreatedByNavigation")]
+	[InverseProperty(nameof(CreatedByNavigation))]
 	public virtual ICollection<User> InverseCreatedByNavigation { get; } = new List<User>();
 
-	[InverseProperty("UpdatedByNavigation")]
+	[InverseProperty(nameof(UpdatedByNavigation))]
 	public virtual ICollection<User> InverseUpdatedByNavigation { get; } = new List<User>();
 
-	[InverseProperty("CreatedByNavigation")]
+	[InverseProperty(nameof(Pipeline.CreatedByNavigation))]
 	public virtual ICollection<Pipeline> PipelineCreatedByNavigation { get; } = new List<Pipeline>();
 
-	[InverseProperty("CreatedByNavigation")]
+	[InverseProperty(nameof(PipelineInstruction.CreatedByNavigation))]
 	public virtual ICollection<PipelineInstruction> PipelineInstructionCreatedByNavigation { get; } = new List<PipelineInstruction>();
 
-	[InverseProperty("CreatedByNavigation")]
+	[InverseProperty(nameof(PipelineInstructionInput.CreatedByNavigation))]
 	public virtual ICollection<PipelineInstructionInput> PipelineInstructionInputCreatedByNavigation { get; } = new List<PipelineInstructionInput>();
 
-	[InverseProperty("UpdatedByNavigation")]
+	[InverseProperty(nameof(PipelineInstructionInput.UpdatedByNavigation))]
 	public virtual ICollection<PipelineInstructionInput> PipelineInstructionInputUpdatedByNavigation { get; } = new List<PipelineInstructionInput>();
 
-	[InverseProperty("UpdatedByNavigation")]
+	[InverseProperty(nameof(PipelineInstruction.UpdatedByNavigation))]
 	public virtual ICollection<PipelineInstruction> PipelineInstructionUpdatedByNavigation { get; } = new List<PipelineInstruction>();
 
-	[InverseProperty("CreatedByNavigation")]
+	[InverseProperty(nameof(PipelineTrigger.CreatedByNavigation))]
 	public virtual ICollection<PipelineTrigger> PipelineTriggerCreatedByNavigation { get; } = new List<PipelineTrigger>();
 
-	[InverseProperty("UpdatedByNavigation")]
+	[InverseProperty(nameof(PipelineTrigger.UpdatedByNavigation))]
 	public virtual ICollection<PipelineTrigger> PipelineTriggerUpdatedByNavigation { get; } = new List<PipelineTrigger>();
 
-	[InverseProperty("UpdatedByNavigation")]
+	[InverseProperty(nameof(Pipeline.UpdatedByNavigation))]
 	public virtual ICollection<Pipeline> PipelineUpdatedByNavigation { get; } = new List<Pipeline>();
 
-	[InverseProperty("TriggeredByNavigation")]
+	[InverseProperty(nameof(PipelineLog.TriggeredByNavigation))]
 	public virtual ICollection<PipelineLog> PipelineLogTriggeredByNavigation { get; } = new List<PipelineLog>();
 
-	[ForeignKey("UpdatedBy")]
-	[InverseProperty("InverseUpdatedByNavigation")]
+	[ForeignKey(nameof(UpdatedBy))]
+	[InverseProperty(nameof(InverseUpdatedByNavigation))]
 	public virtual User UpdatedByNavigation { get; set; } = null!;
 }

@@ -30,12 +30,15 @@ public partial class PipelineLog {
 	[Column("duration", TypeName = "time without time zone")]
 	public TimeSpan Duration { get; set; }
 
-	[ForeignKey("PipelineId")]
+	[ForeignKey(nameof(PipelineId))]
+	[InverseProperty(nameof(Postgres.Pipeline.PipelineLogs))]
 	public virtual Pipeline Pipeline { get; set; } = null!;
 
-	[ForeignKey("TriggeredBy")]
+	[ForeignKey(nameof(TriggeredBy))]
+	[InverseProperty(nameof(User.PipelineLogTriggeredByNavigation))]
 	public virtual User TriggeredByNavigation { get; set; } = null!;
 
-	[ForeignKey("InstructionWithError")]
-	public virtual PipelineInstruction InstructionWithErrorNavigation { get; set; } = null!;
+	[ForeignKey(nameof(InstructionWithError))]
+	[InverseProperty(nameof(Postgres.PipelineInstruction.PipelineLogs))]
+	public virtual PipelineInstruction PipelineInstruction { get; set; } = null!;
 }

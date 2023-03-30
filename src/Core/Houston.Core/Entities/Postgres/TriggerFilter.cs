@@ -12,6 +12,6 @@ public partial class TriggerFilter {
 	[Column("value", TypeName = "character varying")]
 	public string Value { get; set; } = null!;
 
-	[InverseProperty("Filter")]
-	public virtual ICollection<PipelineTrigger> PipelineTrigger { get; } = new List<PipelineTrigger>();
+	[InverseProperty(nameof(PipelineTrigger.TriggerFilter))]
+	public virtual ICollection<PipelineTrigger> PipelineTriggers { get; } = new List<PipelineTrigger>();
 }

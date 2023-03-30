@@ -72,7 +72,7 @@ public partial class PostgresContext : DbContext {
 			entity.Property(e => e.LastUpdate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
 			entity.Property(e => e.Required).HasDefaultValueSql("true");
 
-			entity.HasOne(d => d.ConnectorFunction).WithMany(p => p.ConnectorFunctionInput)
+			entity.HasOne(d => d.ConnectorFunction).WithMany(p => p.ConnectorFunctionInputs)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("ConnectorFunction_id_connector_function_id_fk");
 
@@ -114,7 +114,7 @@ public partial class PostgresContext : DbContext {
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("User_id_created_by_id");
 
-			entity.HasOne(d => d.Pipeline).WithMany(p => p.PipelineInstruction)
+			entity.HasOne(d => d.Pipeline).WithMany(p => p.PipelineInstructions)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("Pipeline_id_pipeline_id_fk");
 
@@ -134,11 +134,11 @@ public partial class PostgresContext : DbContext {
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("User_id_created_by_fk");
 
-			entity.HasOne(d => d.Input).WithMany(p => p.PipelineInstructionInput)
+			entity.HasOne(d => d.ConnectorFunctionInput).WithMany(p => p.PipelineInstructionInputs)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("ConnectorFunctionInput_id_input_id_fk");
 
-			entity.HasOne(d => d.Instruction).WithMany(p => p.PipelineInstructionInput)
+			entity.HasOne(d => d.PipelineInstruction).WithMany(p => p.PipelineInstructionInputs)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("PipelineInstruction_id_input_id_fk");
 
@@ -158,15 +158,15 @@ public partial class PostgresContext : DbContext {
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("User_id_created_by_fk");
 
-			entity.HasOne(d => d.Event).WithMany(p => p.PipelineTrigger)
+			entity.HasOne(d => d.TriggerEvent).WithMany(p => p.PipelineTriggers)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("TriggerEvent_id_event_id_fk");
 
-			entity.HasOne(d => d.Filter).WithMany(p => p.PipelineTrigger)
+			entity.HasOne(d => d.TriggerFilter).WithMany(p => p.PipelineTriggers)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("TriggerFilter_id_filter_id_fk");
 
-			entity.HasOne(d => d.Pipeline).WithMany(p => p.PipelineTrigger)
+			entity.HasOne(d => d.Pipeline).WithMany(p => p.PipelineTriggers)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("Pipeline_id_pipeline_id_fk");
 
@@ -210,7 +210,7 @@ public partial class PostgresContext : DbContext {
 
 			entity.Property(e => e.Id).ValueGeneratedNever();
 
-			entity.HasOne(d => d.Pipeline).WithMany(p => p.PipelineLog)
+			entity.HasOne(d => d.Pipeline).WithMany(p => p.PipelineLogs)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("Pipeline_id_pipeline_id_fk");
 
@@ -218,7 +218,7 @@ public partial class PostgresContext : DbContext {
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("User_id_triggered_by_fk");
 
-			entity.HasOne(d => d.InstructionWithErrorNavigation).WithMany(p => p.PipelineLogInstructionWithErrorNavigation)
+			entity.HasOne(d => d.PipelineInstruction).WithMany(p => p.PipelineLogs)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("PipelineInstruction_id_instruction_with_error");
 		});

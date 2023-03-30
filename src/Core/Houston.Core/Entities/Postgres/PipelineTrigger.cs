@@ -33,23 +33,23 @@ public partial class PipelineTrigger {
 	[Column("last_update", TypeName = "timestamp(3) without time zone")]
 	public DateTime LastUpdate { get; set; }
 
-	[ForeignKey("CreatedBy")]
-	[InverseProperty("PipelineTriggerCreatedByNavigation")]
+	[ForeignKey(nameof(CreatedBy))]
+	[InverseProperty(nameof(User.PipelineTriggerCreatedByNavigation))]
 	public virtual User CreatedByNavigation { get; set; } = null!;
 
-	[ForeignKey("EventId")]
-	[InverseProperty("PipelineTrigger")]
-	public virtual TriggerEvent Event { get; set; } = null!;
+	[ForeignKey(nameof(EventId))]
+	[InverseProperty(nameof(Postgres.TriggerEvent.PipelineTriggers))]
+	public virtual TriggerEvent TriggerEvent { get; set; } = null!;
 
-	[ForeignKey("FilterId")]
-	[InverseProperty("PipelineTrigger")]
-	public virtual TriggerFilter Filter { get; set; } = null!;
+	[ForeignKey(nameof(FilterId))]
+	[InverseProperty(nameof(Postgres.TriggerFilter.PipelineTriggers))]
+	public virtual TriggerFilter TriggerFilter { get; set; } = null!;
 
-	[ForeignKey("PipelineId")]
-	[InverseProperty("PipelineTrigger")]
+	[ForeignKey(nameof(PipelineId))]
+	[InverseProperty(nameof(Postgres.Pipeline.PipelineTriggers))]
 	public virtual Pipeline Pipeline { get; set; } = null!;
 
-	[ForeignKey("UpdatedBy")]
-	[InverseProperty("PipelineTriggerUpdatedByNavigation")]
+	[ForeignKey(nameof(UpdatedBy))]
+	[InverseProperty(nameof(User.PipelineTriggerUpdatedByNavigation))]
 	public virtual User UpdatedByNavigation { get; set; } = null!;
 }

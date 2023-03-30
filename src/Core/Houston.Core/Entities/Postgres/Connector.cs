@@ -27,14 +27,14 @@ public partial class Connector {
 	[Column("last_update", TypeName = "timestamp(3) without time zone")]
 	public DateTime LastUpdate { get; set; }
 
-	[InverseProperty("Connector")]
+	[InverseProperty(nameof(Postgres.ConnectorFunction.Connector))]
 	public virtual ICollection<ConnectorFunction> ConnectorFunction { get; } = new List<ConnectorFunction>();
 
-	[ForeignKey("CreatedBy")]
-	[InverseProperty("ConnectorCreatedByNavigation")]
+	[ForeignKey(nameof(CreatedBy))]
+	[InverseProperty(nameof(User.ConnectorCreatedByNavigation))]
 	public virtual User CreatedByNavigation { get; set; } = null!;
 
-	[ForeignKey("UpdatedBy")]
-	[InverseProperty("ConnectorUpdatedByNavigation")]
+	[ForeignKey(nameof(UpdatedBy))]
+	[InverseProperty(nameof(User.ConnectorUpdatedByNavigation))]
 	public virtual User UpdatedByNavigation { get; set; } = null!;
 }

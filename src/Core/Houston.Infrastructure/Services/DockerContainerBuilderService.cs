@@ -99,15 +99,15 @@ namespace Houston.Infrastructure.Services {
 		}
 
 		private async Task GenerateBashScript(string containerId) {
-			if (_container.Pipeline.PipelineInstruction is null || !_container.Pipeline.PipelineInstruction.Any()) {
-				throw new ArgumentNullException(nameof(_container.Pipeline.PipelineInstruction));
+			if (_container.Pipeline.PipelineInstructions is null || !_container.Pipeline.PipelineInstructions.Any()) {
+				throw new ArgumentNullException(nameof(_container.Pipeline.PipelineInstructions));
 			}
 
-			foreach (var instruction in _container.Pipeline.PipelineInstruction) {
+			foreach (var instruction in _container.Pipeline.PipelineInstructions) {
 				string? instructionScript = string.Join("\n", instruction.Script);
 
-				if (instruction.PipelineInstructionInput is not null) {
-					instructionScript = ReplaceVariables(instruction.PipelineInstructionInput.ToList(), instructionScript);
+				if (instruction.PipelineInstructionInputs is not null) {
+					instructionScript = ReplaceVariables(instruction.PipelineInstructionInputs.ToList(), instructionScript);
 				}
 
 				var generateScriptCreateResponse = await _client.Exec.ExecCreateContainerAsync(containerId, new ContainerExecCreateParameters {
@@ -130,7 +130,7 @@ namespace Houston.Infrastructure.Services {
 
 			if (match.Success) {
 				string key = match.Groups[1].Value;
-				string replacement = inputs.Find(x => x.Input.Replace == key)?.ReplaceValue ?? string.Empty;
+				string replacement = inputs.Find(x => x.ConnectorFunctionInput.Replace == key)?.ReplaceValue ?? string.Empty;
 				script = Regex.Replace(script, pattern, replacement);
 			}
 
@@ -140,11 +140,11 @@ namespace Houston.Infrastructure.Services {
 		private async Task<ContainerBuilderResponse> ExecutePipelineScripts(string containerId) {
 			var response = new ContainerBuilderResponse();
 
-			if (_container.Pipeline.PipelineInstruction is null || !_container.Pipeline.PipelineInstruction.Any()) {
-				throw new ArgumentNullException(nameof(_container.Pipeline.PipelineInstruction));
+			if (_container.Pipeline.PipelineInstructions is null || !_container.Pipeline.PipelineInstructions.Any()) {
+				throw new ArgumentNullException(nameof(_container.Pipeline.PipelineInstructions));
 			}
 
-			foreach (var instruction in _container.Pipeline.PipelineInstruction) {
+			foreach (var instruction in _container.Pipeline.PipelineInstructions) {
 				var runScriptcreateResponse = await _client.Exec.ExecCreateContainerAsync(containerId, new ContainerExecCreateParameters {
 					Cmd = new List<string> { "/bin/bash", "-c", $"cd /src; bash /scripts/script-{instruction.Id}.sh" },
 					Detach = false,

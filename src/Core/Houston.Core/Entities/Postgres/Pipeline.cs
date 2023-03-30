@@ -41,20 +41,20 @@ public partial class Pipeline {
 	[Column("last_update", TypeName = "timestamp(3) without time zone")]
 	public DateTime LastUpdate { get; set; }
 
-	[ForeignKey("CreatedBy")]
-	[InverseProperty("PipelineCreatedByNavigation")]
+	[ForeignKey(nameof(CreatedBy))]
+	[InverseProperty(nameof(User.PipelineCreatedByNavigation))]
 	public virtual User CreatedByNavigation { get; set; } = null!;
 
-	[InverseProperty("Pipeline")]
-	public virtual ICollection<PipelineLog> PipelineLog { get; } = new List<PipelineLog>();
+	[InverseProperty(nameof(PipelineLog.Pipeline))]
+	public virtual ICollection<PipelineLog> PipelineLogs { get; } = new List<PipelineLog>();
 
-	[InverseProperty("Pipeline")]
-	public virtual ICollection<PipelineInstruction> PipelineInstruction { get; } = new List<PipelineInstruction>();
+	[InverseProperty(nameof(PipelineInstruction.Pipeline))]
+	public virtual ICollection<PipelineInstruction> PipelineInstructions { get; } = new List<PipelineInstruction>();
 
-	[InverseProperty("Pipeline")]
-	public virtual ICollection<PipelineTrigger> PipelineTrigger { get; } = new List<PipelineTrigger>();
+	[InverseProperty(nameof(PipelineTrigger.Pipeline))]
+	public virtual ICollection<PipelineTrigger> PipelineTriggers { get; } = new List<PipelineTrigger>();
 
-	[ForeignKey("UpdatedBy")]
-	[InverseProperty("PipelineUpdatedByNavigation")]
+	[ForeignKey(nameof(UpdatedBy))]
+	[InverseProperty(nameof(User.PipelineUpdatedByNavigation))]
 	public virtual User UpdatedByNavigation { get; set; } = null!;
 }

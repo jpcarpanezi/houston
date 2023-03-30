@@ -30,19 +30,19 @@ public partial class PipelineInstructionInput {
 	[Column("last_update", TypeName = "timestamp(3) without time zone")]
 	public DateTime LastUpdate { get; set; }
 
-	[ForeignKey("CreatedBy")]
-	[InverseProperty("PipelineInstructionInputCreatedByNavigation")]
+	[ForeignKey(nameof(CreatedBy))]
+	[InverseProperty(nameof(User.PipelineInstructionInputCreatedByNavigation))]
 	public virtual User CreatedByNavigation { get; set; } = null!;
 
-	[ForeignKey("InputId")]
-	[InverseProperty("PipelineInstructionInput")]
-	public virtual ConnectorFunctionInput Input { get; set; } = null!;
+	[ForeignKey(nameof(InputId))]
+	[InverseProperty(nameof(Postgres.ConnectorFunctionInput.PipelineInstructionInputs))]
+	public virtual ConnectorFunctionInput ConnectorFunctionInput { get; set; } = null!;
 
-	[ForeignKey("InstructionId")]
-	[InverseProperty("PipelineInstructionInput")]
-	public virtual PipelineInstruction Instruction { get; set; } = null!;
+	[ForeignKey(nameof(InstructionId))]
+	[InverseProperty(nameof(Postgres.PipelineInstruction.PipelineInstructionInputs))]
+	public virtual PipelineInstruction PipelineInstruction { get; set; } = null!;
 
-	[ForeignKey("UpdatedBy")]
-	[InverseProperty("PipelineInstructionInputUpdatedByNavigation")]
+	[ForeignKey(nameof(UpdatedBy))]
+	[InverseProperty(nameof(User.PipelineInstructionInputUpdatedByNavigation))]
 	public virtual User UpdatedByNavigation { get; set; } = null!;
 }
