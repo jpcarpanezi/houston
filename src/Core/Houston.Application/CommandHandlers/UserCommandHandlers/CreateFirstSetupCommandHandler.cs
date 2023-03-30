@@ -38,9 +38,6 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 				return new ResultCommand<User>(HttpStatusCode.Forbidden, "userAlreadyRegistered", null);
 			}
 
-			var systemConfiguration = new SystemConfiguration(request.RegistryAddress, request.RegistryEmail, request.RegistryUsername, request.RegistryPassword, DefaultOs, DefaultOsVersion, false);
-			await _cache.SetStringAsync("configurations", JsonSerializer.Serialize(systemConfiguration));
-
 			var userId = Guid.NewGuid();
 			var user = new User {
 				Id = userId,
@@ -51,13 +48,16 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 				FirstAccess = false,
 				Active = true,
 				CreatedBy = userId,
-				CreationDate = DateTime.UtcNow,
+				CreationDate = DateTime.MinValue,
 				UpdatedBy = userId,
 				LastUpdate = DateTime.UtcNow
 			};
 			
 			_unitOfWork.UserRepository.Add(user);
 			await _unitOfWork.Commit();
+
+			var systemConfiguration = new SystemConfiguration(request.RegistryAddress, request.RegistryEmail, request.RegistryUsername, request.RegistryPassword, DefaultOs, DefaultOsVersion, false);
+			await _cache.SetStringAsync("configurations", JsonSerializer.Serialize(systemConfiguration));
 
 			return new ResultCommand<User>(HttpStatusCode.Created, null, user);
 		}

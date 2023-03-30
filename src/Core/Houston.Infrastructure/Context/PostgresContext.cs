@@ -32,8 +32,6 @@ public partial class PostgresContext : DbContext {
 			entity.HasKey(e => e.Id).HasName("Connector_pk");
 
 			entity.Property(e => e.Id).ValueGeneratedNever();
-			entity.Property(e => e.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
-			entity.Property(e => e.LastUpdate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
 
 			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ConnectorCreatedByNavigation)
 				.OnDelete(DeleteBehavior.ClientSetNull)
@@ -48,8 +46,6 @@ public partial class PostgresContext : DbContext {
 			entity.HasKey(e => e.Id).HasName("ConnectorFunction_pk");
 
 			entity.Property(e => e.Id).ValueGeneratedNever();
-			entity.Property(e => e.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
-			entity.Property(e => e.LastUpdate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
 
 			entity.HasOne(d => d.Connector).WithMany(p => p.ConnectorFunction)
 				.OnDelete(DeleteBehavior.ClientSetNull)
@@ -68,9 +64,6 @@ public partial class PostgresContext : DbContext {
 			entity.HasKey(e => e.Id).HasName("ConnectorFunctionInput_pk");
 
 			entity.Property(e => e.Id).ValueGeneratedNever();
-			entity.Property(e => e.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
-			entity.Property(e => e.LastUpdate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
-			entity.Property(e => e.Required).HasDefaultValueSql("true");
 
 			entity.HasOne(d => d.ConnectorFunction).WithMany(p => p.ConnectorFunctionInputs)
 				.OnDelete(DeleteBehavior.ClientSetNull)
@@ -89,8 +82,6 @@ public partial class PostgresContext : DbContext {
 			entity.HasKey(e => e.Id).HasName("Pipeline_pk");
 
 			entity.Property(e => e.Id).ValueGeneratedNever();
-			entity.Property(e => e.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
-			entity.Property(e => e.LastUpdate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
 
 			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.PipelineCreatedByNavigation)
 				.OnDelete(DeleteBehavior.ClientSetNull)
@@ -105,8 +96,6 @@ public partial class PostgresContext : DbContext {
 			entity.HasKey(e => e.Id).HasName("PipelineInstruction_pk");
 
 			entity.Property(e => e.Id).ValueGeneratedNever();
-			entity.Property(e => e.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
-			entity.Property(e => e.LastUpdate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
 
 			entity.HasOne(d => d.ConnectionNavigation).WithMany(p => p.InverseConnectionNavigation).HasConstraintName("PipelineInstruction_id_connection_fk");
 
@@ -127,8 +116,6 @@ public partial class PostgresContext : DbContext {
 			entity.HasKey(e => e.Id).HasName("PipelineInstructionInput_pk");
 
 			entity.Property(e => e.Id).ValueGeneratedNever();
-			entity.Property(e => e.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
-			entity.Property(e => e.LastUpdate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
 
 			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.PipelineInstructionInputCreatedByNavigation)
 				.OnDelete(DeleteBehavior.ClientSetNull)
@@ -151,8 +138,6 @@ public partial class PostgresContext : DbContext {
 			entity.HasKey(e => e.Id).HasName("PipelineTrigger_pk");
 
 			entity.Property(e => e.Id).ValueGeneratedNever();
-			entity.Property(e => e.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
-			entity.Property(e => e.LastUpdate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
 
 			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.PipelineTriggerCreatedByNavigation)
 				.OnDelete(DeleteBehavior.ClientSetNull)
@@ -191,10 +176,6 @@ public partial class PostgresContext : DbContext {
 			entity.HasKey(e => e.Id).HasName("User_pk");
 
 			entity.Property(e => e.Id).ValueGeneratedNever();
-			entity.Property(e => e.Active).HasDefaultValueSql("true");
-			entity.Property(e => e.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
-			entity.Property(e => e.FirstAccess).HasDefaultValueSql("true");
-			entity.Property(e => e.LastUpdate).HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
 
 			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.InverseCreatedByNavigation)
 				.OnDelete(DeleteBehavior.ClientSetNull)

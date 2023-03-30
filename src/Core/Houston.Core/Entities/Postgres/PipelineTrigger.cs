@@ -24,13 +24,13 @@ public partial class PipelineTrigger {
 	[Column("created_by")]
 	public Guid CreatedBy { get; set; }
 
-	[Column("creation_date", TypeName = "timestamp(3) without time zone")]
+	[Column("creation_date", TypeName = "timestamp(3) with time zone")]
 	public DateTime CreationDate { get; set; }
 
 	[Column("updated_by")]
 	public Guid UpdatedBy { get; set; }
 
-	[Column("last_update", TypeName = "timestamp(3) without time zone")]
+	[Column("last_update", TypeName = "timestamp(3) with time zone")]
 	public DateTime LastUpdate { get; set; }
 
 	[ForeignKey(nameof(CreatedBy))]
