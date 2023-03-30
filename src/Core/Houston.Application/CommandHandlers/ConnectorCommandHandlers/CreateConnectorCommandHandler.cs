@@ -22,6 +22,7 @@ namespace Houston.Application.CommandHandlers.ConnectorCommandHandlers {
 				Id = connectorId,
 				Name = request.Name,
 				Description = request.Description,
+				Active = true,
 				CreatedBy = _claims.Id,
 				CreationDate = DateTime.UtcNow,
 				UpdatedBy = _claims.Id,

@@ -25,6 +25,7 @@ namespace Houston.API.UnitTests.ConnectorCommandHandlers {
 				Id = It.IsAny<Guid>(),
 				Name = "Test Connector",
 				Description = "Test Description Connector",
+				Active = true,
 				CreatedBy = It.IsAny<Guid>(),
 				CreationDate = It.IsAny<DateTime>(),
 				UpdatedBy = It.IsAny<Guid>(),

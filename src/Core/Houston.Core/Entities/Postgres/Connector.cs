@@ -15,6 +15,9 @@ public partial class Connector {
 	[Column("description")]
 	public string? Description { get; set; }
 
+	[Column("active")]
+	public bool Active { get; set; }
+
 	[Column("created_by")]
 	public Guid CreatedBy { get; set; }
 
