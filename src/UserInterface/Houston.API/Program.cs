@@ -3,16 +3,13 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Houston.API.Setups;
 using Houston.Application.CommandHandlers.ConnectorCommandHandlers;
-using Houston.Core.Converters;
 using Houston.Core.Interfaces.Repository;
 using Houston.Core.Interfaces.Services;
-using Houston.Infrastructure.Context;
 using Houston.Infrastructure.Repository;
 using Houston.Infrastructure.Services;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Swagger;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -20,10 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-builder.Services.AddControllers(opts => opts.Filters.Add(new ProducesAttribute("application/json"))).AddJsonOptions(opts => {
-	opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-	opts.JsonSerializerOptions.Converters.Add(new ObjectIdConverter());
-});
+builder.Services.AddControllers(opts => opts.Filters.Add(new ProducesAttribute("application/json"))).AddJsonOptions(opts => opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddFluentValidationAutoValidation().AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddBearerAuthentication(builder.Configuration);
@@ -46,7 +40,7 @@ builder.Services.AddStackExchangeRedisCache(options => {
 });
 builder.Services.AddEventBus(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IMongoContext, MongoContext>();
+builder.Services.AddPostgres(builder.Configuration);
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IUserClaimsService, UserClaimsService>();
 

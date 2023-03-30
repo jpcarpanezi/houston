@@ -1,17 +1,15 @@
 ﻿namespace Houston.Core.Interfaces.Repository {
-	public interface IUnitOfWork {
+	public interface IUnitOfWork : IDisposable {
 		IUserRepository UserRepository { get; }
 		
 		IConnectorRepository ConnectorRepository { get; }
-
-		IRepositoryHostRepository RepositoryHostRepository { get; }
 
 		IPipelineRepository PipelineRepository { get; }
 
 		IConnectorFunctionRepository ConnectorFunctionRepository { get; }
 
-		IPipelineLogsRepository PipelineLogsRepository { get; }
+		IPipelineLogRepository PipelineLogsRepository { get; }
 
-		Task<bool> Commit();
+		Task<int> Commit();
 	}
 }

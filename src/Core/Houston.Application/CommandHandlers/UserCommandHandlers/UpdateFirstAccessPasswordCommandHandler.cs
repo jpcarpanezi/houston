@@ -1,12 +1,11 @@
 ﻿using Houston.Core.Commands;
 using Houston.Core.Commands.UserCommands;
-using Houston.Core.Entities.MongoDB;
+using Houston.Core.Entities.Postgres;
 using Houston.Core.Interfaces.Repository;
 using Houston.Core.Services;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Net;
-using System.Text.Json;
 
 namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 	public class UpdateFirstAccessPasswordCommandHandler : IRequestHandler<UpdateFirstAccessPasswordCommand, ResultCommand<User>> {
@@ -24,7 +23,7 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 				return new ResultCommand<User>(HttpStatusCode.Forbidden, "invalidToken", null);
 			}
 
-			if (!user.IsFirstAccess || !user.IsActive) {
+			if (!user.FirstAccess || !user.Active) {
 				return new ResultCommand<User>(HttpStatusCode.Forbidden, "invalidToken", null);
 			}
 
@@ -46,10 +45,12 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 			}
 
 			user.Password = PasswordService.HashPassword(request.Password);
-			user.IsFirstAccess = false;
+			user.FirstAccess = false;
 			user.LastUpdate = DateTime.UtcNow;
 			user.UpdatedBy = user.Id;
-			await _unitOfWork.UserRepository.ReplaceOneAsync(user);
+
+			_unitOfWork.UserRepository.Update(user);
+			await _unitOfWork.Commit();
 
 			await _cache.RemoveAsync(user.Id.ToString());
 

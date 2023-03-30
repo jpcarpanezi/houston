@@ -1,18 +1,18 @@
-﻿using Houston.Core.Entities.MongoDB;
+﻿using Houston.Core.Entities.Postgres;
 using Houston.Core.Interfaces.Repository;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
+using Houston.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Houston.Infrastructure.Repository {
 	public class UserRepository : Repository<User>, IUserRepository {
-		public UserRepository(IMongoContext context) : base(context) { }
+		public UserRepository(PostgresContext context) : base(context) { }
 
 		public async Task<bool> AnyUser() {
-			return await DbSet.AsQueryable().AnyAsync();
+			return await Context.User.AnyAsync();
 		}
 
 		public async Task<User?> FindByEmail(string email) {
-			return await DbSet.AsQueryable().Where(x => x.Email == email).FirstOrDefaultAsync();
+			return await Context.User.Where(x => x.Email == email).FirstOrDefaultAsync();
 		}
 	}
 }

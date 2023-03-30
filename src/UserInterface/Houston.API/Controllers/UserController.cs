@@ -7,7 +7,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
-using MongoDB.Bson;
 using System.Net;
 
 namespace Houston.API.Controllers {
@@ -144,7 +143,7 @@ namespace Houston.API.Controllers {
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> ToggleUserStatus(string userId) {
-			if (!ObjectId.TryParse(userId, out ObjectId id)) {
+			if (!Guid.TryParse(userId, out Guid id)) {
 				return BadRequest(new MessageViewModel("invalidUserId"));
 			}
 

@@ -1,6 +1,6 @@
 ﻿using Houston.Core.Commands;
 using Houston.Core.Commands.UserCommands;
-using Houston.Core.Entities.MongoDB;
+using Houston.Core.Entities.Postgres;
 using Houston.Core.Interfaces.Repository;
 using Houston.Core.Interfaces.Services;
 using MediatR;
@@ -21,16 +21,17 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 				return new ResultCommand<User>(HttpStatusCode.Forbidden, "selfUpdateNotAllowed", null);
 			}
 
-			var user = await _unitOfWork.UserRepository.FindByIdAsync(request.UserId);
+			var user = await _unitOfWork.UserRepository.GetByIdAsync(request.UserId);
 			if (user is null) {
 				return new ResultCommand<User>(HttpStatusCode.NotFound, "userNotFound", null);
 			}
 
-			user.IsActive = !user.IsActive;
+			user.Active = !user.Active;
 			user.LastUpdate = DateTime.UtcNow;
 			user.UpdatedBy = _claims.Id;
 
-			await _unitOfWork.UserRepository.ReplaceOneAsync(user);
+			_unitOfWork.UserRepository.Update(user);
+			await _unitOfWork.Commit();
 
 			return new ResultCommand<User>(HttpStatusCode.NoContent, null, null);
 		}

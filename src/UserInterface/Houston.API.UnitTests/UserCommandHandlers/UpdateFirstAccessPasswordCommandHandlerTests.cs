@@ -1,5 +1,6 @@
 ﻿using Houston.Application.CommandHandlers.UserCommandHandlers;
 using Houston.Core.Commands.UserCommands;
+using Houston.Core.Entities.Postgres;
 using Houston.Core.Services;
 using System.Net;
 
@@ -37,9 +38,20 @@ namespace Houston.API.UnitTests.UserCommandHandlers {
 		[Test]
 		public async Task Handle_WithNoFirstAccessUserOrDisabled_ReturnsForbiddenAndErrorMessage() {
 			// Arrange
-			var userId = ObjectId.GenerateNewId();
 			var command = new UpdateFirstAccessPasswordCommand("john.doe@test.com", Guid.NewGuid().ToString("N"), "StrongPassword1324");
-			var user = new User(userId, "John Doe", "john.doe@test.com", "StrongPassword1234", false, Core.Enums.UserRoleEnum.User, false, It.IsAny<ObjectId>(), It.IsAny<DateTime>(), It.IsAny<ObjectId>(), It.IsAny<DateTime>());
+			var user = new User {
+				Id = Guid.NewGuid(),
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("password"),
+				Active = false,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = false,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByEmail(command.Email)).ReturnsAsync(user);
 
 			// Act
@@ -56,9 +68,20 @@ namespace Houston.API.UnitTests.UserCommandHandlers {
 		[Test]
 		public async Task Handle_WithTokenNotFound_ReturnsForbiddenAndErrorMessage() {
 			// Arrange
-			var userId = ObjectId.GenerateNewId();
 			var command = new UpdateFirstAccessPasswordCommand("john.doe@test.com", Guid.NewGuid().ToString("N"), "StrongPassword1324");
-			var user = new User(userId, "John Doe", "john.doe@test.com", "StrongPassword1234", true, Core.Enums.UserRoleEnum.User, true, It.IsAny<ObjectId>(), It.IsAny<DateTime>(), It.IsAny<ObjectId>(), It.IsAny<DateTime>());
+			var user = new User {
+				Id = Guid.NewGuid(),
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("password"),
+				Active = true,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = true,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByEmail(command.Email)).ReturnsAsync(user);
 
 			// Act
@@ -75,9 +98,21 @@ namespace Houston.API.UnitTests.UserCommandHandlers {
 		[Test]
 		public async Task Handle_WithInvalidToken_ReturnsForbiddenAndErrorMessage() {
 			// Arrange
-			var userId = ObjectId.GenerateNewId();
+			Guid userId = Guid.NewGuid();
 			var command = new UpdateFirstAccessPasswordCommand("john.doe@test.com", Guid.NewGuid().ToString("N"), "StrongPassword1324");
-			var user = new User(userId, "John Doe", "john.doe@test.com", "StrongPassword1234", true, Core.Enums.UserRoleEnum.User, true, It.IsAny<ObjectId>(), It.IsAny<DateTime>(), It.IsAny<ObjectId>(), It.IsAny<DateTime>());
+			var user = new User {
+				Id = userId,
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("password"),
+				Active = true,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = true,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
 			_cache.SetString(userId.ToString(), Guid.NewGuid().ToString("N"), new DistributedCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(15)));
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByEmail(command.Email)).ReturnsAsync(user);
 
@@ -95,10 +130,22 @@ namespace Houston.API.UnitTests.UserCommandHandlers {
 		[Test]
 		public async Task Handle_WithWeakPassword_ReturnsBadRequestAndErrorMessage() {
 			// Arrange
-			var userId = ObjectId.GenerateNewId();
+			var userId = Guid.NewGuid();
 			var token = Guid.NewGuid().ToString("N");
 			var command = new UpdateFirstAccessPasswordCommand("john.doe@test.com", token, "weakpwd");
-			var user = new User(userId, "John Doe", "john.doe@test.com", PasswordService.HashPassword("tempStrongPwd1234"), true, Core.Enums.UserRoleEnum.User, true, It.IsAny<ObjectId>(), It.IsAny<DateTime>(), It.IsAny<ObjectId>(), It.IsAny<DateTime>());
+			var user = new User {
+				Id = userId,
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("weakpwd"),
+				Active = true,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = true,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
 			_cache.SetString(userId.ToString(), token, new DistributedCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(15)));
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByEmail(command.Email)).ReturnsAsync(user);
 
@@ -116,10 +163,22 @@ namespace Houston.API.UnitTests.UserCommandHandlers {
 		[Test]
 		public async Task Handle_WithInvalidTempPassword_ReturnsBadRequestAndErrorMessage() {
 			// Arrange
-			var userId = ObjectId.GenerateNewId();
+			var userId = Guid.NewGuid();
 			var token = Guid.NewGuid().ToString("N");
-			var command = new UpdateFirstAccessPasswordCommand("john.doe@test.com", token, "StrongPassword1324");
-			var user = new User(userId, "John Doe", "john.doe@test.com", PasswordService.HashPassword("StrongPassword1324"), true, Core.Enums.UserRoleEnum.User, true, It.IsAny<ObjectId>(), It.IsAny<DateTime>(), It.IsAny<ObjectId>(), It.IsAny<DateTime>());
+			var command = new UpdateFirstAccessPasswordCommand("john.doe@test.com", token, "StrongPassword1234");
+			var user = new User {
+				Id = userId,
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("StrongPassword1234"),
+				Active = true,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = true,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
 			_cache.SetString(userId.ToString(), token, new DistributedCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(15)));
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByEmail(command.Email)).ReturnsAsync(user);
 
@@ -137,10 +196,22 @@ namespace Houston.API.UnitTests.UserCommandHandlers {
 		[Test]
 		public async Task Handle_WithValidParameters_ReturnsNoContent() {
 			// Arrange
-			var userId = ObjectId.GenerateNewId();
+			var userId = Guid.NewGuid();
 			var token = Guid.NewGuid().ToString("N");
 			var command = new UpdateFirstAccessPasswordCommand("john.doe@test.com", token, "StrongPassword1234");
-			var user = new User(userId, "John Doe", "john.doe@test.com", PasswordService.HashPassword("StrongPassword1324"), true, Core.Enums.UserRoleEnum.User, true, It.IsAny<ObjectId>(), It.IsAny<DateTime>(), It.IsAny<ObjectId>(), It.IsAny<DateTime>());
+			var user = new User {
+				Id = userId,
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("StrongTempPassword1234"),
+				Active = true,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = true,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
 			_cache.SetString(userId.ToString(), token, new DistributedCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(15)));
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByEmail(command.Email)).ReturnsAsync(user);
 
@@ -148,12 +219,12 @@ namespace Houston.API.UnitTests.UserCommandHandlers {
 			var result = await _handler.Handle(command, default);
 
 			// Assert
-			_mockUnitOfWork.Verify(x => x.UserRepository.ReplaceOneAsync(user));
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
 				Assert.That(result.ErrorMessage, Is.Null);
 				Assert.That(result.Response, Is.Null);
 			});
+			_mockUnitOfWork.Verify(x => x.UserRepository.Update(user), Times.Once);
 		}
 	}
 }

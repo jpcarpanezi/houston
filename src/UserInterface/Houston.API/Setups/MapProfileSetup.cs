@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Houston.Application.ViewModel.UserViewModels;
-using Houston.Core.Entities.MongoDB;
+using Houston.Core.Entities.Postgres;
 
 namespace Houston.API.Setups {
 	public class MapProfileSetup : Profile {

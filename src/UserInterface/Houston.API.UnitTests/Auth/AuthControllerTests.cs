@@ -1,4 +1,5 @@
-﻿using Houston.Core.Services;
+﻿using Houston.Core.Entities.Postgres;
+using Houston.Core.Services;
 
 namespace Houston.API.UnitTests.Auth {
 	[TestFixture]
@@ -21,8 +22,19 @@ namespace Houston.API.UnitTests.Auth {
 		public async Task SignIn_WithValidCredentials_ReturnsOk() {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "password");
-			var userId = ObjectId.GenerateNewId();
-			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), false, Core.Enums.UserRoleEnum.Admin, true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User {
+				Id = Guid.NewGuid(),
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("password"),
+				Active = true,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = false,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
@@ -41,8 +53,19 @@ namespace Houston.API.UnitTests.Auth {
 		public async Task SignIn_WithValidCredentialsFirstAccess_ReturnsUnauthorized() {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "password");
-			var userId = ObjectId.GenerateNewId();
-			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, Core.Enums.UserRoleEnum.Admin, true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User {
+				Id = Guid.NewGuid(),
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("password"),
+				Active = true,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = true,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
@@ -61,8 +84,19 @@ namespace Houston.API.UnitTests.Auth {
 		public async Task SignIn_WithInvalidCredentials_ReturnsForbidden() {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "wrongpassword");
-			var userId = ObjectId.GenerateNewId();
-			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, Core.Enums.UserRoleEnum.Admin, true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User {
+				Id = Guid.NewGuid(),
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("password"),
+				Active = true,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = false,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
@@ -82,8 +116,19 @@ namespace Houston.API.UnitTests.Auth {
 		public async Task SignIn_WithInactiveUser_ReturnsForbidden() {
 			// Arrange
 			var command = new GeneralSignInCommand("test@test.com", "password");
-			var userId = ObjectId.GenerateNewId();
-			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, Core.Enums.UserRoleEnum.Admin, false, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
+			var user = new User {
+				Id = Guid.NewGuid(),
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("password"),
+				Active = false,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = false,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
@@ -102,11 +147,23 @@ namespace Houston.API.UnitTests.Auth {
 		[Test]
 		public async Task RefreshToken_WithValidToken_ReturnsOk() {
 			// Arrange
-			ObjectId userId = ObjectId.GenerateNewId();
+			Guid userId = Guid.NewGuid();
 			var token = Guid.NewGuid().ToString("N");
 			await InsertTokenData(token, userId);
-			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, Core.Enums.UserRoleEnum.Admin, true, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
-			_mockUnitOfWork.Setup(x => x.UserRepository.FindByIdAsync(It.IsAny<ObjectId>())).ReturnsAsync(user);
+			var user = new User {
+				Id = Guid.NewGuid(),
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("password"),
+				Active = true,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = false,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
+			_mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
 
 			// Act
 			var result = await _authController.RefreshToken(token) as ObjectResult;
@@ -159,10 +216,10 @@ namespace Houston.API.UnitTests.Auth {
 		[Test]
 		public async Task RefreshToken_WithValidTokenAndUserNotFound_ReturnsForbidden() {
 			// Arrange
-			ObjectId userId = ObjectId.GenerateNewId();
+			Guid userId = Guid.NewGuid();
 			string token = Guid.NewGuid().ToString("N");
 			await InsertTokenData(token, userId);
-			_mockUnitOfWork.Setup(x => x.UserRepository.FindByIdAsync(userId)).ReturnsAsync(default(User));
+			_mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(userId)).ReturnsAsync(default(User));
 
 			// Act
 			var result = await _authController.RefreshToken(token) as ObjectResult;
@@ -180,11 +237,23 @@ namespace Houston.API.UnitTests.Auth {
 		[Test]
 		public async Task RefreshToken_WithValidTokenAndInactiveUser_ReturnsForbidden() {
 			// Arrange
-			ObjectId userId = ObjectId.GenerateNewId();
+			Guid userId = Guid.NewGuid();
 			string token = Guid.NewGuid().ToString("N");
 			await InsertTokenData(token, userId);
-			var user = new User(userId, "Test User", "test@test.com", PasswordService.HashPassword("password"), true, Core.Enums.UserRoleEnum.Admin, false, userId, DateTime.UtcNow, userId, DateTime.UtcNow);
-			_mockUnitOfWork.Setup(x => x.UserRepository.FindByIdAsync(userId)).ReturnsAsync(user);
+			var user = new User {
+				Id = Guid.NewGuid(),
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("password"),
+				Active = false,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = false,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
+			_mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(userId)).ReturnsAsync(user);
 
 			// Act
 			var result = await _authController.RefreshToken(token) as ObjectResult;
@@ -199,7 +268,7 @@ namespace Houston.API.UnitTests.Auth {
 			});
 		}
 
-		private async Task InsertTokenData(string token, ObjectId userId, string userEmail = "test@test.com") {
+		private async Task InsertTokenData(string token, Guid userId, string userEmail = "test@test.com") {
 			var tokenData = new RefreshTokenData(token, userId.ToString(), userEmail);
 
 			var opts = new DistributedCacheEntryOptions {

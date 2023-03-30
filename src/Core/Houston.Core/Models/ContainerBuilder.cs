@@ -1,4 +1,4 @@
-﻿using Houston.Core.Entities.MongoDB;
+﻿using Houston.Core.Entities.Postgres;
 
 namespace Houston.Core.Models {
 	public class ContainerBuilder {
