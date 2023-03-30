@@ -1,6 +1,6 @@
 ﻿using Houston.Application.CommandHandlers.UserCommandHandlers;
 using Houston.Core.Commands.UserCommands;
-using Houston.Core.Entities.MongoDB;
+using Houston.Core.Entities.Postgres;
 using Houston.Core.Interfaces.Services;
 using Houston.Core.Services;
 using System.Net;
@@ -22,7 +22,7 @@ namespace Houston.API.UnitTests.UserCommandHandlers {
 		[Test]
 		public async Task Handle_WithUnauthorizedPasswordChange_ReturnsForbiddenAndErrorMessage() {
 			// Arrange
-			var userId = ObjectId.GenerateNewId();
+			var userId = Guid.NewGuid();
 			var command = new UpdatePasswordCommand(userId, null, "StrongPassword1234");
 			_mockUserClaimsService.Setup(x => x.Roles).Returns(new List<Core.Enums.UserRoleEnum> { Core.Enums.UserRoleEnum.User });
 
@@ -40,10 +40,10 @@ namespace Houston.API.UnitTests.UserCommandHandlers {
 		[Test]
 		public async Task Handle_WithNotFoundUser_ReturnsForbiddenAndErrorMessage() {
 			// Arrange
-			var userId = ObjectId.GenerateNewId();
+			var userId = Guid.NewGuid();
 			var command = new UpdatePasswordCommand(userId, null, "StrongPassword1234");
 			_mockUserClaimsService.Setup(x => x.Roles).Returns(new List<Core.Enums.UserRoleEnum> { Core.Enums.UserRoleEnum.Admin });
-			_mockUnitOfWork.Setup(x => x.UserRepository.FindByIdAsync(userId)).ReturnsAsync((User)null!);
+			_mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(userId)).ReturnsAsync(default(User));
 
 			// Act
 			var result = await _handler.Handle(command, default);
@@ -59,11 +59,23 @@ namespace Houston.API.UnitTests.UserCommandHandlers {
 		[Test]
 		public async Task Handle_WithInactiveUser_ReturnsForbiddenAndErrorMessage() {
 			// Arrange
-			var userId = ObjectId.GenerateNewId();
+			var userId = Guid.NewGuid();
 			var command = new UpdatePasswordCommand(userId, null, "StrongPassword1234");
-			var user = new User(userId, "John Doe", "john.doe@example.com", PasswordService.HashPassword("oldPassword"), false, Core.Enums.UserRoleEnum.User, false, It.IsAny<ObjectId>(), It.IsAny<DateTime>(), It.IsAny<ObjectId>(), It.IsAny<DateTime>());
+			var user = new User {
+				Id = userId,
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("StrongPassword1234"),
+				Active = false,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = false,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
 			_mockUserClaimsService.Setup(x => x.Roles).Returns(new List<Core.Enums.UserRoleEnum> { Core.Enums.UserRoleEnum.Admin });
-			_mockUnitOfWork.Setup(x => x.UserRepository.FindByIdAsync(userId)).ReturnsAsync(user);
+			_mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(userId)).ReturnsAsync(user);
 
 			// Act
 			var result = await _handler.Handle(command, default);
@@ -79,11 +91,23 @@ namespace Houston.API.UnitTests.UserCommandHandlers {
 		[Test]
 		public async Task Handle_WithIncorrectOldPassword_ReturnsForbiddenAndErrorMessage() {
 			// Arrange
-			var userId = ObjectId.GenerateNewId();
+			var userId = Guid.NewGuid();
 			var command = new UpdatePasswordCommand(null, "wrongOldPassword", "StrongPassword1234");
-			var user = new User(userId, "John Doe", "john.doe@example.com", PasswordService.HashPassword("oldPassword"), false, Core.Enums.UserRoleEnum.User, true, It.IsAny<ObjectId>(), It.IsAny<DateTime>(), It.IsAny<ObjectId>(), It.IsAny<DateTime>());
+			var user = new User {
+				Id = userId,
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("StrongPassword1234"),
+				Active = true,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = false,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
 			_mockUserClaimsService.Setup(x => x.Roles).Returns(new List<Core.Enums.UserRoleEnum> { Core.Enums.UserRoleEnum.User });
-			_mockUnitOfWork.Setup(x => x.UserRepository.FindByIdAsync(It.IsAny<ObjectId>())).ReturnsAsync(user);
+			_mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
 
 			// Act
 			var result = await _handler.Handle(command, default);
@@ -99,11 +123,23 @@ namespace Houston.API.UnitTests.UserCommandHandlers {
 		[Test]
 		public async Task Handle_WithWeakPassword_ReturnsBadRequestAndErrorMessage() {
 			// Arrange
-			var userId = ObjectId.GenerateNewId();
+			var userId = Guid.NewGuid();
 			var command = new UpdatePasswordCommand(userId, null, "weakpwd");
-			var user = new User(userId, "John Doe", "john.doe@example.com", PasswordService.HashPassword("oldPassword"), false, Core.Enums.UserRoleEnum.User, true, It.IsAny<ObjectId>(), It.IsAny<DateTime>(), It.IsAny<ObjectId>(), It.IsAny<DateTime>());
+			var user = new User {
+				Id = userId,
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("StrongPassword1234"),
+				Active = true,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = false,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
 			_mockUserClaimsService.Setup(x => x.Roles).Returns(new List<Core.Enums.UserRoleEnum> { Core.Enums.UserRoleEnum.Admin });
-			_mockUnitOfWork.Setup(x => x.UserRepository.FindByIdAsync(userId)).ReturnsAsync(user);
+			_mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(userId)).ReturnsAsync(user);
 
 			// Act
 			var result = await _handler.Handle(command, default);
@@ -119,11 +155,23 @@ namespace Houston.API.UnitTests.UserCommandHandlers {
 		[Test]
 		public async Task Handle_WithValidParameters_ReturnsNoContent() {
 			// Arrange
-			var userId = ObjectId.GenerateNewId();
+			var userId = Guid.NewGuid();
 			var command = new UpdatePasswordCommand(userId, null, "StrongPassword1234");
-			var user = new User(userId, "John Doe", "john.doe@example.com", PasswordService.HashPassword("oldPassword"), false, Core.Enums.UserRoleEnum.User, true, It.IsAny<ObjectId>(), It.IsAny<DateTime>(), It.IsAny<ObjectId>(), It.IsAny<DateTime>());
+			var user = new User {
+				Id = userId,
+				Name = "John Doe",
+				Email = "john.doe@example.com",
+				Password = PasswordService.HashPassword("StrongPassword1234"),
+				Active = true,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = false,
+				CreatedBy = It.IsAny<Guid>(),
+				CreationDate = It.IsAny<DateTime>(),
+				UpdatedBy = It.IsAny<Guid>(),
+				LastUpdate = It.IsAny<DateTime>()
+			};
 			_mockUserClaimsService.Setup(x => x.Roles).Returns(new List<Core.Enums.UserRoleEnum> { Core.Enums.UserRoleEnum.Admin });
-			_mockUnitOfWork.Setup(x => x.UserRepository.FindByIdAsync(userId)).ReturnsAsync(user);
+			_mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(userId)).ReturnsAsync(user);
 
 			// Act
 			var result = await _handler.Handle(command, default);

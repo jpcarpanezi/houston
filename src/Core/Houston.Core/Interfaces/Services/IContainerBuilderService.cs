@@ -1,4 +1,4 @@
-﻿using Houston.Core.Entities.MongoDB;
+﻿using Houston.Core.Entities.Postgres;
 using Houston.Core.Models;
 
 namespace Houston.Core.Interfaces.Services {

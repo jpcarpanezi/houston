@@ -1,16 +1,15 @@
-﻿using Houston.Core.Entities.MongoDB;
+﻿using Houston.Core.Entities.Postgres;
 using MediatR;
-using MongoDB.Bson;
 
 namespace Houston.Core.Commands.PipelineCommands {
 	public class UpdatePipelineInstructionsCommand : IRequest<ResultCommand<List<PipelineInstruction>>> {
-		public ObjectId PipelineId { get; set; }
+		public Guid PipelineId { get; set; }
 
 		public List<UpdatePipelineInstructionsListCommand> PipelineInstructions { get; set; } = null!;
 	}
 
 	public class UpdatePipelineInstructionsListCommand {
-		public ObjectId ConnectorFunctionId { get; set; }
+		public Guid ConnectorFunctionId { get; set; }
 
 		public string? Comments { get; set; }
 

@@ -1,11 +1,10 @@
 ﻿using Houston.Core.Commands;
 using Houston.Core.Commands.UserCommands;
-using Houston.Core.Entities.MongoDB;
+using Houston.Core.Entities.Postgres;
 using Houston.Core.Interfaces.Repository;
 using Houston.Core.Interfaces.Services;
 using Houston.Core.Services;
 using MediatR;
-using MongoDB.Bson;
 using System.Net;
 
 namespace Houston.Application.CommandHandlers.UserCommandHandlers {
@@ -23,13 +22,13 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 				return new ResultCommand<User>(HttpStatusCode.Forbidden, "unauthorizedPasswordChange", null);
 			}
 
-			ObjectId userId = request.UserId is null ? _claims.Id : (ObjectId)request.UserId;
-			var user = await _unitOfWork.UserRepository.FindByIdAsync(userId);
+			Guid userId = request.UserId is null ? _claims.Id : (Guid)request.UserId;
+			var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
 			if (user is null) {
 				return new ResultCommand<User>(HttpStatusCode.Forbidden, "invalidUser", null);
 			}
 
-			if (!user.IsActive) {
+			if (!user.Active) {
 				return new ResultCommand<User>(HttpStatusCode.Forbidden, "inactiveUser", null);
 			}
 
@@ -42,11 +41,12 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 			}
 
 			user.Password = PasswordService.HashPassword(request.NewPassword);
-			user.IsFirstAccess = request.UserId is not null;
+			user.FirstAccess = request.UserId is not null;
 			user.LastUpdate = DateTime.UtcNow;
 			user.UpdatedBy = _claims.Id;
 			
-			await _unitOfWork.UserRepository.ReplaceOneAsync(user);
+			_unitOfWork.UserRepository.Update(user);
+			await _unitOfWork.Commit();
 
 			return new ResultCommand<User>(HttpStatusCode.NoContent, null, null);
 		}

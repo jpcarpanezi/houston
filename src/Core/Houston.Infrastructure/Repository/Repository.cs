@@ -1,43 +1,54 @@
-﻿using Houston.Core.Entities.MongoDB;
+﻿using Houston.Infrastructure.Context;
 using Houston.Core.Interfaces.Repository;
-using MongoDB.Bson;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace Houston.Infrastructure.Repository
-{
-    public class Repository<TEntity> : EntityBase, IRepository<TEntity> where TEntity : EntityBase {
-		protected readonly IMongoContext Context;
-		protected IMongoCollection<TEntity> DbSet;
+namespace Houston.Infrastructure.Repository {
+	public class Repository<TEntity> : IRepository<TEntity> where TEntity : class {
+		protected readonly PostgresContext Context;
+		protected readonly DbSet<TEntity> DbSet;
 
-		protected Repository(IMongoContext context) {
+		protected Repository(PostgresContext context) {
 			Context = context;
-			DbSet = Context.GetCollection<TEntity>(typeof(TEntity));
+			DbSet = Context.Set<TEntity>();
 		}
 
-		public async virtual Task InsertOneAsync(TEntity obj) {
-			await DbSet.InsertOneAsync(obj);
+		public void Add(TEntity entity) {
+			DbSet.Add(entity);
 		}
 
-		public virtual async Task<TEntity?> FindByIdAsync(ObjectId id) {
-			var data = await DbSet.FindAsync(Builders<TEntity>.Filter.Eq("_id", id));
-			return data.FirstOrDefault();
+		public void AddRange(IEnumerable<TEntity> entities) {
+			DbSet.AddRange(entities);
 		}
 
-		public virtual async Task ReplaceOneAsync(TEntity document) {
-			var filter = Builders<TEntity>.Filter.Eq("_id", document.Id);
-			await DbSet.ReplaceOneAsync(filter, document);
+		public void RemoveRange(IEnumerable<TEntity> entities) {
+			DbSet.RemoveRange(entities);
 		}
 
-		public virtual async Task UpdateOneAsync<TEntityFilter, TEntityUpdate>(Expression<Func<TEntity, TEntityFilter>> filterExp, TEntityFilter filterValue, Expression<Func<TEntity, TEntityUpdate>> updateExp, TEntityUpdate updateValue) {
-			var filter = Builders<TEntity>.Filter.Eq(filterExp, filterValue);
-			var update = Builders<TEntity>.Update.Set(updateExp, updateValue);
-
-			await DbSet.UpdateOneAsync(filter, update);
+		public void UpdateRange(IEnumerable<TEntity> entities) {
+			DbSet.UpdateRange(entities);
 		}
 
-		public async virtual Task DeleteOneAsync(Guid id) {
-			await DbSet.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", id));
+		public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> expressions) {
+			return DbSet.Where(expressions);
+		}
+
+		public async Task<IEnumerable<TEntity>> GetAllAsync() {
+			return await DbSet.ToListAsync();
+		}
+
+		public async Task<TEntity?> GetByIdAsync(Guid id) {
+			return await DbSet.FindAsync(id);
+		}
+
+		public void Remove(TEntity entity) {
+			DbSet.Remove(entity);
+		}
+
+		public void Update(TEntity entity) {
+			DbSet.Attach(entity);
+			Context.Entry(entity).State = EntityState.Modified;
+			DbSet.Update(entity);
 		}
 	}
 }

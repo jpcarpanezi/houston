@@ -1,14 +1,13 @@
 ﻿using Houston.Core.Enums;
 using Houston.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
-using MongoDB.Bson;
 using System.Security.Claims;
 
 namespace Houston.Infrastructure.Services {
 	public class UserClaimsService : IUserClaimsService {
 		private readonly IHttpContextAccessor _context;
 
-		public ObjectId Id { get => GetUserId(); }
+		public Guid Id { get => GetUserId(); }
 
 		public string Name { get => GetUserName(); }
 
@@ -20,10 +19,10 @@ namespace Houston.Infrastructure.Services {
 			_context = context;
 		}
 
-		public ObjectId GetUserId() {
+		public Guid GetUserId() {
 			string userGuid = _context.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new ArgumentNullException(nameof(ClaimTypes.NameIdentifier), "Cannot get user UUID from JWT.");
 
-			return ObjectId.Parse(userGuid);
+			return Guid.Parse(userGuid);
 		}
 
 		public string GetUserEmail() {

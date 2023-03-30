@@ -17,7 +17,6 @@ IHost host = Host.CreateDefaultBuilder(args)
 		services.AddAutofac();
 		services.AddEventBus(hostContext.Configuration);
 		services.AddScoped<IContainerBuilderService, DockerContainerBuilderService>();
-		services.AddScoped<IMongoContext, MongoContext>();
 		services.AddTransient<IUnitOfWork, UnitOfWork>();
 		//services.AddScoped<RunPipelineEventHandler>();
 	})

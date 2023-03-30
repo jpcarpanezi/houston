@@ -1,6 +1,5 @@
-﻿using Houston.Core.Entities.MongoDB;
+﻿using Houston.Core.Entities.Postgres;
 using MediatR;
-using MongoDB.Bson;
 
 namespace Houston.Core.Commands.PipelineCommands {
 	public class CreatePipelineCommand : IRequest<ResultCommand<Pipeline>> {
@@ -8,7 +7,7 @@ namespace Houston.Core.Commands.PipelineCommands {
 
 		public string? Description { get; set; }
 
-		public ObjectId RepositoryHostConfig { get; set; }
+		public Guid RepositoryHostConfig { get; set; }
 
 		public string SourceCode { get; set; } = null!;
 

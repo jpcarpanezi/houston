@@ -1,6 +1,6 @@
 ﻿using Houston.Core.Commands;
 using Houston.Core.Commands.UserCommands;
-using Houston.Core.Entities.MongoDB;
+using Houston.Core.Entities.Postgres;
 using Houston.Core.Interfaces.Repository;
 using Houston.Core.Interfaces.Services;
 using Houston.Core.Services;
@@ -31,16 +31,17 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 				Name = request.Name,
 				Email = request.Email,
 				Password = PasswordService.HashPassword(request.TempPassword),
-				UserRole = request.UserRole,
-				IsFirstAccess = true,
-				IsActive = true,
+				Role = request.UserRole,
+				FirstAccess = true,
+				Active = true,
 				CreatedBy = _claims.Id,
 				CreationDate = DateTime.UtcNow,
 				UpdatedBy = _claims.Id,
 				LastUpdate = DateTime.UtcNow
 			};
 
-			await _unitOfWork.UserRepository.InsertOneAsync(user);
+			_unitOfWork.UserRepository.Add(user);
+			await _unitOfWork.Commit();
 
 			return new ResultCommand<User>(HttpStatusCode.Created, null, user);
 		}

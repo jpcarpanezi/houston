@@ -1,12 +1,11 @@
 ﻿using Houston.Core.Commands;
 using Houston.Core.Commands.UserCommands;
-using Houston.Core.Entities.MongoDB;
+using Houston.Core.Entities.Postgres;
 using Houston.Core.Entities.Redis;
 using Houston.Core.Interfaces.Repository;
 using Houston.Core.Services;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
-using MongoDB.Bson;
 using System.Net;
 using System.Text.Json;
 
@@ -42,20 +41,23 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 			var systemConfiguration = new SystemConfiguration(request.RegistryAddress, request.RegistryEmail, request.RegistryUsername, request.RegistryPassword, DefaultOs, DefaultOsVersion, false);
 			await _cache.SetStringAsync("configurations", JsonSerializer.Serialize(systemConfiguration));
 
-			var userId = ObjectId.GenerateNewId();
+			var userId = Guid.NewGuid();
 			var user = new User {
 				Id = userId,
 				Name = request.UserName,
 				Email = request.UserEmail,
 				Password = PasswordService.HashPassword(request.UserPassword),
-				IsFirstAccess = false,
-				IsActive = true,
+				Role = Core.Enums.UserRoleEnum.Admin,
+				FirstAccess = false,
+				Active = true,
 				CreatedBy = userId,
 				CreationDate = DateTime.UtcNow,
 				UpdatedBy = userId,
 				LastUpdate = DateTime.UtcNow
 			};
-			await _unitOfWork.UserRepository.InsertOneAsync(user);
+			
+			_unitOfWork.UserRepository.Add(user);
+			await _unitOfWork.Commit();
 
 			return new ResultCommand<User>(HttpStatusCode.Created, null, user);
 		}

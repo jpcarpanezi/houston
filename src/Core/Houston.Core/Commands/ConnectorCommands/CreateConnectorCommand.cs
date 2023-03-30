@@ -1,4 +1,4 @@
-﻿using Houston.Core.Entities.MongoDB;
+﻿using Houston.Core.Entities.Postgres;
 using MediatR;
 
 namespace Houston.Core.Commands.ConnectorCommands {

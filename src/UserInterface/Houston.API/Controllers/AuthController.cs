@@ -1,14 +1,12 @@
 ﻿using Houston.API.AuthConfigurations;
 using Houston.Application.ViewModel;
 using Houston.Core.Commands.AuthCommands;
-using Houston.Core.Converters;
 using Houston.Core.Entities.Redis;
 using Houston.Core.Interfaces.Repository;
 using Houston.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
-using MongoDB.Bson;
 using Projeta.API.Infrastructure;
 using System.Net;
 using System.Text.Json;
@@ -50,11 +48,11 @@ namespace Houston.API.Controllers {
 				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("invalidCredentials"));
 			}
 
-			if (!user.IsActive) {
+			if (!user.Active) {
 				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("userInactive"));
 			}
 
-			if (user.IsFirstAccess) {
+			if (user.FirstAccess) {
 				var passwordToken = await _cache.GetStringAsync(user.Id.ToString());
 
 				if (passwordToken is null) {
@@ -96,12 +94,12 @@ namespace Houston.API.Controllers {
 				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("tokenExpired"));
 			}
 
-			var user = await _unitOfWork.UserRepository.FindByIdAsync(ObjectId.Parse(tokenData.UserId));
+			var user = await _unitOfWork.UserRepository.GetByIdAsync(Guid.Parse(tokenData.UserId));
 			if (user is null) {
 				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("userNotFound"));
 			}
 
-			if (!user.IsActive) {
+			if (!user.Active) {
 				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("userInactive"));
 			}
 
