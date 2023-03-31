@@ -4,7 +4,7 @@ using Houston.Core.Entities.Postgres;
 using Houston.Core.Interfaces.Services;
 using System.Net;
 
-namespace Houston.API.UnitTests.ConnectorCommandHandlers {
+namespace Houston.API.UnitTests.ConnectorEndpoints {
 	public class CreateConnectorCommandHandlerTests {
 		private CreateConnectorCommandHandler _handler;
 		private Mock<IUnitOfWork> _mockUnitOfWork;

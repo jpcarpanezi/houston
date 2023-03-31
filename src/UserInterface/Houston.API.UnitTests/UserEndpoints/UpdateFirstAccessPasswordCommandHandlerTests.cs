@@ -4,7 +4,7 @@ using Houston.Core.Entities.Postgres;
 using Houston.Core.Services;
 using System.Net;
 
-namespace Houston.API.UnitTests.UserCommandHandlers {
+namespace Houston.API.UnitTests.UserEndpoints {
 	[TestFixture]
 	public class UpdateFirstAccessPasswordCommandHandlerTests {
 		private UpdateFirstAccessPasswordCommandHandler _handler;

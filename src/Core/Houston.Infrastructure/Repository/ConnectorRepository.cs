@@ -7,8 +7,18 @@ namespace Houston.Infrastructure.Repository {
 	public class ConnectorRepository : Repository<Connector>, IConnectorRepository {
 		public ConnectorRepository(PostgresContext context) : base(context) {}
 
+		public Task<Connector?> GetActive(Guid id) {
+			return Context.Connector.Include(x => x.CreatedByNavigation)
+						   .Include(x => x.UpdatedByNavigation)
+						   .Where(x => x.Id == id && x.Active)
+						   .FirstOrDefaultAsync();
+		}
+
 		public Task<Connector?> GetByIdWithInverseProperties(Guid id) {
-			return Context.Connector.Include(x => x.CreatedByNavigation).Include(x => x.UpdatedByNavigation).Where(x => x.Id == id).FirstOrDefaultAsync();
+			return Context.Connector.Include(x => x.CreatedByNavigation)
+						   .Include(x => x.UpdatedByNavigation)
+						   .Where(x => x.Id == id)
+						   .FirstOrDefaultAsync();
 		}
 	}
 }

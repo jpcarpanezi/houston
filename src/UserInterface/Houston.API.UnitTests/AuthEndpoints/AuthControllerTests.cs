@@ -1,7 +1,7 @@
 ﻿using Houston.Core.Entities.Postgres;
 using Houston.Core.Services;
 
-namespace Houston.API.UnitTests.Auth {
+namespace Houston.API.UnitTests.AuthEndpoints {
 	[TestFixture]
 	public class AuthControllerTests {
 		private AuthController _authController;

@@ -81,5 +81,27 @@ namespace Houston.API.Controllers {
 
 			return Ok(view);
 		}
+
+		/// <summary>
+		/// Gets the connector by id
+		/// </summary>
+		/// <param name="connectorId"></param>
+		/// <response code="200">Connector response</response>
+		/// <response code="404">Connector not found</response>
+		[HttpGet("{connectorId:guid}")]
+		[Authorize]
+		[ProducesResponseType(typeof(ConnectorViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType((int)HttpStatusCode.NotFound)]
+		public async Task<IActionResult> Get(Guid connectorId) {
+			var command = new GetConnectorCommand(connectorId);
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode == HttpStatusCode.NotFound)
+				return NotFound();
+
+			var view = _mapper.Map<ConnectorViewModel>(response.Response);
+
+			return Ok(view);
+		}
 	}
 }

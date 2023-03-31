@@ -5,7 +5,7 @@ using Houston.Core.Interfaces.Services;
 using Houston.Core.Services;
 using System.Net;
 
-namespace Houston.API.UnitTests.UserCommandHandlers {
+namespace Houston.API.UnitTests.UserEndpoints {
 	[TestFixture]
 	public class ToggleUserStatusCommandHandlerTests {
 		private ToggleUserStatusCommandHandler _handler;
