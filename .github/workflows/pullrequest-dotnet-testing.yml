@@ -12,6 +12,8 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
+    - name: Create testing private key
+      run: ssh-keygen -t rsa -b 4096 -m PEM -N "" -f /src/UserInterface/Houston.API.UnitTests/PrivateKey.pem
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
