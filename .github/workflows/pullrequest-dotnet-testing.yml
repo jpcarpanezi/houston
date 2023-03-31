@@ -1,6 +1,6 @@
 name: .NET Pull request test
 
-on: [pull_request, workflow_dispatch]
+on: [pull_request, workflow_dispatch, push]
 
 jobs:
   build:
@@ -12,11 +12,11 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
-    - name: Create testing private key
-      run: ssh-keygen -t rsa -b 4096 -m PEM -N "" -f /src/UserInterface/Houston.API.UnitTests/PrivateKey.pem
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
+    - name: Create testing private key
+      run: ssh-keygen -t rsa -b 4096 -m PEM -N "" -f /home/runner/work/houston/houston/src/UserInterface/Houston.API.UnitTests/bin/Debug/net6.0/PrivateKey.pem
     - name: Test
       run: dotnet test --no-build --verbosity normal
