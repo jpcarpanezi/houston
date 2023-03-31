@@ -48,6 +48,7 @@ namespace Houston.API.Controllers {
 		/// <response code="204">Connector deleted successfully</response>
 		/// <response code="403">Invalid connector ID</response>
 		[HttpDelete("{connectorId:guid}")]
+		[Authorize]
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
 		public async Task<IActionResult> Delete(Guid connectorId) {
@@ -58,6 +59,27 @@ namespace Houston.API.Controllers {
 				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
 
 			return NoContent();
+		}
+
+		/// <summary>
+		/// Updates connector informations
+		/// </summary>
+		/// <param name="command">Connector informations</param>
+		/// <response code="200">Connector successfully updated</response>
+		/// <response code="403">Invalid connector</response>
+		[HttpPut]
+		[Authorize]
+		[ProducesResponseType(typeof(ConnectorViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		public async Task<IActionResult> Update([FromBody] UpdateConnectorCommand command) {
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.OK)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			var view = _mapper.Map<ConnectorViewModel>(response.Response);
+
+			return Ok(view);
 		}
 	}
 }
