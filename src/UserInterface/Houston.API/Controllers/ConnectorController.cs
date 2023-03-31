@@ -12,12 +12,10 @@ namespace Houston.API.Controllers {
 	[Route("api/[controller]")]
 	[ApiController]
 	public class ConnectorController : ControllerBase {
-		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMediator _mediator;
 		private readonly IMapper _mapper;
 
-		public ConnectorController(IUnitOfWork unitOfWork, IMediator mediator, IMapper mapper) {
-			_unitOfWork = unitOfWork;
+		public ConnectorController(IMediator mediator, IMapper mapper) {
 			_mediator = mediator;
 			_mapper = mapper;
 		}
@@ -102,6 +100,22 @@ namespace Houston.API.Controllers {
 			var view = _mapper.Map<ConnectorViewModel>(response.Response);
 
 			return Ok(view);
+		}
+
+		/// <summary>
+		/// List all active connectors
+		/// </summary>
+		/// <param name="command">URL query optional query parameters</param>
+		/// <response code="200">List of all active connectors</response>
+		[HttpGet]
+		[Authorize]
+		[ProducesResponseType(typeof(PaginatedItemsViewModel<ConnectorViewModel>), (int)HttpStatusCode.OK)]
+		public async Task<IActionResult> GetAll([FromQuery] GetAllConnectorCommand command) {
+			var response = await _mediator.Send(command);
+
+			var view = _mapper.Map<List<ConnectorViewModel>>(response.Response);
+
+			return Ok(new PaginatedItemsViewModel<ConnectorViewModel>(response.PageIndex, response.PageSize, response.Count, view));
 		}
 	}
 }

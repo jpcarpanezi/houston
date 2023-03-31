@@ -5,5 +5,9 @@ namespace Houston.Core.Interfaces.Repository {
 		Task<Connector?> GetByIdWithInverseProperties(Guid id);
 
 		Task<Connector?> GetActive(Guid id);
+
+		Task<long> CountActives();
+
+		Task<List<Connector>> GetAllActives(int pageSize, int pageIndex);
 	}
 }
