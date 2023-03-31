@@ -17,9 +17,12 @@ namespace Houston.Application.CommandHandlers.ConnectorCommandHandlers {
 		}
 
 		public async Task<ResultCommand<Connector>> Handle(CreateConnectorCommand request, CancellationToken cancellationToken) {
+			var connectorId = Guid.NewGuid();
 			Connector connector = new() {
+				Id = connectorId,
 				Name = request.Name,
 				Description = request.Description,
+				Active = true,
 				CreatedBy = _claims.Id,
 				CreationDate = DateTime.UtcNow,
 				UpdatedBy = _claims.Id,
@@ -29,7 +32,9 @@ namespace Houston.Application.CommandHandlers.ConnectorCommandHandlers {
 			_unitOfWork.ConnectorRepository.Add(connector);
 			await _unitOfWork.Commit();
 
-			return new ResultCommand<Connector>(HttpStatusCode.Created, "Sucesso", null);
+			var response = await _unitOfWork.ConnectorRepository.GetByIdWithInverseProperties(connectorId);
+
+			return new ResultCommand<Connector>(HttpStatusCode.Created, null, response);
 		}
 	}
 }

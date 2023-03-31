@@ -2,14 +2,17 @@
 using MediatR;
 
 namespace Houston.Core.Commands.ConnectorCommands {
-	public class CreateConnectorCommand : IRequest<ResultCommand<Connector>> {
+	public class UpdateConnectorCommand : IRequest<ResultCommand<Connector>> {
+		public Guid ConnectorId { get; set; }
+
 		public string Name { get; set; } = null!;
 
 		public string? Description { get; set; }
 
-		public CreateConnectorCommand() { }
-		
-		public CreateConnectorCommand(string name, string? description) {
+		public UpdateConnectorCommand() { }
+
+		public UpdateConnectorCommand(Guid connectorId, string name, string? description) {
+			ConnectorId = connectorId;
 			Name = name ?? throw new ArgumentNullException(nameof(name));
 			Description = description;
 		}

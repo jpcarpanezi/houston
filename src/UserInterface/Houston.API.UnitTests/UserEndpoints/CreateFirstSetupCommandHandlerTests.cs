@@ -3,7 +3,7 @@ using Houston.Core.Commands.UserCommands;
 using Houston.Core.Entities.Postgres;
 using System.Net;
 
-namespace Houston.API.UnitTests.UserCommandHandlers {
+namespace Houston.API.UnitTests.UserEndpoints {
 	[TestFixture]
 	public class CreateFirstSetupCommandHandlerTests {
 		private CreateFirstSetupCommandHandler _handler;

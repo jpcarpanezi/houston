@@ -14,4 +14,15 @@ namespace Houston.Core.Commands {
 			Response = response;
 		}
 	}
+
+	public class ResultCommand {
+		public HttpStatusCode StatusCode { get; set; }
+
+		public string? ErrorMessage { get; set; }
+
+		public ResultCommand(HttpStatusCode statusCode, string? errorMessage) {
+			StatusCode = statusCode;
+			ErrorMessage = errorMessage;
+		}
+	}
 }

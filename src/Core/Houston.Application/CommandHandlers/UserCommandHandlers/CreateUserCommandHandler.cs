@@ -28,6 +28,7 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 			}
 
 			var user = new User {
+				Id = Guid.NewGuid(),
 				Name = request.Name,
 				Email = request.Email,
 				Password = PasswordService.HashPassword(request.TempPassword),
