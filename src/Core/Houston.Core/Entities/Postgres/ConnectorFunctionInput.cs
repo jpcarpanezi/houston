@@ -24,7 +24,7 @@ public partial class ConnectorFunctionInput {
 
 	[Required]
 	[Column("required")]
-	public bool? Required { get; set; }
+	public bool Required { get; set; }
 
 	[Column("replace", TypeName = "character varying")]
 	public string Replace { get; set; } = null!;

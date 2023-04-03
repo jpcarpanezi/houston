@@ -7,14 +7,20 @@ namespace Houston.Core.Commands.ConnectorFunctionCommands {
 
 		public string? Description { get; set; }
 
-		public Guid? ConnectorId { get; set; }
-
-		public List<Guid>? Dependencies { get; set; }
-
-		public string? Version { get; set; }
+		public Guid ConnectorId { get; set; }
 
 		public List<GeneralConnectorFunctionInputCommand>? Inputs { get; set; }
 
-		public List<string> Script { get; set; } = null!;
+		public string[] Script { get; set; } = null!;
+
+		public CreateConnectorFunctionCommand() { }
+
+		public CreateConnectorFunctionCommand(string name, string? description, Guid connectorId, List<GeneralConnectorFunctionInputCommand>? inputs, string[] script) {
+			Name = name ?? throw new ArgumentNullException(nameof(name));
+			Description = description;
+			ConnectorId = connectorId;
+			Inputs = inputs;
+			Script = script ?? throw new ArgumentNullException(nameof(script));
+		}
 	}	
 }

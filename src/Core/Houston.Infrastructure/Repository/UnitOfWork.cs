@@ -7,6 +7,8 @@ namespace Houston.Infrastructure.Repository {
 
 		public IConnectorRepository ConnectorRepository { get; private set; }
 
+		public IConnectorFunctionInputRepository ConnectorFunctionInputRepository { get; private set; }
+
 		public IPipelineRepository PipelineRepository { get; private set; }
 
 		public IConnectorFunctionRepository ConnectorFunctionRepository { get; private set; }
@@ -22,6 +24,7 @@ namespace Houston.Infrastructure.Repository {
 			PipelineRepository = new PipelineRepository(context);
 			ConnectorFunctionRepository = new ConnectorFunctionRepository(context);
 			PipelineLogsRepository = new PipelineLogRepository(context);
+			ConnectorFunctionInputRepository = new ConnectorFunctionInputRepository(context);
 		}
 
 		public async Task<int> Commit() {

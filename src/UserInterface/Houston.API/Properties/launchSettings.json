@@ -29,6 +29,8 @@
       },
       "publishAllPorts": true,
       "useSSL": true,
+      "httpPort": 32769,
+      "sslPort": 32768,
       "DockerfileRunArguments": "--network=debug"
     }
   },

@@ -2,52 +2,72 @@
 using Houston.Core.Commands.ConnectorFunctionCommands;
 using Houston.Core.Entities.Postgres;
 using Houston.Core.Interfaces.Repository;
+using Houston.Core.Interfaces.Services;
 using MediatR;
 using System.Net;
 
 namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 	public class CreateConnectorFunctionCommandHandler : IRequestHandler<CreateConnectorFunctionCommand, ResultCommand<ConnectorFunction>> {
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IUserClaimsService _claims;
 
-		public CreateConnectorFunctionCommandHandler(IUnitOfWork unitOfWork) {
+		public CreateConnectorFunctionCommandHandler(IUnitOfWork unitOfWork, IUserClaimsService claims) {
 			_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
 		}
 
 		public async Task<ResultCommand<ConnectorFunction>> Handle(CreateConnectorFunctionCommand request, CancellationToken cancellationToken) {
-			//Guid userId = ObjectId.Parse("6406274256017a23e89a7dd6");
-			//ConnectorFunction connectorFunction = new() {
-			//	Id = ObjectId.GenerateNewId(),
-			//	Name = request.Name,
-			//	Description = request.Description,
-			//	ConnectorId = request.ConnectorId ?? ObjectId.Empty,
-			//	Dependencies = request.Dependencies,
-			//	Version = request.Version ?? "1.0.0",
-			//	IsEntrypoint = false,
-			//	Inputs = request.Inputs?.Select(x => new ConnectorFunctionInput {
-			//		Id = ObjectId.GenerateNewId(),
-			//		Name = x.Name,
-			//		InputType = x.InputType,
-			//		Required = x.Required,
-			//		Placeholder = x.Placeholder,
-			//		Replace = x.Replace,
-			//		Values = x.Values,
-			//		DefaultValue = x.DefaultValue,
-			//		AdvancedOption = x.AdvancedOption,
-			//		CreatedBy = userId,
-			//		CreationDate = DateTime.UtcNow,
-			//		UpdatedBy = userId,
-			//		LastUpdate = DateTime.UtcNow
-			//	}).ToList(),
-			//	Script = request.Script,
-			//	CreatedBy = userId,
-			//	CreationDate = DateTime.UtcNow,
-			//	UpdatedBy = userId,
-			//	LastUpdate = DateTime.UtcNow
-			//};
+			var connector = await _unitOfWork.ConnectorRepository.GetActive(request.ConnectorId);
+			if (connector is null) {
+				return new ResultCommand<ConnectorFunction>(HttpStatusCode.Forbidden, "invalidConnector", null);
+			}
 
-			//await _unitOfWork.ConnectorFunctionRepository.InsertOneAsync(connectorFunction);
+			var connectorFunctionInputs = new List<ConnectorFunctionInput>();
+			var connectorFunctionId = Guid.NewGuid();
 
-			return new ResultCommand<ConnectorFunction>(HttpStatusCode.Created, null, null);
+			if (request.Inputs is not null) {
+				foreach (var input in request.Inputs) {
+					var connectorFunctionInput = new ConnectorFunctionInput {
+						Id = Guid.NewGuid(),
+						ConnectorFunctionId = connectorFunctionId,
+						Name = input.Name,
+						Placeholder = input.Placeholder,
+						Type = input.InputType,
+						Required = input.Required,
+						Replace = input.Replace,
+						Values = input.Values,
+						DefaultValue = input.DefaultValue,
+						AdvancedOption = input.AdvancedOption,
+						CreatedBy = _claims.Id,
+						CreationDate = DateTime.UtcNow,
+						UpdatedBy = _claims.Id,
+						LastUpdate = DateTime.UtcNow
+					};
+
+					connectorFunctionInputs.Add(connectorFunctionInput);
+				}
+			}
+
+			var connectorFunction = new ConnectorFunction {
+				Id = connectorFunctionId,
+				Name = request.Name,
+				Description = request.Description,
+				ConnectorId = request.ConnectorId,
+				Script = request.Script,
+				CreatedBy = _claims.Id,
+				CreationDate = DateTime.UtcNow,
+				UpdatedBy = _claims.Id,
+				LastUpdate = DateTime.UtcNow,
+			};
+
+			_unitOfWork.ConnectorFunctionRepository.Add(connectorFunction);
+
+			if (connectorFunctionInputs.Any())
+				_unitOfWork.ConnectorFunctionInputRepository.AddRange(connectorFunctionInputs);
+
+			await _unitOfWork.Commit();
+
+			return new ResultCommand<ConnectorFunction>(HttpStatusCode.Created, null, connectorFunction);
 		}
 	}
 }

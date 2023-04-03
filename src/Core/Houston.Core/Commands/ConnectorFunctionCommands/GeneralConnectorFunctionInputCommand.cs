@@ -14,8 +14,21 @@ namespace Houston.Core.Commands.ConnectorFunctionCommands {
 
 		public string? DefaultValue { get; set; } = null!;
 
-		public List<string>? Values { get; set; } = null!;
+		public string[]? Values { get; set; } = null!;
 
 		public bool AdvancedOption { get; set; }
+
+		public GeneralConnectorFunctionInputCommand() { }
+
+		public GeneralConnectorFunctionInputCommand(InputTypeEnum inputType, string name, string placeholder, string replace, bool required, string? defaultValue, string[]? values, bool advancedOption) {
+			InputType = inputType;
+			Name = name ?? throw new ArgumentNullException(nameof(name));
+			Placeholder = placeholder ?? throw new ArgumentNullException(nameof(placeholder));
+			Replace = replace ?? throw new ArgumentNullException(nameof(replace));
+			Required = required;
+			DefaultValue = defaultValue;
+			Values = values;
+			AdvancedOption = advancedOption;
+		}
 	}
 }
