@@ -43,7 +43,6 @@ namespace Houston.API.Controllers {
 		public async Task<IActionResult> SignIn([FromBody] GeneralSignInCommand command) {
 			var user = await _unitOfWork.UserRepository.FindByEmail(command.Email);
 
-			// TODO: Mudar para validar senha criptografada
 			if (user is null || !PasswordService.VerifyHashedPassword(command.Password, user.Password)) {
 				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("invalidCredentials"));
 			}

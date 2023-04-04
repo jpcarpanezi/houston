@@ -15,6 +15,9 @@ public partial class ConnectorFunction {
 	[Column("description")]
 	public string? Description { get; set; }
 
+	[Column("active")]
+	public bool Active { get; set; }
+
 	[Column("connector_id")]
 	public Guid ConnectorId { get; set; }
 
@@ -38,7 +41,7 @@ public partial class ConnectorFunction {
 	public virtual Connector Connector { get; set; } = null!;
 
 	[InverseProperty(nameof(ConnectorFunctionInput.ConnectorFunction))]
-	public virtual ICollection<ConnectorFunctionInput> ConnectorFunctionInputs { get; } = new List<ConnectorFunctionInput>();
+	public virtual ICollection<ConnectorFunctionInput> ConnectorFunctionInputs { get; set; } = new List<ConnectorFunctionInput>();
 
 	[ForeignKey(nameof(CreatedBy))]
 	[InverseProperty(nameof(User.ConnectorFunctionCreatedByNavigation))]
