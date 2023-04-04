@@ -81,21 +81,21 @@ namespace Houston.Infrastructure.Services {
 		}
 
 		private async Task GetSSHKey(string containerId) {
-			if (_container.Pipeline.DeployKey is null) {
-				throw new ArgumentNullException(nameof(_container.Pipeline.DeployKey));
-			}
+			//if (_container.Pipeline.DeployKey is null) {
+			//	throw new ArgumentNullException(nameof(_container.Pipeline.DeployKey));
+			//}
 
-			var generateSSHKeyCreateResponse = await _client.Exec.ExecCreateContainerAsync(containerId, new ContainerExecCreateParameters {
-				Cmd = new List<string> {
-					"/bin/bash",
-					"-c",
-					$"mkdir /root/.ssh; echo '{Encoding.UTF8.GetString(Convert.FromBase64String(_container.Pipeline.DeployKey)).Replace("\r\n", "\n").Replace("\r", "\n")}' >> /root/.ssh/id_ed25519"
-				},
-				AttachStdin = true,
-				Tty = true
-			}, default);
+			//var generateSSHKeyCreateResponse = await _client.Exec.ExecCreateContainerAsync(containerId, new ContainerExecCreateParameters {
+			//	Cmd = new List<string> {
+			//		"/bin/bash",
+			//		"-c",
+			//		$"mkdir /root/.ssh; echo '{Encoding.UTF8.GetString(Convert.FromBase64String(_container.Pipeline.DeployKey)).Replace("\r\n", "\n").Replace("\r", "\n")}' >> /root/.ssh/id_ed25519"
+			//	},
+			//	AttachStdin = true,
+			//	Tty = true
+			//}, default);
 
-			await _client.Exec.StartAndAttachContainerExecAsync(generateSSHKeyCreateResponse.ID, false, default);
+			//await _client.Exec.StartAndAttachContainerExecAsync(generateSSHKeyCreateResponse.ID, false, default);
 		}
 
 		private async Task GenerateBashScript(string containerId) {

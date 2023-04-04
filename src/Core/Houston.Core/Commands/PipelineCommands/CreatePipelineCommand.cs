@@ -7,14 +7,11 @@ namespace Houston.Core.Commands.PipelineCommands {
 
 		public string? Description { get; set; }
 
-		public Guid RepositoryHostConfig { get; set; }
+		public CreatePipelineCommand() { }
 
-		public string SourceCode { get; set; } = null!;
-
-		public string? DeployKey { get; set; } = null!;
-
-		public string? Secret { get; set; } = null!;
-
-		public List<PipelineTrigger> Triggers { get; set; } = null!;
+		public CreatePipelineCommand(string name, string? description) {
+			Name = name ?? throw new ArgumentNullException(nameof(name));
+			Description = description;
+		}
 	}
 }

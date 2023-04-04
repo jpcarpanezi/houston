@@ -2,5 +2,6 @@
 
 namespace Houston.Core.Interfaces.Repository {
 	public interface IPipelineRepository : IRepository<Pipeline> {
+		Task<Pipeline?> GetActive(Guid id);
 	}
 }

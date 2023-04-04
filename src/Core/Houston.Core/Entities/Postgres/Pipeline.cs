@@ -16,18 +16,11 @@ public partial class Pipeline {
 	[Column("description", TypeName = "character varying")]
 	public string? Description { get; set; }
 
+	[Column("active")]
+	public bool Active { get; set; }
+
 	[Column("status")]
 	public PipelineStatusEnum Status { get; set; }
-
-	[Column("source_git", TypeName = "character varying")]
-	public string SourceGit { get; set; } = null!;
-
-	[Column("deploy_key", TypeName = "character varying")]
-	public string DeployKey { get; set; } = null!;
-
-	[Column("secret")]
-	[StringLength(256)]
-	public string Secret { get; set; } = null!;
 
 	[Column("created_by")]
 	public Guid CreatedBy { get; set; }
