@@ -80,5 +80,27 @@ namespace Houston.API.Controllers {
 
 			return NoContent();
 		}
+
+		/// <summary>
+		/// Gets the connector function with inputs by id
+		/// </summary>
+		/// <param name="connectorFunctionId"></param>
+		/// <response code="200">Connector function response</response>
+		/// <response code="404">Connector function not found</response>
+		[HttpGet("{connectorFunctionId:guid}")]
+		[Authorize]
+		[ProducesResponseType(typeof(ConnectorFunctionViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType((int)HttpStatusCode.NotFound)]
+		public async Task<IActionResult> Get(Guid connectorFunctionId) {
+			var command = new GetConnectorFunctionCommand(connectorFunctionId);
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode == HttpStatusCode.NotFound)
+				return NotFound();
+
+			var view = _mapper.Map<ConnectorFunctionViewModel>(response.Response);
+
+			return Ok(view);
+		}
 	}
 }
