@@ -87,7 +87,7 @@ namespace Houston.API.Controllers {
 		/// <param name="connectorFunctionId"></param>
 		/// <response code="200">Connector function response</response>
 		/// <response code="404">Connector function not found</response>
-		[HttpGet("{connectorFunctionId:guid}")]
+		[HttpGet("item/{connectorFunctionId:guid}")]
 		[Authorize]
 		[ProducesResponseType(typeof(ConnectorFunctionViewModel), (int)HttpStatusCode.OK)]
 		[ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -101,6 +101,23 @@ namespace Houston.API.Controllers {
 			var view = _mapper.Map<ConnectorFunctionViewModel>(response.Response);
 
 			return Ok(view);
+		}
+
+		/// <summary>
+		/// List all active connector function with inputs
+		/// </summary>
+		/// <param name="command">URL query optional query parameters</param>
+		/// <response code="200">List of all active connector functions</response>
+		[HttpGet("{connectorId:guid}")]
+		[Authorize]
+		[ProducesResponseType(typeof(PaginatedItemsViewModel<ConnectorFunctionViewModel>), (int)HttpStatusCode.OK)]
+		public async Task<IActionResult> GetAll([FromQuery] GetAllConnectorFunctionCommand command, Guid connectorId) {
+			command.ConnectorId = connectorId;
+			var response = await _mediator.Send(command);
+
+			var view = _mapper.Map<List<ConnectorFunctionViewModel>>(response.Response);
+
+			return Ok(new PaginatedItemsViewModel<ConnectorFunctionViewModel>(response.PageIndex, response.PageSize, response.Count, view));
 		}
 	}
 }
