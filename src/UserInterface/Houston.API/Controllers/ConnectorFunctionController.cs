@@ -60,5 +60,25 @@ namespace Houston.API.Controllers {
 
 			return Ok(view);
 		}
+
+		/// <summary>
+		/// Logically deletes a connector function with inputs
+		/// </summary>
+		/// <param name="connectorFunctionId"></param>
+		/// <response code="204">Successfully deleted the connector function</response>
+		/// <response code="403">Invalid connector function id</response>
+		[HttpDelete("{connectorFunctionId:guid}")]
+		[Authorize]
+		[ProducesResponseType((int)HttpStatusCode.NoContent)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		public async Task<IActionResult> Delete(Guid connectorFunctionId) {
+			var command = new DeleteConnectorFunctionCommand(connectorFunctionId);
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.NoContent)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			return NoContent();
+		}
 	}
 }

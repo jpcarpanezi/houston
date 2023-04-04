@@ -52,6 +52,7 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 				Id = connectorFunctionId,
 				Name = request.Name,
 				Description = request.Description,
+				Active = true,
 				ConnectorId = request.ConnectorId,
 				Script = request.Script,
 				CreatedBy = _claims.Id,

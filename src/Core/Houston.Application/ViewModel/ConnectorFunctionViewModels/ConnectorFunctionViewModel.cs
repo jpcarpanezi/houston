@@ -8,6 +8,8 @@ namespace Houston.Application.ViewModel.ConnectorFunctionViewModels {
 
 		public string? Description { get; set; }
 
+		public bool Active { get; set; }
+
 		public Guid ConnectorId { get; set; }
 
 		public string[] Script { get; set; } = null!;
