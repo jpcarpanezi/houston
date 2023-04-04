@@ -38,7 +38,7 @@ public partial class ConnectorFunction {
 	public virtual Connector Connector { get; set; } = null!;
 
 	[InverseProperty(nameof(ConnectorFunctionInput.ConnectorFunction))]
-	public virtual ICollection<ConnectorFunctionInput> ConnectorFunctionInputs { get; } = new List<ConnectorFunctionInput>();
+	public virtual ICollection<ConnectorFunctionInput> ConnectorFunctionInputs { get; set; } = new List<ConnectorFunctionInput>();
 
 	[ForeignKey(nameof(CreatedBy))]
 	[InverseProperty(nameof(User.ConnectorFunctionCreatedByNavigation))]

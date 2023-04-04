@@ -2,17 +2,17 @@
 using Houston.Core.Commands.ConnectorFunctionCommands;
 
 namespace Houston.API.Validators.ConnectorFunctionValidators {
-	public class CreateConnectorFunctionCommandValidator : AbstractValidator<CreateConnectorFunctionCommand> {
-		public CreateConnectorFunctionCommandValidator() {
+	public class UpdateConnectorFunctionCommandValidator : AbstractValidator<UpdateConnectorFunctionCommand> {
+		public UpdateConnectorFunctionCommandValidator() {
 			RuleFor(x => x.Name)
-				.NotEmpty().NotNull().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty)
-				.MaximumLength(50).WithMessage(ValidatorsModelErrorMessages.MaxLength);
+				.NotNull().NotEmpty().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty)
+				.MaximumLength(25).WithMessage(ValidatorsModelErrorMessages.MaxLength);
 
 			RuleFor(x => x.Description)
 				.MaximumLength(5000).WithMessage(ValidatorsModelErrorMessages.MaxLength);
 
 			RuleForEach(x => x.Inputs)
-				.SetValidator(new CreateConnectorFunctionInputCommandValidator());
+				.SetValidator(new UpdateConnectorFunctionInputCommandValidator());
 
 			RuleForEach(x => x.Script)
 				.NotEmpty().NotNull().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty);

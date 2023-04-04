@@ -57,13 +57,11 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 				CreatedBy = _claims.Id,
 				CreationDate = DateTime.UtcNow,
 				UpdatedBy = _claims.Id,
-				LastUpdate = DateTime.UtcNow,
+				LastUpdate = DateTime.UtcNow
 			};
 
 			_unitOfWork.ConnectorFunctionRepository.Add(connectorFunction);
-
-			if (connectorFunctionInputs.Any())
-				_unitOfWork.ConnectorFunctionInputRepository.AddRange(connectorFunctionInputs);
+			_unitOfWork.ConnectorFunctionInputRepository.AddRange(connectorFunctionInputs);
 
 			await _unitOfWork.Commit();
 

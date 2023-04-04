@@ -9,13 +9,13 @@ namespace Houston.Core.Commands.ConnectorFunctionCommands {
 
 		public Guid ConnectorId { get; set; }
 
-		public List<GeneralConnectorFunctionInputCommand>? Inputs { get; set; }
+		public List<CreateConnectorFunctionInputCommand>? Inputs { get; set; }
 
 		public string[] Script { get; set; } = null!;
 
 		public CreateConnectorFunctionCommand() { }
 
-		public CreateConnectorFunctionCommand(string name, string? description, Guid connectorId, List<GeneralConnectorFunctionInputCommand>? inputs, string[] script) {
+		public CreateConnectorFunctionCommand(string name, string? description, Guid connectorId, List<CreateConnectorFunctionInputCommand>? inputs, string[] script) {
 			Name = name ?? throw new ArgumentNullException(nameof(name));
 			Description = description;
 			ConnectorId = connectorId;

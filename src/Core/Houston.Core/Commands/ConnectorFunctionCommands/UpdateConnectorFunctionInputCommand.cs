@@ -1,7 +1,9 @@
 ﻿using Houston.Core.Enums;
 
 namespace Houston.Core.Commands.ConnectorFunctionCommands {
-	public class GeneralConnectorFunctionInputCommand {
+	public class UpdateConnectorFunctionInputCommand {
+		public Guid? ConnectorFunctionInputId { get; set; }
+
 		public InputTypeEnum InputType { get; set; }
 
 		public string Name { get; set; } = null!;
@@ -18,9 +20,10 @@ namespace Houston.Core.Commands.ConnectorFunctionCommands {
 
 		public bool AdvancedOption { get; set; }
 
-		public GeneralConnectorFunctionInputCommand() { }
+		public UpdateConnectorFunctionInputCommand() { }
 
-		public GeneralConnectorFunctionInputCommand(InputTypeEnum inputType, string name, string placeholder, string replace, bool required, string? defaultValue, string[]? values, bool advancedOption) {
+		public UpdateConnectorFunctionInputCommand(Guid connectorFunctionInputId, InputTypeEnum inputType, string name, string placeholder, string replace, bool required, string? defaultValue, string[]? values, bool advancedOption) {
+			ConnectorFunctionInputId = connectorFunctionInputId;
 			InputType = inputType;
 			Name = name ?? throw new ArgumentNullException(nameof(name));
 			Placeholder = placeholder ?? throw new ArgumentNullException(nameof(placeholder));

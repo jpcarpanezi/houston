@@ -4,7 +4,6 @@ using Houston.Application.ViewModel.ConnectorFunctionViewModels;
 using Houston.Core.Commands.ConnectorFunctionCommands;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -39,6 +38,27 @@ namespace Houston.API.Controllers {
 			var view = _mapper.Map<ConnectorFunctionViewModel>(response.Response);
 
 			return CreatedAtAction(nameof(Create), view);
+		}
+
+		/// <summary>
+		/// Updates a connector function with inputs
+		/// </summary>
+		/// <param name="command">Connector function with inputs if necessary</param>
+		/// <response code="200">Successfully updated connector function</response>
+		/// <response code="403">Invalid connector id</response>
+		[HttpPut]
+		[Authorize]
+		[ProducesResponseType(typeof(ConnectorFunctionViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		public async Task<IActionResult> Update([FromBody] UpdateConnectorFunctionCommand command) {
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.OK)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			var view = _mapper.Map<ConnectorFunctionViewModel>(response.Response);
+
+			return Ok(view);
 		}
 	}
 }

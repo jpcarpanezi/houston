@@ -2,8 +2,8 @@
 using Houston.Core.Commands.ConnectorFunctionCommands;
 
 namespace Houston.API.Validators.ConnectorFunctionValidators {
-	public class GeneralConnectorFunctionInputCommandValidator : AbstractValidator<GeneralConnectorFunctionInputCommand> {
-		public GeneralConnectorFunctionInputCommandValidator() {
+	public class UpdateConnectorFunctionInputCommandValidator : AbstractValidator<UpdateConnectorFunctionInputCommand> {
+		public UpdateConnectorFunctionInputCommandValidator() {
 			RuleFor(x => x.Name)
 				.NotNull().NotEmpty().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty)
 				.MaximumLength(25).WithMessage(ValidatorsModelErrorMessages.MaxLength);
@@ -22,7 +22,6 @@ namespace Houston.API.Validators.ConnectorFunctionValidators {
 
 			RuleForEach(x => x.Values)
 				.MaximumLength(100).WithMessage(ValidatorsModelErrorMessages.MaxLength);
-
 		}
 	}
 }
