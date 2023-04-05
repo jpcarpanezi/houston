@@ -41,6 +41,27 @@ namespace Houston.API.Controllers {
 			return CreatedAtAction(nameof(Create), view);
 		}
 
+		/// <summary>
+		/// Updates a pipeline
+		/// </summary>
+		/// <param name="command"></param>
+		/// <response code="200">Successfully updated the pipeline</response>
+		/// <response code="403">Invalid pipeline id</response>
+		[HttpPut]
+		[Authorize]
+		[ProducesResponseType(typeof(PipelineViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		public async Task<IActionResult> Update([FromBody] UpdatePipelineCommand command) {
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.OK)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			var view = _mapper.Map<PipelineViewModel>(response.Response);
+
+			return Ok(view);
+		}
+
 		[HttpPost("run")]
 		public IActionResult RunPipeline() {
 			var message = new RunPipelineMessage("640f51d5681f8ae2d6ae0f15", null);
