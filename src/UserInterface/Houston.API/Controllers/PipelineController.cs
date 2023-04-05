@@ -110,6 +110,28 @@ namespace Houston.API.Controllers {
 			return NoContent();
 		}
 
+		/// <summary>
+		/// Gets the pipeline by id
+		/// </summary>
+		/// <param name="pipelineId"></param>
+		/// <response code="200">Pipeline response</response>
+		/// <response code="404">Pipeline not found</response>
+		[HttpGet("{pipelineId:guid}")]
+		[Authorize]
+		[ProducesResponseType(typeof(PipelineViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType((int)HttpStatusCode.NotFound)]
+		public async Task<IActionResult> Get(Guid pipelineId) {
+			var command = new GetPipelineCommand(pipelineId);
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.OK)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			var view = _mapper.Map<PipelineViewModel>(response.Response);
+
+			return Ok(view);
+		}
+
 		[HttpPost("run")]
 		public IActionResult RunPipeline() {
 			var message = new RunPipelineMessage("640f51d5681f8ae2d6ae0f15", null);
