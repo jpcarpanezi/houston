@@ -71,8 +71,13 @@ namespace Houston.API.Controllers {
 			var command = new DeletePipelineCommand(pipelineId);
 			var response = await _mediator.Send(command);
 
-			if (response.StatusCode != HttpStatusCode.NoContent)
+			if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.Locked)
 				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			if (response.StatusCode == HttpStatusCode.Locked) {
+				DateTime convertedEstimateTime = DateTime.ParseExact(response.ErrorMessage!, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("pipelineRunning", convertedEstimateTime));
+			}
 
 			return NoContent();
 		}

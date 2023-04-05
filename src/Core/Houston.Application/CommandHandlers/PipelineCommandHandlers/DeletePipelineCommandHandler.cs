@@ -21,6 +21,11 @@ namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
 				return new ResultCommand(HttpStatusCode.Forbidden, "invalidPipeline");
 			}
 
+			if (pipeline.Status == Core.Enums.PipelineStatusEnum.Running) {
+				var avg = await _unitOfWork.PipelineLogsRepository.DurationAverage(request.Id);
+				return new ResultCommand(HttpStatusCode.Locked, DateTime.UtcNow.AddTicks((long)avg).ToString("yyyy-MM-ddTHH:mm:ssZ"));
+			}
+
 			pipeline.Active = false;
 			pipeline.UpdatedBy = _claims.Id;
 			pipeline.LastUpdate = DateTime.UtcNow;
