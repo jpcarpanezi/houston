@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EventBus.EventBus.Abstractions;
 using Houston.Application.ViewModel;
+using Houston.Application.ViewModel.ConnectorViewModels;
 using Houston.Application.ViewModel.PipelineViewModels;
 using Houston.Core.Commands.PipelineCommands;
 using Houston.Core.Messages;
@@ -130,6 +131,22 @@ namespace Houston.API.Controllers {
 			var view = _mapper.Map<PipelineViewModel>(response.Response);
 
 			return Ok(view);
+		}
+
+		/// <summary>
+		/// List all active pipelines
+		/// </summary>
+		/// <param name="command">URL query optional query parameters</param>
+		/// <response code="200">List of all active connectors</response>
+		[HttpGet]
+		[Authorize]
+		[ProducesResponseType(typeof(PaginatedItemsViewModel<PipelineViewModel>), (int)HttpStatusCode.OK)]
+		public async Task<IActionResult> GetAll([FromQuery] GetAllPipelineCommand command) {
+			var response = await _mediator.Send(command);
+
+			var view = _mapper.Map<List<PipelineViewModel>>(response.Response);
+
+			return Ok(new PaginatedItemsViewModel<PipelineViewModel>(response.PageIndex, response.PageSize, response.Count, view));
 		}
 
 		[HttpPost("run")]
