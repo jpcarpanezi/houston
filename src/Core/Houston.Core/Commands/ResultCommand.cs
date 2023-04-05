@@ -20,7 +20,7 @@ namespace Houston.Core.Commands {
 
 		public string? ErrorMessage { get; set; }
 
-		public ResultCommand(HttpStatusCode statusCode, string? errorMessage) {
+		public ResultCommand(HttpStatusCode statusCode, string? errorMessage = null) {
 			StatusCode = statusCode;
 			ErrorMessage = errorMessage;
 		}

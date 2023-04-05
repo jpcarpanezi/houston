@@ -2,14 +2,17 @@
 using MediatR;
 
 namespace Houston.Core.Commands.PipelineCommands {
-	public class CreatePipelineCommand : IRequest<ResultCommand<Pipeline>> {
+	public class UpdatePipelineCommand : IRequest<ResultCommand<Pipeline>> {
+		public Guid Id { get; set; }
+		
 		public string Name { get; set; } = null!;
 
 		public string? Description { get; set; }
 
-		public CreatePipelineCommand() { }
+		public UpdatePipelineCommand() { }
 
-		public CreatePipelineCommand(string name, string? description) {
+		public UpdatePipelineCommand(Guid id, string name, string? description) {
+			Id = id;
 			Name = name ?? throw new ArgumentNullException(nameof(name));
 			Description = description;
 		}

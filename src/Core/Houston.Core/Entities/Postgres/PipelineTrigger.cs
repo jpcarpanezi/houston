@@ -12,6 +12,19 @@ public partial class PipelineTrigger {
 	[Column("pipeline_id")]
 	public Guid PipelineId { get; set; }
 
+	[Column("source_git", TypeName = "character varying")]
+	public string SourceGit { get; set; } = null!;
+
+	[Column("deploy_key", TypeName = "character varying")]
+	public string DeployKey { get; set; } = null!;
+
+	[NotMapped]
+	public string PublicKey { get; set; } = null!;
+
+	[Column("secret")]
+	[StringLength(256)]
+	public string Secret { get; set; } = null!;
+
 	[Column("event_id")]
 	public Guid EventId { get; set; }
 

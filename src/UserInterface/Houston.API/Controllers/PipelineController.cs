@@ -1,10 +1,11 @@
-﻿using EventBus.EventBus.Abstractions;
+﻿using AutoMapper;
 using Houston.Application.ViewModel;
+using Houston.Application.ViewModel.PipelineViewModels;
 using Houston.Core.Commands.PipelineCommands;
-using Houston.Core.Messages;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using System.Net;
 
 namespace Houston.API.Controllers {
@@ -12,48 +13,164 @@ namespace Houston.API.Controllers {
 	[ApiController]
 	public class PipelineController : ControllerBase {
 		private readonly IMediator _mediator;
-		private readonly IEventBus _eventBus;
-		private readonly ILogger<PipelineController> _logger;
+		private readonly IMapper _mapper;
 
-		public PipelineController(IMediator mediator, IEventBus eventBus, ILogger<PipelineController> logger) {
-			_mediator = mediator;
-			_eventBus = eventBus;
-			_logger = logger;
+		public PipelineController(IMediator mediator, IMapper mapper) {
+			_mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 		}
 
+		/// <summary>
+		/// Creates a new pipeline 
+		/// </summary>
+		/// <param name="command"></param>
+		/// <response code="201">Successfully created pipeline with response object</response>
 		[HttpPost]
+		[Authorize]
+		[ProducesResponseType(typeof(PipelineViewModel), (int)HttpStatusCode.Created)]
 		public async Task<IActionResult> Create([FromBody] CreatePipelineCommand command) {
 			var response = await _mediator.Send(command);
 
-			if (response.StatusCode != HttpStatusCode.Created)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+			var view = _mapper.Map<PipelineViewModel>(response.Response);
 
-			// TODO: Adicionar automapper
-
-			return CreatedAtAction(nameof(Create), response.Response);
+			return CreatedAtAction(nameof(Create), view);
 		}
 
-		[HttpPatch("instructions")]
-		public async Task<IActionResult> UpdateInstructions([FromBody] UpdatePipelineInstructionsCommand command) {
+		/// <summary>
+		/// Updates a pipeline
+		/// </summary>
+		/// <param name="command"></param>
+		/// <response code="200">Successfully updated the pipeline</response>
+		/// <response code="403">Invalid pipeline id</response>
+		[HttpPut]
+		[Authorize]
+		[ProducesResponseType(typeof(PipelineViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		public async Task<IActionResult> Update([FromBody] UpdatePipelineCommand command) {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.OK)
 				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
 
-			return Ok(response.Response);
+			var view = _mapper.Map<PipelineViewModel>(response.Response);
+
+			return Ok(view);
 		}
 
-		[HttpPost("run")]
-		public IActionResult RunPipeline() {
-			var message = new RunPipelineMessage("640f51d5681f8ae2d6ae0f15", null);
+		/// <summary>
+		/// Deletes a pipeline
+		/// </summary>
+		/// <param name="pipelineId"></param>
+		/// <response code="204">Successfully deleted the pipeline</response>
+		/// <response code="403">Invalid pipeline id</response>
+		[HttpDelete("{pipelineId:guid}")]
+		[Authorize]
+		[ProducesResponseType((int)HttpStatusCode.NoContent)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		public async Task<IActionResult> Delete(Guid pipelineId) {
+			var command = new DeletePipelineCommand(pipelineId);
+			var response = await _mediator.Send(command);
 
-			try {
-				_eventBus.Publish(message);
-			} catch (Exception e) {
-				_logger.LogError(e, $"Failed to publish {nameof(RunPipelineMessage)}");
+			if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.Locked)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			if (response.StatusCode == HttpStatusCode.Locked) {
+				DateTime convertedEstimateTime = DateTime.ParseExact(response.ErrorMessage!, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("pipelineRunning", convertedEstimateTime));
 			}
 
-			return Ok();
+			return NoContent();
+		}
+
+		/// <summary>
+		/// Toggle pipeline status to stopped or awaiting
+		/// </summary>
+		/// <param name="pipelineId"></param>
+		/// <response code="204">Successfully toggled pipeline status</response>
+		/// <response code="403">Invalid pipeline id</response>
+		/// <response code="423">Pipeline is running</response>
+		[HttpPatch("toggle/{pipelineId:guid}")]
+		[Authorize]
+		[ProducesResponseType((int)HttpStatusCode.NoContent)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(LockedMessageViewModel), (int)HttpStatusCode.Locked)]
+		public async Task<IActionResult> ToggleStatus(Guid pipelineId) {
+			var command = new TogglePipelineStatusCommand(pipelineId);
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.Locked)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			if (response.StatusCode == HttpStatusCode.Locked) { 
+				DateTime convertedEstimateTime = DateTime.ParseExact(response.ErrorMessage!, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("pipelineRunning", convertedEstimateTime));
+			}
+
+			return NoContent();
+		}
+
+		/// <summary>
+		/// Gets the pipeline by id
+		/// </summary>
+		/// <param name="pipelineId"></param>
+		/// <response code="200">Pipeline response</response>
+		/// <response code="404">Pipeline not found</response>
+		[HttpGet("{pipelineId:guid}")]
+		[Authorize]
+		[ProducesResponseType(typeof(PipelineViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType((int)HttpStatusCode.NotFound)]
+		public async Task<IActionResult> Get(Guid pipelineId) {
+			var command = new GetPipelineCommand(pipelineId);
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.OK)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			var view = _mapper.Map<PipelineViewModel>(response.Response);
+
+			return Ok(view);
+		}
+
+		/// <summary>
+		/// List all active pipelines
+		/// </summary>
+		/// <param name="command">URL query optional query parameters</param>
+		/// <response code="200">List of all active connectors</response>
+		[HttpGet]
+		[Authorize]
+		[ProducesResponseType(typeof(PaginatedItemsViewModel<PipelineViewModel>), (int)HttpStatusCode.OK)]
+		public async Task<IActionResult> GetAll([FromQuery] GetAllPipelineCommand command) {
+			var response = await _mediator.Send(command);
+
+			var view = _mapper.Map<List<PipelineViewModel>>(response.Response);
+
+			return Ok(new PaginatedItemsViewModel<PipelineViewModel>(response.PageIndex, response.PageSize, response.Count, view));
+		}
+
+		/// <summary>
+		/// Manually runs a pipeline
+		/// </summary>
+		/// <param name="command"></param>
+		/// <response code="204">Pipeline run request accepted</response>
+		/// <response code="403">Invalid pipeline id</response>
+		/// <response code="423">Pipeline is running</response>
+		[HttpPost("run")]
+		[Authorize]
+		[ProducesResponseType((int)HttpStatusCode.NoContent)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(LockedMessageViewModel), (int)HttpStatusCode.Locked)]
+		public async Task<IActionResult> Run([FromBody] RunPipelineCommand command) {
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.Locked)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			if (response.StatusCode == HttpStatusCode.Locked) {
+				DateTime convertedEstimateTime = DateTime.ParseExact(response.ErrorMessage!, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("pipelineRunning", convertedEstimateTime));
+			}
+
+			return NoContent();
 		}
 	}
 }
