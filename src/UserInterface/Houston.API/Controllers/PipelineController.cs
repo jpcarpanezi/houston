@@ -7,6 +7,7 @@ using Houston.Core.Messages;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using System.Net;
 
 namespace Houston.API.Controllers {
@@ -78,6 +79,33 @@ namespace Houston.API.Controllers {
 
 			if (response.StatusCode != HttpStatusCode.NoContent)
 				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			return NoContent();
+		}
+
+		/// <summary>
+		/// Toggle pipeline status to stopped or awaiting
+		/// </summary>
+		/// <param name="pipelineId"></param>
+		/// <response code="204">Successfully toggled pipeline status</response>
+		/// <response code="403">Invalid pipeline id</response>
+		/// <response code="423">Pipeline is running</response>
+		[HttpPatch("toggle/{pipelineId:guid}")]
+		[Authorize]
+		[ProducesResponseType((int)HttpStatusCode.NoContent)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(LockedMessageViewModel), (int)HttpStatusCode.Locked)]
+		public async Task<IActionResult> ToggleStatus(Guid pipelineId) {
+			var command = new TogglePipelineStatusCommand(pipelineId);
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.Locked)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			if (response.StatusCode == HttpStatusCode.Locked) { 
+				DateTime convertedEstimateTime = DateTime.ParseExact(response.ErrorMessage!, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("pipelineRunning", convertedEstimateTime));
+			}
 
 			return NoContent();
 		}
