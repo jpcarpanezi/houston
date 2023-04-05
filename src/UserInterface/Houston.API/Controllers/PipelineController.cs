@@ -62,6 +62,26 @@ namespace Houston.API.Controllers {
 			return Ok(view);
 		}
 
+		/// <summary>
+		/// Deletes a pipeline
+		/// </summary>
+		/// <param name="pipelineId"></param>
+		/// <response code="204">Successfully deleted the pipeline</response>
+		/// <response code="403">Invalid pipeline id</response>
+		[HttpDelete("{pipelineId:guid}")]
+		[Authorize]
+		[ProducesResponseType((int)HttpStatusCode.NoContent)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		public async Task<IActionResult> Delete(Guid pipelineId) {
+			var command = new DeletePipelineCommand(pipelineId);
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.NoContent)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			return NoContent();
+		}
+
 		[HttpPost("run")]
 		public IActionResult RunPipeline() {
 			var message = new RunPipelineMessage("640f51d5681f8ae2d6ae0f15", null);
