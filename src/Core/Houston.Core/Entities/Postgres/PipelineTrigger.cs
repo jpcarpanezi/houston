@@ -48,9 +48,6 @@ public partial class PipelineTrigger {
 	[InverseProperty(nameof(PipelineTriggerEvent.PipelineTrigger))]
 	public virtual ICollection<PipelineTriggerEvent> PipelineTriggerEvents { get; set; } = new List<PipelineTriggerEvent>();
 
-	[InverseProperty(nameof(PipelineTriggerFilter.PipelineTrigger))]
-	public virtual ICollection<PipelineTriggerFilter> PipelineTriggerFilters { get; set; } = new List<PipelineTriggerFilter>();
-
 	[ForeignKey(nameof(UpdatedBy))]
 	[InverseProperty(nameof(User.PipelineTriggerUpdatedByNavigation))]
 	public virtual User UpdatedByNavigation { get; set; } = null!;

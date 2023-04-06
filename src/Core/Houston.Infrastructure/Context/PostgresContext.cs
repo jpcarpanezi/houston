@@ -177,9 +177,9 @@ public partial class PostgresContext : DbContext {
 
 			entity.Property(e => e.Id).ValueGeneratedNever();
 
-			entity.HasOne(d => d.PipelineTrigger).WithMany(p => p.PipelineTriggerFilters)
+			entity.HasOne(d => d.PipelineTriggerEvent).WithMany(p => p.PipelineTriggerFilters)
 				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("PipelineTriggerFilter_pipeline_trigger_id_fk");
+				.HasConstraintName("PipelineTriggerFilter_pipeline_trigger_event_id_fk");
 
 			entity.HasOne(d => d.TriggerFilter).WithMany(p => p.PipelineTriggerFilters)
 				.OnDelete(DeleteBehavior.ClientSetNull)

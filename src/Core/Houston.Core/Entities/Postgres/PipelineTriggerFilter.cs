@@ -19,8 +19,8 @@ public partial class PipelineTriggerFilter {
 	public string[] FilterValues { get; set; } = null!;
 
 	[ForeignKey(nameof(PipelineTriggerId))]
-	[InverseProperty(nameof(Postgres.PipelineTrigger.PipelineTriggerFilters))]
-	public virtual PipelineTrigger PipelineTrigger { get; set; } = null!;
+	[InverseProperty(nameof(Postgres.PipelineTriggerEvent.PipelineTriggerFilters))]
+	public virtual PipelineTriggerEvent PipelineTriggerEvent { get; set; } = null!;
 
 	[ForeignKey(nameof(TriggerFilterId))]
 	[InverseProperty(nameof(Postgres.TriggerFilter.PipelineTriggerFilters))]
