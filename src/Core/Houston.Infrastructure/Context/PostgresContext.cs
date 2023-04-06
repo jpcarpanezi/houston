@@ -19,6 +19,10 @@ public partial class PostgresContext : DbContext {
 
 	public virtual DbSet<PipelineTrigger> PipelineTrigger { get; set; }
 
+	public virtual DbSet<PipelineTriggerEvent> PipelineTriggerEvent { get; set; }
+
+	public virtual DbSet<PipelineTriggerFilter> PipelineTriggerFilter { get; set; }
+
 	public virtual DbSet<TriggerEvent> TriggerEvent { get; set; }
 
 	public virtual DbSet<TriggerFilter> TriggerFilter { get; set; }
@@ -145,14 +149,6 @@ public partial class PostgresContext : DbContext {
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("User_id_created_by_fk");
 
-			entity.HasOne(d => d.TriggerEvent).WithMany(p => p.PipelineTriggers)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("TriggerEvent_id_event_id_fk");
-
-			entity.HasOne(d => d.TriggerFilter).WithMany(p => p.PipelineTriggers)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("TriggerFilter_id_filter_id_fk");
-
 			entity.HasOne(d => d.Pipeline).WithMany(p => p.PipelineTriggers)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("Pipeline_id_pipeline_id_fk");
@@ -160,6 +156,34 @@ public partial class PostgresContext : DbContext {
 			entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.PipelineTriggerUpdatedByNavigation)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("User_id_updated_by_fk");
+		});
+
+		modelBuilder.Entity<PipelineTriggerEvent>(entity => {
+			entity.HasKey(e => e.Id).HasName("PipelineTriggerEvent_pk");
+
+			entity.Property(e => e.Id).ValueGeneratedNever();
+
+			entity.HasOne(d => d.PipelineTrigger).WithMany(p => p.PipelineTriggerEvents)
+				.OnDelete(DeleteBehavior.ClientSetNull)
+				.HasConstraintName("PipelineTriggerEvent_pipeline_trigger_id_fk");
+
+			entity.HasOne(d => d.TriggerEvent).WithMany(p => p.PipelineTriggerEvents)
+				.OnDelete(DeleteBehavior.ClientSetNull)
+				.HasConstraintName("PipelineTriggerEvent_trigger_event_id_fk");
+		});
+
+		modelBuilder.Entity<PipelineTriggerFilter>(entity => {
+			entity.HasKey(e => e.Id).HasName("PipelineTriggerFilter_pk");
+
+			entity.Property(e => e.Id).ValueGeneratedNever();
+
+			entity.HasOne(d => d.PipelineTrigger).WithMany(p => p.PipelineTriggerFilters)
+				.OnDelete(DeleteBehavior.ClientSetNull)
+				.HasConstraintName("PipelineTriggerFilter_pipeline_trigger_id_fk");
+
+			entity.HasOne(d => d.TriggerFilter).WithMany(p => p.PipelineTriggerFilters)
+				.OnDelete(DeleteBehavior.ClientSetNull)
+				.HasConstraintName("PipelineTriggerFilter_trigger_filter_id_fk");
 		});
 
 		modelBuilder.Entity<TriggerEvent>(entity => {

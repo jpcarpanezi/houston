@@ -15,6 +15,9 @@ public partial class PipelineLog {
 	[Column("exit_code")]
 	public int ExitCode { get; set; }
 
+	[Column("run_n")]
+	public long RunN { get; set; }
+
 	[Column("stdout")]
 	public string? Stdout { get; set; }
 
