@@ -62,5 +62,26 @@ namespace Houston.API.Controllers {
 
 			return Ok(view);
 		}
+
+		/// <summary>
+		/// Changes the pipeline trigger secret
+		/// </summary>
+		/// <param name="command"></param>
+		/// <response code="204">Secret updated successfully</response>
+		/// <response code="403">Invalid pipeline trigger</response>
+		/// <response code="400">Weak trigger secret</response>
+		[HttpPatch("changeSecret")]
+		[Authorize]
+		[ProducesResponseType((int)HttpStatusCode.NoContent)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
+		public async Task<IActionResult> ChangeSecret([FromBody] ChangeSecretPipelineTriggerCommand command) {
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.NoContent)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			return NoContent();
+		}
 	}
 }
