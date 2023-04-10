@@ -1,0 +1,45 @@
+﻿using AutoMapper;
+using Houston.Application.ViewModel;
+using Houston.Application.ViewModel.PipelineTriggerViewModels;
+using Houston.Core.Commands.PipelineTriggerCommands;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+
+namespace Houston.API.Controllers {
+	[Route("api/[controller]")]
+	[ApiController]
+	public class PipelineTriggerController : ControllerBase {
+		private readonly IMediator _mediator;
+		private readonly IMapper _mapper;
+
+		public PipelineTriggerController(IMediator mediator, IMapper mapper) {
+			_mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+		}
+
+		/// <summary>
+		/// Creates a pipeline trigger
+		/// </summary>
+		/// <param name="command"></param>
+		/// <response code="201">Pipeline created successfully</response>
+		/// <response code="403">Invalid pipeline or event and filter</response>
+		/// <response code="400">Weak trigger secret</response>
+		[HttpPost]
+		[Authorize]
+		[ProducesResponseType(typeof(PipelineTriggerViewModel), (int)HttpStatusCode.Created)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
+		public async Task<IActionResult> Create([FromBody] CreatePipelineTriggerCommand command) {
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.Created)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
+
+			return CreatedAtAction(nameof(Create), view);
+		}
+	}
+}

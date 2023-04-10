@@ -9,16 +9,16 @@ public partial class PipelineTriggerFilter {
 	[Column("id")]
 	public Guid Id { get; set; }
 
-	[Column("pipeline_trigger_id")]
-	public Guid PipelineTriggerId { get; set; }
+	[Column("pipeline_trigger_event_id")]
+	public Guid PipelineTriggerEventId { get; set; }
 
 	[Column("trigger_filter_id")]
 	public Guid TriggerFilterId { get; set; }
 
 	[Column("filter_values", TypeName = "character varying[]")]
-	public string[] FilterValues { get; set; } = null!;
+	public string[]? FilterValues { get; set; } = null!;
 
-	[ForeignKey(nameof(PipelineTriggerId))]
+	[ForeignKey(nameof(PipelineTriggerEventId))]
 	[InverseProperty(nameof(Postgres.PipelineTriggerEvent.PipelineTriggerFilters))]
 	public virtual PipelineTriggerEvent PipelineTriggerEvent { get; set; } = null!;
 

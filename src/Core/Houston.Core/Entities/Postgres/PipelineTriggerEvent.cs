@@ -12,8 +12,8 @@ public partial class PipelineTriggerEvent {
 	[Column("pipeline_trigger_id")]
 	public Guid PipelineTriggerId { get; set; }
 
-	[Column("pipeline_event_id")]
-	public Guid PipelineEventId { get; set; }
+	[Column("trigger_event_id")]
+	public Guid TriggerEventId { get; set; }
 
 	[ForeignKey(nameof(PipelineTriggerId))]
 	[InverseProperty(nameof(Postgres.PipelineTrigger.PipelineTriggerEvents))]
@@ -22,7 +22,7 @@ public partial class PipelineTriggerEvent {
 	[InverseProperty(nameof(PipelineTriggerFilter.PipelineTriggerEvent))]
 	public virtual ICollection<PipelineTriggerFilter> PipelineTriggerFilters { get; set; } = new List<PipelineTriggerFilter>();
 
-	[ForeignKey(nameof(PipelineEventId))]
+	[ForeignKey(nameof(TriggerEventId))]
 	[InverseProperty(nameof(Postgres.TriggerEvent.PipelineTriggerEvents))]
 	public virtual TriggerEvent TriggerEvent { get; set; } = null!;
 }
