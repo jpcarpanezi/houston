@@ -5,5 +5,10 @@ namespace Houston.Core.Commands.PipelineTriggerCommands {
 		public Guid PipelineTriggerId { get; set; }
 
 		public string NewSecret { get; set; } = null!;
+
+		public ChangeSecretPipelineTriggerCommand(Guid pipelineTriggerId, string newSecret) {
+			PipelineTriggerId = pipelineTriggerId;
+			NewSecret = newSecret ?? throw new ArgumentNullException(nameof(newSecret));
+		}
 	}
 }
