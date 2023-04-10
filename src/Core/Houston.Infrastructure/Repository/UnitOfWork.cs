@@ -15,6 +15,12 @@ namespace Houston.Infrastructure.Repository {
 
 		public IPipelineLogRepository PipelineLogsRepository { get; private set; }
 
+		public IPipelineTriggerRepository PipelineTriggerRepository { get; private set; }
+
+		public ITriggerEventRepository TriggerEventRepository { get; private set; }
+
+		public ITriggerFilterRepository TriggerFilterRepository { get; private set; }
+
 		private readonly PostgresContext _context;
 
 		public UnitOfWork(PostgresContext context) {
@@ -25,6 +31,9 @@ namespace Houston.Infrastructure.Repository {
 			ConnectorFunctionRepository = new ConnectorFunctionRepository(context);
 			PipelineLogsRepository = new PipelineLogRepository(context);
 			ConnectorFunctionInputRepository = new ConnectorFunctionInputRepository(context);
+			PipelineTriggerRepository = new PipelineTriggerRepository(context);
+			TriggerEventRepository = new TriggerEventRepository(context);
+			TriggerFilterRepository = new TriggerFilterRepository(context);
 		}
 
 		public async Task<int> Commit() {

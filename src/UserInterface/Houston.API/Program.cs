@@ -17,7 +17,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-builder.Services.AddControllers(opts => opts.Filters.Add(new ProducesAttribute("application/json"))).AddJsonOptions(opts => opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+builder.Services.AddControllers(opts => opts.Filters.Add(new ProducesAttribute("application/json"))).AddJsonOptions(opts => {
+	opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+	opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 builder.Services.AddFluentValidationAutoValidation().AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddBearerAuthentication(builder.Configuration);
@@ -33,14 +36,14 @@ builder.Services.AddSwaggerGen(options => {
 });
 builder.Services.AddFluentValidationRulesToSwagger();
 builder.Services.AddAutoMapper(typeof(MapProfileSetup));
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateConnectorCommandHandler>());
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(AppDomain.CurrentDomain.Load("Houston.Application")));
 builder.Services.AddStackExchangeRedisCache(options => {
 	options.Configuration = builder.Configuration.GetConnectionString("Redis");
 	options.InstanceName = "houston-";
 });
 builder.Services.AddEventBus(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddPostgres(builder.Configuration);
+builder.Services.AddPostgres(builder.Configuration, builder.Environment);
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IUserClaimsService, UserClaimsService>();
 

@@ -25,15 +25,6 @@ public partial class PipelineTrigger {
 	[StringLength(256)]
 	public string Secret { get; set; } = null!;
 
-	[Column("event_id")]
-	public Guid EventId { get; set; }
-
-	[Column("filter_id")]
-	public Guid FilterId { get; set; }
-
-	[Column("filter_values", TypeName = "character varying[]")]
-	public string[]? FilterValues { get; set; }
-
 	[Column("created_by")]
 	public Guid CreatedBy { get; set; }
 
@@ -50,17 +41,12 @@ public partial class PipelineTrigger {
 	[InverseProperty(nameof(User.PipelineTriggerCreatedByNavigation))]
 	public virtual User CreatedByNavigation { get; set; } = null!;
 
-	[ForeignKey(nameof(EventId))]
-	[InverseProperty(nameof(Postgres.TriggerEvent.PipelineTriggers))]
-	public virtual TriggerEvent TriggerEvent { get; set; } = null!;
-
-	[ForeignKey(nameof(FilterId))]
-	[InverseProperty(nameof(Postgres.TriggerFilter.PipelineTriggers))]
-	public virtual TriggerFilter TriggerFilter { get; set; } = null!;
-
 	[ForeignKey(nameof(PipelineId))]
 	[InverseProperty(nameof(Postgres.Pipeline.PipelineTriggers))]
 	public virtual Pipeline Pipeline { get; set; } = null!;
+
+	[InverseProperty(nameof(PipelineTriggerEvent.PipelineTrigger))]
+	public virtual ICollection<PipelineTriggerEvent> PipelineTriggerEvents { get; set; } = new List<PipelineTriggerEvent>();
 
 	[ForeignKey(nameof(UpdatedBy))]
 	[InverseProperty(nameof(User.PipelineTriggerUpdatedByNavigation))]

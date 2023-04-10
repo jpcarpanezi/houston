@@ -2,6 +2,9 @@
 using Houston.Application.ViewModel.ConnectorFunctionInputViewModels;
 using Houston.Application.ViewModel.ConnectorFunctionViewModels;
 using Houston.Application.ViewModel.ConnectorViewModels;
+using Houston.Application.ViewModel.PipelineTriggerEventViewModels;
+using Houston.Application.ViewModel.PipelineTriggerFilterViewModels;
+using Houston.Application.ViewModel.PipelineTriggerViewModels;
 using Houston.Application.ViewModel.PipelineViewModels;
 using Houston.Application.ViewModel.UserViewModels;
 using Houston.Core.Entities.Postgres;
@@ -23,6 +26,11 @@ namespace Houston.API.Setups {
 			CreateMap<Pipeline, PipelineViewModel>()
 				.ForMember(dest => dest.CreatedBy, m => m.MapFrom(src => src.CreatedByNavigation.Name))
 				.ForMember(dest => dest.UpdatedBy, m => m.MapFrom(src => src.UpdatedByNavigation.Name));
+			CreateMap<PipelineTriggerEvent, PipelineTriggerEventViewModel>()
+				.ForMember(dest => dest.TriggerEvent, m => m.MapFrom(src => src.TriggerEvent.Value));
+			CreateMap<PipelineTriggerFilter, PipelineTriggerFilterViewModel>()
+				.ForMember(dest => dest.TriggerFilter, m => m.MapFrom(src => src.TriggerFilter.Value));
+			CreateMap<PipelineTrigger, PipelineTriggerViewModel>();
 		}
 	}
 }

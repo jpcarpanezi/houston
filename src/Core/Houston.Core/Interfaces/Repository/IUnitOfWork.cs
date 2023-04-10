@@ -12,6 +12,12 @@
 
 		IPipelineLogRepository PipelineLogsRepository { get; }
 
+		IPipelineTriggerRepository PipelineTriggerRepository { get; }
+
+		ITriggerEventRepository TriggerEventRepository { get; }
+
+		ITriggerFilterRepository TriggerFilterRepository { get; }
+
 		Task<int> Commit();
 	}
 }

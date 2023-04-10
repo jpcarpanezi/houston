@@ -12,6 +12,6 @@ public partial class TriggerEvent {
 	[Column("value", TypeName = "character varying")]
 	public string Value { get; set; } = null!;
 
-	[InverseProperty(nameof(PipelineTrigger.TriggerEvent))]
-	public virtual ICollection<PipelineTrigger> PipelineTriggers { get; } = new List<PipelineTrigger>();
+	[InverseProperty(nameof(PipelineTriggerEvent.TriggerEvent))]
+	public virtual ICollection<PipelineTriggerEvent> PipelineTriggerEvents { get; set; } = new List<PipelineTriggerEvent>();
 }
