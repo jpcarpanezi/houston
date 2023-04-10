@@ -36,14 +36,14 @@ builder.Services.AddSwaggerGen(options => {
 });
 builder.Services.AddFluentValidationRulesToSwagger();
 builder.Services.AddAutoMapper(typeof(MapProfileSetup));
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateConnectorCommandHandler>());
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(AppDomain.CurrentDomain.Load("Houston.Application")));
 builder.Services.AddStackExchangeRedisCache(options => {
 	options.Configuration = builder.Configuration.GetConnectionString("Redis");
 	options.InstanceName = "houston-";
 });
 builder.Services.AddEventBus(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddPostgres(builder.Configuration);
+builder.Services.AddPostgres(builder.Configuration, builder.Environment);
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IUserClaimsService, UserClaimsService>();
 

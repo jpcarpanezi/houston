@@ -164,11 +164,11 @@ public partial class PostgresContext : DbContext {
 			entity.Property(e => e.Id).ValueGeneratedNever();
 
 			entity.HasOne(d => d.PipelineTrigger).WithMany(p => p.PipelineTriggerEvents)
-				.OnDelete(DeleteBehavior.ClientSetNull)
+				.OnDelete(DeleteBehavior.Cascade)
 				.HasConstraintName("PipelineTriggerEvent_pipeline_trigger_id_fk");
 
 			entity.HasOne(d => d.TriggerEvent).WithMany(p => p.PipelineTriggerEvents)
-				.OnDelete(DeleteBehavior.ClientSetNull)
+				.OnDelete(DeleteBehavior.Cascade)
 				.HasConstraintName("PipelineTriggerEvent_trigger_event_id_fk");
 		});
 
@@ -178,11 +178,11 @@ public partial class PostgresContext : DbContext {
 			entity.Property(e => e.Id).ValueGeneratedNever();
 
 			entity.HasOne(d => d.PipelineTriggerEvent).WithMany(p => p.PipelineTriggerFilters)
-				.OnDelete(DeleteBehavior.ClientSetNull)
+				.OnDelete(DeleteBehavior.Cascade)
 				.HasConstraintName("PipelineTriggerFilter_pipeline_trigger_event_id_fk");
 
 			entity.HasOne(d => d.TriggerFilter).WithMany(p => p.PipelineTriggerFilters)
-				.OnDelete(DeleteBehavior.ClientSetNull)
+				.OnDelete(DeleteBehavior.Cascade)
 				.HasConstraintName("PipelineTriggerFilter_trigger_filter_id_fk");
 		});
 
