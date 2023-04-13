@@ -39,5 +39,25 @@ namespace Houston.API.Controllers {
 
 			return CreatedAtAction(nameof(Save), view);
 		}
+
+		/// <summary>
+		/// Gets instruction by pipeline id
+		/// </summary>
+		/// <param name="pipelineId"></param>
+		/// <response code="200">List of all instructions from provided pipeline</response>
+		[HttpGet("{pipelineId:guid}")]
+		[Authorize]
+		[ProducesResponseType(typeof(List<PipelineInstructionViewModel>), (int)HttpStatusCode.OK)]
+		public async Task<IActionResult> GetAll(Guid pipelineId) {
+			var command = new GetAllPipelineInstructionCommand(pipelineId);
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.OK)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+
+			var view = _mapper.Map<List<PipelineInstructionViewModel>>(response.Response);
+
+			return Ok(view);
+		}
 	}
 }
