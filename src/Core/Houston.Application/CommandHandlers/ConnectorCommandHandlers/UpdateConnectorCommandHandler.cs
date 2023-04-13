@@ -19,11 +19,11 @@ namespace Houston.Application.CommandHandlers.ConnectorCommandHandlers {
 		public async Task<ResultCommand<Connector>> Handle(UpdateConnectorCommand request, CancellationToken cancellationToken) {
 			var connector = await _unitOfWork.ConnectorRepository.GetByIdWithInverseProperties(request.ConnectorId);
 			if (connector is null) {
-				return new ResultCommand<Connector>(HttpStatusCode.Forbidden, "invalidConnector", null);
+				return new ResultCommand<Connector>(HttpStatusCode.NotFound, "The requested connector could not be found.", null);
 			}
 
 			if (!connector.Active) {
-				return new ResultCommand<Connector>(HttpStatusCode.Forbidden, "invalidConnector", null);
+				return new ResultCommand<Connector>(HttpStatusCode.NotFound, "The requested connector could not be found.", null);
 			}
 
 			connector.Name = request.Name;

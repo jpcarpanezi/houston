@@ -24,11 +24,9 @@ namespace Houston.API.Controllers {
 		/// </summary>
 		/// <param name="command">Connector function with inputs if necessary</param>
 		/// <response code="201">Successfully created connector function</response>
-		/// <response code="403">Invalid connector id</response>
 		[HttpPost]
 		[Authorize]
 		[ProducesResponseType(typeof(ConnectorFunctionViewModel), (int)HttpStatusCode.Created)]
-		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
 		public async Task<IActionResult> Create([FromBody] CreateConnectorFunctionCommand command) {
 			var response = await _mediator.Send(command);
 
@@ -45,11 +43,11 @@ namespace Houston.API.Controllers {
 		/// </summary>
 		/// <param name="command">Connector function with inputs if necessary</param>
 		/// <response code="200">Successfully updated connector function</response>
-		/// <response code="403">Invalid connector id</response>
+		/// <response code="404">The requested connector function could not be found</response>
 		[HttpPut]
 		[Authorize]
 		[ProducesResponseType(typeof(ConnectorFunctionViewModel), (int)HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		public async Task<IActionResult> Update([FromBody] UpdateConnectorFunctionCommand command) {
 			var response = await _mediator.Send(command);
 
@@ -66,11 +64,11 @@ namespace Houston.API.Controllers {
 		/// </summary>
 		/// <param name="connectorFunctionId"></param>
 		/// <response code="204">Successfully deleted the connector function</response>
-		/// <response code="403">Invalid connector function id</response>
+		/// <response code="404">The requested connector function could not be found</response>
 		[HttpDelete("{connectorFunctionId:guid}")]
 		[Authorize]
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
-		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		public async Task<IActionResult> Delete(Guid connectorFunctionId) {
 			var command = new DeleteConnectorFunctionCommand(connectorFunctionId);
 			var response = await _mediator.Send(command);
@@ -86,7 +84,7 @@ namespace Houston.API.Controllers {
 		/// </summary>
 		/// <param name="connectorFunctionId"></param>
 		/// <response code="200">Connector function response</response>
-		/// <response code="404">Connector function not found</response>
+		/// <response code="404">The requested connector function could not be found</response>
 		[HttpGet("item/{connectorFunctionId:guid}")]
 		[Authorize]
 		[ProducesResponseType(typeof(ConnectorFunctionViewModel), (int)HttpStatusCode.OK)]

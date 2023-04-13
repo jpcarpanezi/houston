@@ -2,8 +2,11 @@
 	public class FirstAccessViewModel : MessageViewModel {
 		public string PasswordToken { get; set; }
 
-		public FirstAccessViewModel(string passwordToken, string message) : base(message) {
+		public string Location { get; set; }
+
+		public FirstAccessViewModel(string passwordToken, string location, string message) : base(message) {
 			PasswordToken = passwordToken;
+			Location = location;
 		}
 	}
 }

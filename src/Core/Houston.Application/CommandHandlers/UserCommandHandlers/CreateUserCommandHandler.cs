@@ -20,11 +20,7 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 		public async Task<ResultCommand<User>> Handle(CreateUserCommand request, CancellationToken cancellationToken) {
 			var checkUserExists = await _unitOfWork.UserRepository.FindByEmail(request.Email);
 			if (checkUserExists is not null) {
-				return new ResultCommand<User>(HttpStatusCode.Forbidden, "userAlreadyExists", null);
-			}
-
-			if (!PasswordService.IsPasswordStrong(request.TempPassword)) {
-				return new ResultCommand<User>(HttpStatusCode.BadRequest, "weakPassword", null);
+				return new ResultCommand<User>(HttpStatusCode.Conflict, "A user with this email address already exists in the system.", null);
 			}
 
 			var user = new User {

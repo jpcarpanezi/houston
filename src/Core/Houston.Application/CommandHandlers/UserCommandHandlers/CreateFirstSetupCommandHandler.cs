@@ -26,16 +26,12 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 		public async Task<ResultCommand<User>> Handle(CreateFirstSetupCommand request, CancellationToken cancellationToken) {
 			var configurations = await _cache.GetStringAsync(ConfigurationKey);
 			if (configurations is not null) {
-				return new ResultCommand<User>(HttpStatusCode.Forbidden, "alreadyConfigured", null);
-			}
-
-			if (!PasswordService.IsPasswordStrong(request.UserPassword)) {
-				return new ResultCommand<User>(HttpStatusCode.BadRequest, "weakPassword", null);
+				return new ResultCommand<User>(HttpStatusCode.Forbidden, "The system has already been set up and configured.", null);
 			}
 
 			var anyUser = await _unitOfWork.UserRepository.AnyUser();
 			if (anyUser) {
-				return new ResultCommand<User>(HttpStatusCode.Forbidden, "userAlreadyRegistered", null);
+				return new ResultCommand<User>(HttpStatusCode.Forbidden, "A user has already been registered in the system.", null);
 			}
 
 			var userId = Guid.NewGuid();

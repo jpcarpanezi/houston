@@ -25,7 +25,7 @@ namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
 		public async Task<ResultCommand> Handle(RunPipelineCommand request, CancellationToken cancellationToken) {
 			var pipeline = await _unitOfWork.PipelineRepository.GetActive(request.Id);
 			if (pipeline is null) {
-				return new ResultCommand(HttpStatusCode.Forbidden, "invalidPipeline");
+				return new ResultCommand(HttpStatusCode.NotFound, "The requested connector could not be found.");
 			}
 
 			if (pipeline.Status == Core.Enums.PipelineStatusEnum.Running) {

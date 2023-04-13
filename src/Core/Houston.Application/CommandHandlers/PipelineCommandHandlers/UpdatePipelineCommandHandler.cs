@@ -19,7 +19,7 @@ namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
 		public async Task<ResultCommand<Pipeline>> Handle(UpdatePipelineCommand request, CancellationToken cancellationToken) {
 			var pipeline = await _unitOfWork.PipelineRepository.GetActive(request.Id);
 			if (pipeline is null) {
-				return new ResultCommand<Pipeline>(HttpStatusCode.Forbidden, "invalidPipeline", null);
+				return new ResultCommand<Pipeline>(HttpStatusCode.NotFound, "The requested pipeline could not be found.", null);
 			}
 
 			pipeline.Name = request.Name;

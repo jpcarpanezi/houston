@@ -10,7 +10,7 @@ namespace Houston.API.Validators.UserValidators {
 
 			RuleFor(x => x.Token)
 				.NotNull().NotEmpty().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty)
-				.Must(x => Guid.TryParseExact(x, "N", out _)).WithMessage("invalidToken");
+				.Must(x => Guid.TryParseExact(x, "N", out _)).WithMessage("The token is not in a valid format.");
 
 			RuleFor(x => x.Password)
 				.NotNull().NotEmpty().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty)

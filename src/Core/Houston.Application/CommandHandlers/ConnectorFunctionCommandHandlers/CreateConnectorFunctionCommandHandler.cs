@@ -17,11 +17,6 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 		}
 
 		public async Task<ResultCommand<ConnectorFunction>> Handle(CreateConnectorFunctionCommand request, CancellationToken cancellationToken) {
-			var connector = await _unitOfWork.ConnectorRepository.GetActive(request.ConnectorId);
-			if (connector is null) {
-				return new ResultCommand<ConnectorFunction>(HttpStatusCode.Forbidden, "invalidConnector", null);
-			}
-
 			var connectorFunctionInputs = new List<ConnectorFunctionInput>();
 			var connectorFunctionId = Guid.NewGuid();
 

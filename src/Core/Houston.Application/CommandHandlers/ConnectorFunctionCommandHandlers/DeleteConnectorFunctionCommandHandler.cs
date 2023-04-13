@@ -18,7 +18,7 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 		public async Task<ResultCommand> Handle(DeleteConnectorFunctionCommand request, CancellationToken cancellationToken) {
 			var connectorFunction = await _unitOfWork.ConnectorFunctionRepository.GetActive(request.Id);
 			if (connectorFunction is null) {
-				return new ResultCommand(HttpStatusCode.Forbidden, "invalidConnectorFunction");
+				return new ResultCommand(HttpStatusCode.NotFound, "The requested connector function could not be found.");
 			}
 
 			connectorFunction.Active = false;
