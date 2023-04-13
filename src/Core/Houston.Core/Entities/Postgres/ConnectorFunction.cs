@@ -50,4 +50,7 @@ public partial class ConnectorFunction {
 	[ForeignKey(nameof(UpdatedBy))]
 	[InverseProperty(nameof(User.ConnectorFunctionUpdatedByNavigation))]
 	public virtual User UpdatedByNavigation { get; set; } = null!;
+
+	[InverseProperty(nameof(PipelineInstruction.ConnectorFunction))]
+	public virtual ICollection<PipelineInstruction> PipelineInstructions { get; } = new List<PipelineInstruction>();
 }

@@ -9,5 +9,7 @@ namespace Houston.Core.Interfaces.Repository {
 		Task<List<ConnectorFunction>> GetAllActivesByConnectorId(Guid connectorId, int pageSize, int pageIndex);
 
 		Task<ConnectorFunction?> GetByIdWithInputs(Guid id);
+
+		Task<List<ConnectorFunction>> GetByIdList(List<Guid> ids);
 	}
 }

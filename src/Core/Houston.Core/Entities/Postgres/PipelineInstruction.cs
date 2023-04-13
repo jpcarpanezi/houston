@@ -12,6 +12,9 @@ public partial class PipelineInstruction {
 	[Column("pipeline_id")]
 	public Guid PipelineId { get; set; }
 
+	[Column("connector_function_id")]
+	public Guid ConnectorFunctionId { get; set; }
+
 	[Column("connection")]
 	public Guid? Connection { get; set; }
 
@@ -46,7 +49,7 @@ public partial class PipelineInstruction {
 	public virtual Pipeline Pipeline { get; set; } = null!;
 
 	[InverseProperty(nameof(PipelineInstructionInput.PipelineInstruction))]
-	public virtual ICollection<PipelineInstructionInput> PipelineInstructionInputs { get; } = new List<PipelineInstructionInput>();
+	public virtual ICollection<PipelineInstructionInput> PipelineInstructionInputs { get; set; } = new List<PipelineInstructionInput>();
 
 	[ForeignKey(nameof(UpdatedBy))]
 	[InverseProperty(nameof(User.PipelineInstructionUpdatedByNavigation))]
@@ -54,4 +57,8 @@ public partial class PipelineInstruction {
 
 	[InverseProperty(nameof(PipelineLog.PipelineInstruction))]
 	public virtual ICollection<PipelineLog> PipelineLogs { get; } = new List<PipelineLog>();
+
+	[ForeignKey(nameof(ConnectorFunctionId))]
+	[InverseProperty(nameof(Postgres.ConnectorFunction.PipelineInstructions))]
+	public virtual ConnectorFunction ConnectorFunction { get; set; } = null!;
 }

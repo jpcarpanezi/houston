@@ -18,6 +18,8 @@
 
 		ITriggerFilterRepository TriggerFilterRepository { get; }
 
+		IPipelineInstructionRepository PipelineInstructionRepository { get; }
+
 		Task<int> Commit();
 	}
 }
