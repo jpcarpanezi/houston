@@ -23,19 +23,17 @@ namespace Houston.API.Controllers {
 		/// Creates a pipeline trigger
 		/// </summary>
 		/// <param name="command"></param>
-		/// <response code="201">Pipeline created successfully</response>
-		/// <response code="403">Invalid pipeline or event and filter</response>
-		/// <response code="400">Weak trigger secret</response>
+		/// <response code="201">Pipeline trigger created successfully</response>
+		/// <response code="403">The requested pipeline already has a trigger</response>
 		[HttpPost]
 		[Authorize]
 		[ProducesResponseType(typeof(PipelineTriggerViewModel), (int)HttpStatusCode.Created)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
-		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> Create([FromBody] CreatePipelineTriggerCommand command) {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.Created)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
 
@@ -46,17 +44,17 @@ namespace Houston.API.Controllers {
 		/// Updates a pipeline trigger
 		/// </summary>
 		/// <param name="command"></param>
-		/// <response code="200"></response>
-		/// <response code="403"></response>
+		/// <response code="200">Pipeline trigger updated successfully</response>
+		/// <response code="404">The requested pipeline trigger could not be found</response>
 		[HttpPut]
 		[Authorize]
 		[ProducesResponseType(typeof(PipelineTriggerViewModel), (int)HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		public async Task<IActionResult> Update([FromBody] UpdatePipelineTriggerCommand command) {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
 
@@ -68,18 +66,16 @@ namespace Houston.API.Controllers {
 		/// </summary>
 		/// <param name="command"></param>
 		/// <response code="204">Secret updated successfully</response>
-		/// <response code="403">Invalid pipeline trigger</response>
-		/// <response code="400">Weak trigger secret</response>
+		/// <response code="404">The requested pipeline trigger could not be found</response>
 		[HttpPatch("changeSecret")]
 		[Authorize]
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
-		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
-		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		public async Task<IActionResult> ChangeSecret([FromBody] ChangeSecretPipelineTriggerCommand command) {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.NoContent)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			return NoContent();
 		}
@@ -89,17 +85,17 @@ namespace Houston.API.Controllers {
 		/// </summary>
 		/// <param name="pipelineTriggerId"></param>
 		/// <response code="204">Pipeline trigger deleted successfully</response>
-		/// <response code="403">Invalid pipeline trigger</response>
+		/// <response code="404">The requested pipeline trigger could not be found</response>
 		[HttpDelete("{pipelineTriggerId:guid}")]
 		[Authorize]
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
-		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		public async Task<IActionResult> Delete(Guid pipelineTriggerId) {
 			var command = new DeletePipelineTriggerCommand(pipelineTriggerId);
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.NoContent)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			return NoContent();
 		}
@@ -109,7 +105,7 @@ namespace Houston.API.Controllers {
 		/// </summary>
 		/// <param name="pipelineTriggerId"></param>
 		/// <response code="200">Pipeline trigger object response</response>
-		/// <response code="404">Pipeline trigger not found</response>
+		/// <response code="404">The requested pipeline trigger could not be found</response>
 		[HttpGet("{pipelineTriggerId:guid}")]
 		[Authorize]
 		[ProducesResponseType(typeof(PipelineTriggerViewModel), (int)HttpStatusCode.OK)]
@@ -119,7 +115,7 @@ namespace Houston.API.Controllers {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
 

@@ -114,6 +114,10 @@ public partial class PostgresContext : DbContext {
 			entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.PipelineInstructionUpdatedByNavigation)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("User_id_updated_by_fk");
+
+			entity.HasOne(d => d.ConnectorFunction).WithMany(p => p.PipelineInstructions)
+				.OnDelete(DeleteBehavior.ClientSetNull)
+				.HasConstraintName("PipelineInstruction_connector_function_id_fk");
 		});
 
 		modelBuilder.Entity<PipelineInstructionInput>(entity => {
@@ -130,7 +134,7 @@ public partial class PostgresContext : DbContext {
 				.HasConstraintName("ConnectorFunctionInput_id_input_id_fk");
 
 			entity.HasOne(d => d.PipelineInstruction).WithMany(p => p.PipelineInstructionInputs)
-				.OnDelete(DeleteBehavior.ClientSetNull)
+				.OnDelete(DeleteBehavior.Cascade)
 				.HasConstraintName("PipelineInstruction_id_input_id_fk");
 
 			entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.PipelineInstructionInputUpdatedByNavigation)

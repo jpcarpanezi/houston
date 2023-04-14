@@ -9,7 +9,7 @@ namespace Houston.API.Validators.UserValidators {
 				.NotEmpty()
 				.WithMessage(ValidatorsModelErrorMessages.NullOrEmpty)
 				.NotEqual(x => x.OldPassword)
-				.WithMessage("newPasswordEqualToOld")
+				.WithMessage("The new password cannot be the same as the old password.")
 				.MaximumLength(64)
 				.WithMessage(ValidatorsModelErrorMessages.MaxLength);
 
@@ -17,7 +17,7 @@ namespace Houston.API.Validators.UserValidators {
 				.NotNull()
 				.NotEmpty()
 				.When(x => x.UserId is null)
-				.WithMessage("oldPasswordIsRequiredWhenUserIdNotProvided")
+				.WithMessage("The old password is required when user id is not provided.")
 				.MaximumLength(64)
 				.WithMessage(ValidatorsModelErrorMessages.MaxLength);
 		}

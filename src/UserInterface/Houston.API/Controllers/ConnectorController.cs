@@ -2,7 +2,6 @@
 using Houston.Application.ViewModel;
 using Houston.Application.ViewModel.ConnectorViewModels;
 using Houston.Core.Commands.ConnectorCommands;
-using Houston.Core.Interfaces.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +23,7 @@ namespace Houston.API.Controllers {
 		/// Creates a new connector
 		/// </summary>
 		/// <param name="command">Connector parameters</param>
-		/// <response code="201">Created connector</response>
+		/// <response code="201">Connector created successfully</response>
 		[HttpPost]
 		[Authorize]
 		[ProducesResponseType(typeof(ConnectorViewModel), (int)HttpStatusCode.Created)]
@@ -32,7 +31,7 @@ namespace Houston.API.Controllers {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.Created)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<ConnectorViewModel>(response.Response);
 
@@ -44,17 +43,17 @@ namespace Houston.API.Controllers {
 		/// </summary>
 		/// <param name="connectorId"></param>
 		/// <response code="204">Connector deleted successfully</response>
-		/// <response code="403">Invalid connector ID</response>
+		/// <response code="404">The requested connector could not be found</response>
 		[HttpDelete("{connectorId:guid}")]
 		[Authorize]
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
-		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		public async Task<IActionResult> Delete(Guid connectorId) {
 			var command = new DeleteConnectorCommand(connectorId);
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.NoContent)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			return NoContent();
 		}
@@ -64,16 +63,16 @@ namespace Houston.API.Controllers {
 		/// </summary>
 		/// <param name="command">Connector informations</param>
 		/// <response code="200">Connector successfully updated</response>
-		/// <response code="403">Invalid connector</response>
+		/// <response code="404">The requested connector could not be found</response>
 		[HttpPut]
 		[Authorize]
 		[ProducesResponseType(typeof(ConnectorViewModel), (int)HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		public async Task<IActionResult> Update([FromBody] UpdateConnectorCommand command) {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<ConnectorViewModel>(response.Response);
 
@@ -85,7 +84,7 @@ namespace Houston.API.Controllers {
 		/// </summary>
 		/// <param name="connectorId"></param>
 		/// <response code="200">Connector response</response>
-		/// <response code="404">Connector not found</response>
+		/// <response code="404">The requested connector could not be found</response>
 		[HttpGet("{connectorId:guid}")]
 		[Authorize]
 		[ProducesResponseType(typeof(ConnectorViewModel), (int)HttpStatusCode.OK)]
@@ -95,7 +94,7 @@ namespace Houston.API.Controllers {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode == HttpStatusCode.NotFound)
-				return NotFound();
+				return NotFound(new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<ConnectorViewModel>(response.Response);
 

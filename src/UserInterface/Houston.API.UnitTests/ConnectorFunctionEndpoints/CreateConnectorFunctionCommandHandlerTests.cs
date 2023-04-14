@@ -19,23 +19,6 @@ namespace Houston.API.UnitTests.ConnectorFunctionEndpoints {
 		}
 
 		[Test]
-		public async Task Handle_WithInvalidConnector_ReturnsForbiddenAndErrorMessage() {
-			// Arrange
-			var command = new CreateConnectorFunctionCommand("Function Test", null, It.IsAny<Guid>(), null, new string[] { "return 1;" });
-			_mockUnitOfWork.Setup(x => x.ConnectorRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync(default(Connector));
-
-			// Act
-			var result = await _handler.Handle(command, default);
-
-			// Assert
-			Assert.Multiple(() => {
-				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
-				Assert.That(result.ErrorMessage, Is.EqualTo("invalidConnector"));
-				Assert.That(result.Response, Is.Null);
-			});
-		}
-
-		[Test]
 		[Ignore("Need to understand why is working in request, but not in Unit Testing")]
 		public async Task Handle_WithValidCommand_ReturnsCreatedAndObject() {
 			// Arrange

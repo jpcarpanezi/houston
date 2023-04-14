@@ -1,6 +1,7 @@
 using Autofac.Extensions.DependencyInjection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Houston.API.Filters;
 using Houston.API.Setups;
 using Houston.Application.CommandHandlers.ConnectorCommandHandlers;
 using Houston.Core.Interfaces.Repository;
@@ -17,7 +18,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-builder.Services.AddControllers(opts => opts.Filters.Add(new ProducesAttribute("application/json"))).AddJsonOptions(opts => {
+builder.Services.AddControllers(opts => {
+	opts.Filters.Add(new ProducesAttribute("application/json"));
+	opts.Filters.Add(new ForeignKeyExceptionFilter());
+}).AddJsonOptions(opts => {
 	opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 	opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });

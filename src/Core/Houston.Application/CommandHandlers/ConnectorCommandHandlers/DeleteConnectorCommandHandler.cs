@@ -18,11 +18,11 @@ namespace Houston.Application.CommandHandlers.ConnectorCommandHandlers {
 		public async Task<ResultCommand> Handle(DeleteConnectorCommand request, CancellationToken cancellationToken) {
 			var connector = await _unitOfWork.ConnectorRepository.GetByIdAsync(request.ConnectorId);
 			if (connector is null) {
-				return new ResultCommand(HttpStatusCode.Forbidden, "invalidConnector");
+				return new ResultCommand(HttpStatusCode.NotFound, "The requested connector could not be found.", "connectorNotFound");
 			}
 
 			if (!connector.Active) {
-				return new ResultCommand(HttpStatusCode.Forbidden, "invalidConnector");
+				return new ResultCommand(HttpStatusCode.NotFound, "The requested pipeline could not be found.", "connectorNotFound");
 			}
 
 			connector.Active = false;
@@ -32,7 +32,7 @@ namespace Houston.Application.CommandHandlers.ConnectorCommandHandlers {
 			_unitOfWork.ConnectorRepository.Update(connector);
 			await _unitOfWork.Commit();
 
-			return new ResultCommand(HttpStatusCode.NoContent, null);
+			return new ResultCommand(HttpStatusCode.NoContent);
 		}
 	}
 }

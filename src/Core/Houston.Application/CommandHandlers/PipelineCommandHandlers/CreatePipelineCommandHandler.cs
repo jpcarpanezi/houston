@@ -35,7 +35,7 @@ namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
 
 			pipeline = await _unitOfWork.PipelineRepository.GetActive(pipelineId);
 
-			return new ResultCommand<Pipeline>(HttpStatusCode.Created, null, pipeline);
+			return new ResultCommand<Pipeline>(HttpStatusCode.Created, null, null, pipeline);
 		}
 	}
 }

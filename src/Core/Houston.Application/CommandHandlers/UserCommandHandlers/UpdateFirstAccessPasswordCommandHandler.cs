@@ -20,28 +20,24 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 		public async Task<ResultCommand<User>> Handle(UpdateFirstAccessPasswordCommand request, CancellationToken cancellationToken) {
 			var user = await _unitOfWork.UserRepository.FindByEmail(request.Email);
 			if (user is null) {
-				return new ResultCommand<User>(HttpStatusCode.Forbidden, "invalidToken", null);
+				return new ResultCommand<User>(HttpStatusCode.Forbidden, "Invalid token.", "invalidToken", null);
 			}
 
 			if (!user.FirstAccess || !user.Active) {
-				return new ResultCommand<User>(HttpStatusCode.Forbidden, "invalidToken", null);
+				return new ResultCommand<User>(HttpStatusCode.Forbidden, "Invalid token.", "invalidToken", null);
 			}
 
 			var token = await _cache.GetStringAsync(user.Id.ToString());
 			if (token is null) {
-				return new ResultCommand<User>(HttpStatusCode.Forbidden, "invalidToken", null);
+				return new ResultCommand<User>(HttpStatusCode.Forbidden, "Invalid token.", "invalidToken", null);
 			}
 
 			if (token != request.Token) {
-				return new ResultCommand<User>(HttpStatusCode.Forbidden, "invalidToken", null);
-			}
-
-			if (!PasswordService.IsPasswordStrong(request.Password)) {
-				return new ResultCommand<User>(HttpStatusCode.BadRequest, "weakPassword", null);
+				return new ResultCommand<User>(HttpStatusCode.Forbidden, "Invalid token.", "invalidToken", null);
 			}
 
 			if (PasswordService.VerifyHashedPassword(request.Password, user.Password)) {
-				return new ResultCommand<User>(HttpStatusCode.BadRequest, "passwordEqualToTemp", null);
+				return new ResultCommand<User>(HttpStatusCode.BadRequest, "The new password cannot be the same as previous one.", "passwordEqualToTemp", null);
 			}
 
 			user.Password = PasswordService.HashPassword(request.Password);

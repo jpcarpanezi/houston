@@ -19,11 +19,7 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 		public async Task<ResultCommand> Handle(ChangeSecretPipelineTriggerCommand request, CancellationToken cancellationToken) {
 			var pipelineTrigger = await _unitOfWork.PipelineTriggerRepository.GetByIdAsync(request.PipelineTriggerId);
 			if (pipelineTrigger is null) {
-				return new ResultCommand(HttpStatusCode.Forbidden, "invalidPipelineTrigger");
-			}
-
-			if (!PasswordService.IsPasswordStrong(request.NewSecret)) {
-				return new ResultCommand(HttpStatusCode.BadRequest, "weakPassword");
+				return new ResultCommand(HttpStatusCode.NotFound, "The requested pipeline trigger could not be found.", "pipelineTriggerNotFound");
 			}
 
 			pipelineTrigger.Secret = PasswordService.HashPassword(request.NewSecret);

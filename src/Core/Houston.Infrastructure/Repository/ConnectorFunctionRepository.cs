@@ -36,6 +36,10 @@ namespace Houston.Infrastructure.Repository {
 								 .ToListAsync();
 		}
 
+		public async Task<List<ConnectorFunction>> GetByIdList(List<Guid> ids) {
+			return await Context.ConnectorFunction.Include(x => x.ConnectorFunctionInputs).Where(x => ids.Contains(x.Id)).ToListAsync();
+		}
+
 		public async Task<ConnectorFunction?> GetByIdWithInputs(Guid id) {
 			return await Context.ConnectorFunction
 								   .Include(x => x.ConnectorFunctionInputs)

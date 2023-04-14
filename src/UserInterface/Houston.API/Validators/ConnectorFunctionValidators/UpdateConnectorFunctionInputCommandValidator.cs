@@ -14,7 +14,7 @@ namespace Houston.API.Validators.ConnectorFunctionValidators {
 
 			RuleFor(x => x.Replace)
 				.NotEmpty().NotNull().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty)
-				.Matches("^[a-zA-Z-]*$").WithMessage("onlyLettersNumbersAndHyfens")
+				.Matches("^[a-zA-Z-]*$").WithMessage("The input does not match the required pattern. Only alphabetical characters and hyphens are allowed.")
 				.MaximumLength(25).WithMessage(ValidatorsModelErrorMessages.MaxLength);
 
 			RuleFor(x => x.DefaultValue)

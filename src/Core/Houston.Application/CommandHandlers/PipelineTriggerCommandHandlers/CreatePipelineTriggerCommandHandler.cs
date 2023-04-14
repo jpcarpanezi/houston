@@ -19,18 +19,9 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 		}
 
 		public async Task<ResultCommand<PipelineTrigger>> Handle(CreatePipelineTriggerCommand request, CancellationToken cancellationToken) {
-			var pipeline = await _unitOfWork.PipelineRepository.GetActive(request.PipelineId);
-			if (pipeline is null) {
-				return new ResultCommand<PipelineTrigger>(HttpStatusCode.Forbidden, "invalidPipeline", null);
-			}
-
 			var anyPipelineTrigger = await _unitOfWork.PipelineTriggerRepository.AnyPipelineTrigger(request.PipelineId);
 			if (anyPipelineTrigger) {
-				return new ResultCommand<PipelineTrigger>(HttpStatusCode.Forbidden, "alreadyRegistered", null);
-			}
-
-			if (!PasswordService.IsPasswordStrong(request.Secret)) {
-				return new ResultCommand<PipelineTrigger>(HttpStatusCode.BadRequest, "weakPassword", null);
+				return new ResultCommand<PipelineTrigger>(HttpStatusCode.Forbidden, "The request pipeline already has a trigger.", "alreadyRegistered", null);
 			}
 
 			Guid pipelineTriggerId = Guid.NewGuid();
@@ -74,7 +65,7 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 
 			var response = await _unitOfWork.PipelineTriggerRepository.GetByIdWithInverseProperties(pipelineTriggerId);
 
-			return new ResultCommand<PipelineTrigger>(HttpStatusCode.Created, null, response);
+			return new ResultCommand<PipelineTrigger>(HttpStatusCode.Created, null, null, response);
 		}
 	}
 }

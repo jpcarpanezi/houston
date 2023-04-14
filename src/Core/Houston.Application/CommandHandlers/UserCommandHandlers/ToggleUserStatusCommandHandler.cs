@@ -18,12 +18,12 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 
 		public async Task<ResultCommand<User>> Handle(ToggleUserStatusCommand request, CancellationToken cancellationToken) {
 			if (request.UserId == _claims.Id) {
-				return new ResultCommand<User>(HttpStatusCode.Forbidden, "selfUpdateNotAllowed", null);
+				return new ResultCommand<User>(HttpStatusCode.Forbidden, "Self-updating is not allowed for this resource.", "selfUpdatingNotAllowed", null);
 			}
 
 			var user = await _unitOfWork.UserRepository.GetByIdAsync(request.UserId);
 			if (user is null) {
-				return new ResultCommand<User>(HttpStatusCode.NotFound, "userNotFound", null);
+				return new ResultCommand<User>(HttpStatusCode.NotFound, "The requested user could not be found.", "userNotFound", null);
 			}
 
 			user.Active = !user.Active;
@@ -33,7 +33,7 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 			_unitOfWork.UserRepository.Update(user);
 			await _unitOfWork.Commit();
 
-			return new ResultCommand<User>(HttpStatusCode.NoContent, null, null);
+			return new ResultCommand<User>(HttpStatusCode.NoContent);
 		}
 	}
 }
