@@ -20,7 +20,7 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 		public async Task<ResultCommand<User>> Handle(CreateUserCommand request, CancellationToken cancellationToken) {
 			var checkUserExists = await _unitOfWork.UserRepository.FindByEmail(request.Email);
 			if (checkUserExists is not null) {
-				return new ResultCommand<User>(HttpStatusCode.Conflict, "A user with this email address already exists in the system.", null);
+				return new ResultCommand<User>(HttpStatusCode.Conflict, "A user with this email address already exists in the system.", "userAlreadyExists", null);
 			}
 
 			var user = new User {
@@ -40,7 +40,7 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 			_unitOfWork.UserRepository.Add(user);
 			await _unitOfWork.Commit();
 
-			return new ResultCommand<User>(HttpStatusCode.Created, null, user);
+			return new ResultCommand<User>(HttpStatusCode.Created, null, null, user);
 		}
 	}
 }

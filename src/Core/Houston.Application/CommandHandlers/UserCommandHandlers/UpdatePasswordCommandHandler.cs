@@ -19,21 +19,21 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 
 		public async Task<ResultCommand<User>> Handle(UpdatePasswordCommand request, CancellationToken cancellationToken) {
 			if (request.UserId is not null && !_claims.Roles.Contains(Core.Enums.UserRoleEnum.Admin)) {
-				return new ResultCommand<User>(HttpStatusCode.Forbidden, "Only administators are allowed to change the password of other users.", null);
+				return new ResultCommand<User>(HttpStatusCode.Forbidden, "Only administators are allowed to change the password of other users.", "unauthorizedPasswordChange", null);
 			}
 
 			Guid userId = request.UserId is null ? _claims.Id : (Guid)request.UserId;
 			var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
 			if (user is null) {
-				return new ResultCommand<User>(HttpStatusCode.NotFound, "The requested user could not be found.", null);
+				return new ResultCommand<User>(HttpStatusCode.NotFound, "The requested user could not be found.", "userNotFound", null);
 			}
 
 			if (!user.Active) {
-				return new ResultCommand<User>(HttpStatusCode.Forbidden, "This user account is inactive.", null);
+				return new ResultCommand<User>(HttpStatusCode.Forbidden, "This user account is inactive.", "inactiveUser", null);
 			}
 
 			if (request.UserId is null && request.OldPassword is not null && !PasswordService.VerifyHashedPassword(request.OldPassword, user.Password)) {
-				return new ResultCommand<User>(HttpStatusCode.BadRequest, "The old password provided is incorrect", null);
+				return new ResultCommand<User>(HttpStatusCode.BadRequest, "The old password provided is incorrect", "incorrectOldPassword", null);
 			}
 
 			user.Password = PasswordService.HashPassword(request.NewPassword);

@@ -34,7 +34,7 @@ namespace Houston.Application.CommandHandlers.ConnectorCommandHandlers {
 
 			var response = await _unitOfWork.ConnectorRepository.GetByIdWithInverseProperties(connectorId);
 
-			return new ResultCommand<Connector>(HttpStatusCode.Created, null, response);
+			return new ResultCommand<Connector>(HttpStatusCode.Created, null, null, response);
 		}
 	}
 }

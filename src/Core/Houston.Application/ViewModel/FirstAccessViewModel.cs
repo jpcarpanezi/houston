@@ -4,7 +4,7 @@
 
 		public string Location { get; set; }
 
-		public FirstAccessViewModel(string passwordToken, string location, string message) : base(message) {
+		public FirstAccessViewModel(string passwordToken, string location, string message, string? errorCode) : base(message, errorCode) {
 			PasswordToken = passwordToken;
 			Location = location;
 		}

@@ -50,7 +50,7 @@ namespace Houston.API.Controllers {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<PipelineViewModel>(response.Response);
 
@@ -74,11 +74,11 @@ namespace Houston.API.Controllers {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.Locked)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			if (response.StatusCode == HttpStatusCode.Locked) {
 				DateTime convertedEstimateTime = DateTime.ParseExact(response.ErrorMessage!, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
-				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("Server is processing a request from this pipeline. Please try again later.", convertedEstimateTime));
+				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("Server is processing a request from this pipeline. Please try again later.", "pipelineRunning", convertedEstimateTime));
 			}
 
 			return NoContent();
@@ -101,11 +101,11 @@ namespace Houston.API.Controllers {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.Locked)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			if (response.StatusCode == HttpStatusCode.Locked) { 
 				DateTime convertedEstimateTime = DateTime.ParseExact(response.ErrorMessage!, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
-				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("Server is processing a request from this pipeline. Please try again later.", convertedEstimateTime));
+				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("Server is processing a request from this pipeline. Please try again later.", "pipelineRunning", convertedEstimateTime));
 			}
 
 			return NoContent();
@@ -126,7 +126,7 @@ namespace Houston.API.Controllers {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<PipelineViewModel>(response.Response);
 
@@ -165,11 +165,11 @@ namespace Houston.API.Controllers {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.Locked)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			if (response.StatusCode == HttpStatusCode.Locked) {
 				DateTime convertedEstimateTime = DateTime.ParseExact(response.ErrorMessage!, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
-				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("Server is processing a request from this pipeline. Please try again later.", convertedEstimateTime));
+				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("Server is processing a request from this pipeline. Please try again later.", "pipelineRunning", convertedEstimateTime));
 			}
 
 			return NoContent();

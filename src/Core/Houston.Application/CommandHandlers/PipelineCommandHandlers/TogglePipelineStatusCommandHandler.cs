@@ -18,7 +18,7 @@ namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
 		public async Task<ResultCommand> Handle(TogglePipelineStatusCommand request, CancellationToken cancellationToken) {
 			var pipeline = await _unitOfWork.PipelineRepository.GetActive(request.Id);
 			if (pipeline is null) {
-				return new ResultCommand(HttpStatusCode.NotFound, "The requested pipeline could not be found.");
+				return new ResultCommand(HttpStatusCode.NotFound, "The requested pipeline could not be found.", "pipelineNotFound");
 			}
 
 			if (pipeline.Status == Core.Enums.PipelineStatusEnum.Running) {

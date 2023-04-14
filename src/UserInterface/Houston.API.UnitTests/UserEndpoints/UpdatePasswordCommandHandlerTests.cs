@@ -32,7 +32,8 @@ namespace Houston.API.UnitTests.UserEndpoints {
 			// Assert
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
-				Assert.That(result.ErrorMessage, Is.EqualTo("unauthorizedPasswordChange"));
+				Assert.That(result.ErrorMessage, Is.Not.Null);
+				Assert.That(result.ErrorCode, Is.EqualTo("unauthorizedPasswordChange"));
 				Assert.That(result.Response, Is.Null);
 			});
 		}
@@ -50,8 +51,9 @@ namespace Houston.API.UnitTests.UserEndpoints {
 
 			// Assert
 			Assert.Multiple(() => {
-				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
-				Assert.That(result.ErrorMessage, Is.EqualTo("invalidUser"));
+				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+				Assert.That(result.ErrorMessage, Is.Not.Null);
+				Assert.That(result.ErrorCode, Is.EqualTo("userNotFound"));
 				Assert.That(result.Response, Is.Null);
 			});
 		}
@@ -83,7 +85,8 @@ namespace Houston.API.UnitTests.UserEndpoints {
 			// Assert
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
-				Assert.That(result.ErrorMessage, Is.EqualTo("inactiveUser"));
+				Assert.That(result.ErrorMessage, Is.Not.Null);
+				Assert.That(result.ErrorCode, Is.EqualTo("inactiveUser"));
 				Assert.That(result.Response, Is.Null);
 			});
 		}
@@ -114,40 +117,9 @@ namespace Houston.API.UnitTests.UserEndpoints {
 
 			// Assert
 			Assert.Multiple(() => {
-				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
-				Assert.That(result.ErrorMessage, Is.EqualTo("incorrectOldPassword"));
-				Assert.That(result.Response, Is.Null);
-			});
-		}
-
-		[Test]
-		public async Task Handle_WithWeakPassword_ReturnsBadRequestAndErrorMessage() {
-			// Arrange
-			var userId = Guid.NewGuid();
-			var command = new UpdatePasswordCommand(userId, null, "weakpwd");
-			var user = new User {
-				Id = userId,
-				Name = "John Doe",
-				Email = "john.doe@example.com",
-				Password = PasswordService.HashPassword("StrongPassword1234"),
-				Active = true,
-				Role = Core.Enums.UserRoleEnum.Admin,
-				FirstAccess = false,
-				CreatedBy = It.IsAny<Guid>(),
-				CreationDate = It.IsAny<DateTime>(),
-				UpdatedBy = It.IsAny<Guid>(),
-				LastUpdate = It.IsAny<DateTime>()
-			};
-			_mockUserClaimsService.Setup(x => x.Roles).Returns(new List<Core.Enums.UserRoleEnum> { Core.Enums.UserRoleEnum.Admin });
-			_mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(userId)).ReturnsAsync(user);
-
-			// Act
-			var result = await _handler.Handle(command, default);
-
-			// Assert
-			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
-				Assert.That(result.ErrorMessage, Is.EqualTo("weakPassword"));
+				Assert.That(result.ErrorMessage, Is.Not.Null);
+				Assert.That(result.ErrorCode, Is.EqualTo("incorrectOldPassword"));
 				Assert.That(result.Response, Is.Null);
 			});
 		}

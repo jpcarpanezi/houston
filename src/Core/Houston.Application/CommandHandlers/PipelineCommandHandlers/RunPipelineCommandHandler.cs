@@ -25,7 +25,7 @@ namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
 		public async Task<ResultCommand> Handle(RunPipelineCommand request, CancellationToken cancellationToken) {
 			var pipeline = await _unitOfWork.PipelineRepository.GetActive(request.Id);
 			if (pipeline is null) {
-				return new ResultCommand(HttpStatusCode.NotFound, "The requested connector could not be found.");
+				return new ResultCommand(HttpStatusCode.NotFound, "The requested connector could not be found.", "connectorNotFound");
 			}
 
 			if (pipeline.Status == Core.Enums.PipelineStatusEnum.Running) {
@@ -37,7 +37,7 @@ namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
 				_eventBus.Publish(new RunPipelineMessage(request.Id, _claims.Id));
 			} catch (Exception e) {
 				_logger.LogError(e, $"Failed to publish {nameof(RunPipelineMessage)}");
-				return new ResultCommand(HttpStatusCode.InternalServerError, "cannotRunPipeline");
+				return new ResultCommand(HttpStatusCode.InternalServerError, "Error while trying to run the pipeline.", "cannotRunPipeline");
 			}
 
 			return new ResultCommand(HttpStatusCode.NoContent);

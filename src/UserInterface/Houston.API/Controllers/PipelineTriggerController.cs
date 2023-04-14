@@ -33,7 +33,7 @@ namespace Houston.API.Controllers {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.Created)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
 
@@ -54,7 +54,7 @@ namespace Houston.API.Controllers {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
 
@@ -71,12 +71,11 @@ namespace Houston.API.Controllers {
 		[Authorize]
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
-		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> ChangeSecret([FromBody] ChangeSecretPipelineTriggerCommand command) {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.NoContent)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			return NoContent();
 		}
@@ -96,7 +95,7 @@ namespace Houston.API.Controllers {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.NoContent)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			return NoContent();
 		}
@@ -116,7 +115,7 @@ namespace Houston.API.Controllers {
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!));
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
 

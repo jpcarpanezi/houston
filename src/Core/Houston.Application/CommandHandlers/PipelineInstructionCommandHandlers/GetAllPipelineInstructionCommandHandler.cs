@@ -16,7 +16,7 @@ namespace Houston.Application.CommandHandlers.PipelineInstructionCommandHandlers
 		public async Task<ResultCommand<List<PipelineInstruction>>> Handle(GetAllPipelineInstructionCommand request, CancellationToken cancellationToken) {
 			var pipelineInstructions = await _unitOfWork.PipelineInstructionRepository.GetByPipelineId(request.PipelineId);
 
-			return new ResultCommand<List<PipelineInstruction>>(HttpStatusCode.OK, null, pipelineInstructions);
+			return new ResultCommand<List<PipelineInstruction>>(HttpStatusCode.OK, null, null, pipelineInstructions);
 		}
 	}
 }

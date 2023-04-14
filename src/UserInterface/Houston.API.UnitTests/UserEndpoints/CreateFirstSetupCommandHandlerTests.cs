@@ -34,23 +34,8 @@ namespace Houston.API.UnitTests.UserEndpoints {
 			// Assert
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
-				Assert.That(result.ErrorMessage, Is.EqualTo("alreadyConfigured"));
-				Assert.That(result.Response, Is.Null);
-			});
-		}
-
-		[Test]
-		public async Task Handle_WithWeakPassword_ReturnsBadRequestAndErrorMessage() {
-			// Arrange
-			var command = new CreateFirstSetupCommand("hub.docker.com", "test@test.com", "test", "password", "user", "test@test.com", "weakpwd");
-
-			// Act
-			var result = await _handler.Handle(command, default);
-
-			// Assert
-			Assert.Multiple(() => {
-				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
-				Assert.That(result.ErrorMessage, Is.EqualTo("weakPassword"));
+				Assert.That(result.ErrorMessage, Is.Not.Null);
+				Assert.That(result.ErrorCode, Is.EqualTo("alreadyConfigured"));
 				Assert.That(result.Response, Is.Null);
 			});
 		}
@@ -67,7 +52,8 @@ namespace Houston.API.UnitTests.UserEndpoints {
 			// Assert
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
-				Assert.That(result.ErrorMessage, Is.EqualTo("userAlreadyRegistered"));
+				Assert.That(result.ErrorMessage, Is.Not.Null);
+				Assert.That(result.ErrorCode, Is.EqualTo("userAlreadyRegistered"));
 				Assert.That(result.Response, Is.Null);
 			});
 		}

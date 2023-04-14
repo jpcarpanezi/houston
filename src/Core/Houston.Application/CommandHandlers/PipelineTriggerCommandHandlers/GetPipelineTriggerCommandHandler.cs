@@ -16,10 +16,10 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 		public async Task<ResultCommand<PipelineTrigger>> Handle(GetPipelineTriggerCommand request, CancellationToken cancellationToken) {
 			var pipelineTrigger = await _unitOfWork.PipelineTriggerRepository.GetByIdWithInverseProperties(request.Id);
 			if (pipelineTrigger is null) {
-				return new ResultCommand<PipelineTrigger>(HttpStatusCode.NotFound, "The requested pipeline trigger could not be found.", null);
+				return new ResultCommand<PipelineTrigger>(HttpStatusCode.NotFound, "The requested pipeline trigger could not be found.", "pipelineTriggerNotFound", null);
 			}
 
-			return new ResultCommand<PipelineTrigger>(HttpStatusCode.OK, null, pipelineTrigger);
+			return new ResultCommand<PipelineTrigger>(HttpStatusCode.OK, null, null, pipelineTrigger);
 		}
 	}
 }

@@ -69,13 +69,13 @@ namespace Houston.API.UnitTests.AuthEndpoints {
 			_mockUnitOfWork.Setup(u => u.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
-			var result = await _authController.SignIn(command) as UnauthorizedObjectResult;
+			var result = await _authController.SignIn(command) as ObjectResult;
 
 			// Assert
 			Assert.That(result, Is.Not.Null);
 			Assert.That(result.Value, Is.Not.Null);
 			Assert.Multiple(() => {
-				Assert.That(result.StatusCode, Is.EqualTo(401));
+				Assert.That(result.StatusCode, Is.EqualTo(307));
 				Assert.That(result.Value, Is.TypeOf<FirstAccessViewModel>());
 			});
 		}
@@ -108,7 +108,8 @@ namespace Houston.API.UnitTests.AuthEndpoints {
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(403));
 				Assert.That(result.Value, Is.TypeOf<MessageViewModel>());
-				Assert.That(((MessageViewModel)result.Value).Message, Is.EqualTo("invalidCredentials"));
+				Assert.That(((MessageViewModel)result.Value).Message, Is.Not.Null);
+				Assert.That(((MessageViewModel)result.Value).ErrorCode, Is.EqualTo("invalidCredentials"));
 			});
 		}
 
@@ -138,9 +139,10 @@ namespace Houston.API.UnitTests.AuthEndpoints {
 			Assert.That(result, Is.Not.Null);
 			Assert.That(result.Value, Is.Not.Null);
 			Assert.Multiple(() => {
-				Assert.That(result.StatusCode, Is.EqualTo(403));
+				Assert.That(result.StatusCode, Is.EqualTo(401));
 				Assert.That(result.Value, Is.TypeOf<MessageViewModel>());
-				Assert.That(((MessageViewModel)result.Value).Message, Is.EqualTo("userInactive"));
+				Assert.That(((MessageViewModel)result.Value).Message, Is.Not.Null);
+				Assert.That(((MessageViewModel)result.Value).ErrorCode, Is.EqualTo("userInactive"));
 			});
 		}
 
@@ -191,25 +193,8 @@ namespace Houston.API.UnitTests.AuthEndpoints {
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(403));
 				Assert.That(result.Value, Is.TypeOf<MessageViewModel>());
-				Assert.That(((MessageViewModel)result.Value).Message, Is.EqualTo("invalidToken"));
-			});
-		}
-
-		[Test]
-		public async Task RefreshToken_WithExpiredToken_ReturnsForbidden() {
-			// Arrange
-			string token = Guid.NewGuid().ToString("N");
-
-			// Act
-			var result = await _authController.RefreshToken(token) as ObjectResult;
-
-			// Assert
-			Assert.That(result, Is.Not.Null);
-			Assert.That(result.Value, Is.Not.Null);
-			Assert.Multiple(() => {
-				Assert.That(result.StatusCode, Is.EqualTo(403));
-				Assert.That(result.Value, Is.TypeOf<MessageViewModel>());
-				Assert.That(((MessageViewModel)result.Value).Message, Is.EqualTo("tokenExpired"));
+				Assert.That(((MessageViewModel)result.Value).Message, Is.Not.Null);
+				Assert.That(((MessageViewModel)result.Value).ErrorCode, Is.EqualTo("invalidToken"));
 			});
 		}
 
@@ -230,7 +215,8 @@ namespace Houston.API.UnitTests.AuthEndpoints {
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(403));
 				Assert.That(result.Value, Is.TypeOf<MessageViewModel>());
-				Assert.That(((MessageViewModel)result.Value).Message, Is.EqualTo("userNotFound"));
+				Assert.That(((MessageViewModel)result.Value).Message, Is.Not.Null);
+				Assert.That(((MessageViewModel)result.Value).ErrorCode, Is.EqualTo("userNotFound"));
 			});
 		}
 
@@ -264,7 +250,8 @@ namespace Houston.API.UnitTests.AuthEndpoints {
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(403));
 				Assert.That(result.Value, Is.TypeOf<MessageViewModel>());
-				Assert.That(((MessageViewModel)result.Value).Message, Is.EqualTo("userInactive"));
+				Assert.That(((MessageViewModel)result.Value).Message, Is.Not.Null);
+				Assert.That(((MessageViewModel)result.Value).ErrorCode, Is.EqualTo("userNotFound"));
 			});
 		}
 

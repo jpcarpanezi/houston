@@ -17,10 +17,10 @@ namespace Houston.Application.CommandHandlers.ConnectorCommandHandlers {
 			var connector = await _unitOfWork.ConnectorRepository.GetActive(request.ConnectorId);
 
 			if (connector is null) {
-				return new ResultCommand<Connector>(HttpStatusCode.NotFound, "The requested connector could not be found.", null);
+				return new ResultCommand<Connector>(HttpStatusCode.NotFound, "The requested connector could not be found.", "connectorNotFound", null);
 			}
 
-			return new ResultCommand<Connector>(HttpStatusCode.OK, null, connector);
+			return new ResultCommand<Connector>(HttpStatusCode.OK, null, null, connector);
 		}
 	}
 }

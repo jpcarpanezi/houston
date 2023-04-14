@@ -28,8 +28,9 @@ namespace Houston.API.UnitTests.ConnectorEndpoints {
 
 			// Assert
 			Assert.Multiple(() => {
-				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
-				Assert.That(result.ErrorMessage, Is.EqualTo("invalidConnector"));
+				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+				Assert.That(result.ErrorMessage, Is.Not.Null);
+				Assert.That(result.ErrorCode, Is.EqualTo("connectorNotFound"));
 			});
 		}
 
@@ -54,8 +55,9 @@ namespace Houston.API.UnitTests.ConnectorEndpoints {
 
 			// Assert
 			Assert.Multiple(() => {
-				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
-				Assert.That(result.ErrorMessage, Is.EqualTo("invalidConnector"));
+				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+				Assert.That(result.ErrorMessage, Is.Not.Null);
+				Assert.That(result.ErrorCode, Is.EqualTo("connectorNotFound"));
 			});
 		}
 

@@ -61,7 +61,7 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 
 			await _unitOfWork.Commit();
 
-			return new ResultCommand<ConnectorFunction>(HttpStatusCode.Created, null, connectorFunction);
+			return new ResultCommand<ConnectorFunction>(HttpStatusCode.Created, null, null, connectorFunction);
 		}
 	}
 }

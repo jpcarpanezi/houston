@@ -32,7 +32,8 @@ namespace Houston.API.UnitTests.UserEndpoints {
 			// Assert
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
-				Assert.That(result.ErrorMessage, Is.EqualTo("selfUpdateNotAllowed"));
+				Assert.That(result.ErrorMessage, Is.Not.Null);
+				Assert.That(result.ErrorCode, Is.EqualTo("selfUpdatingNotAllowed"));
 				Assert.That(result.Response, Is.Null);
 			});
 		}
@@ -51,7 +52,8 @@ namespace Houston.API.UnitTests.UserEndpoints {
 
 			Assert.Multiple(() => {
 				Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
-				Assert.That(result.ErrorMessage, Is.EqualTo("userNotFound"));
+				Assert.That(result.ErrorMessage, Is.Not.Null);
+				Assert.That(result.ErrorCode, Is.EqualTo("userNotFound"));
 				Assert.That(result.Response, Is.Null);
 			});
 		}
