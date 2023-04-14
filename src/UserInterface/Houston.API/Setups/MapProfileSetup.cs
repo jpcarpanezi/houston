@@ -4,6 +4,7 @@ using Houston.Application.ViewModel.ConnectorFunctionViewModels;
 using Houston.Application.ViewModel.ConnectorViewModels;
 using Houston.Application.ViewModel.PipelineInstructionInputViewModels;
 using Houston.Application.ViewModel.PipelineInstructionViewModels;
+using Houston.Application.ViewModel.PipelineLogViewModels;
 using Houston.Application.ViewModel.PipelineTriggerEventViewModels;
 using Houston.Application.ViewModel.PipelineTriggerFilterViewModels;
 using Houston.Application.ViewModel.PipelineTriggerViewModels;
@@ -35,6 +36,11 @@ namespace Houston.API.Setups {
 			CreateMap<PipelineTrigger, PipelineTriggerViewModel>();
 			CreateMap<PipelineInstructionInput, PipelineInstructionInputViewModel>();
 			CreateMap<PipelineInstruction, PipelineInstructionViewModel>();
+			CreateMap<PipelineLog, PipelineLogViewModel>()
+				.ForMember(dest => dest.InstructionWithErrorId, m => m.MapFrom(src => src.InstructionWithError))
+				.ForMember(dest => dest.InstructionWithError, m => m.MapFrom(src => src.PipelineInstruction.ConnectorFunction.Name))
+				.ForMember(dest => dest.TriggeredById, m => m.MapFrom(src => src.TriggeredBy))
+				.ForMember(dest => dest.TriggeredBy, m => m.MapFrom(src => src.TriggeredByNavigation.Name));
 		}
 	}
 }

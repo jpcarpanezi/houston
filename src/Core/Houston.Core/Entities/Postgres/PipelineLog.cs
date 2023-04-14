@@ -22,10 +22,10 @@ public partial class PipelineLog {
 	public string? Stdout { get; set; }
 
 	[Column("instruction_with_error")]
-	public Guid InstructionWithError { get; set; }
+	public Guid? InstructionWithError { get; set; }
 
 	[Column("triggered_by")]
-	public Guid TriggeredBy { get; set; }
+	public Guid? TriggeredBy { get; set; }
 
 	[Column("start_time", TypeName = "timespan(3) with time zone")]
 	public DateTime StartTime { get; set; }
@@ -39,9 +39,9 @@ public partial class PipelineLog {
 
 	[ForeignKey(nameof(TriggeredBy))]
 	[InverseProperty(nameof(User.PipelineLogTriggeredByNavigation))]
-	public virtual User TriggeredByNavigation { get; set; } = null!;
+	public virtual User? TriggeredByNavigation { get; set; } = null!;
 
 	[ForeignKey(nameof(InstructionWithError))]
 	[InverseProperty(nameof(Postgres.PipelineInstruction.PipelineLogs))]
-	public virtual PipelineInstruction PipelineInstruction { get; set; } = null!;
+	public virtual PipelineInstruction? PipelineInstruction { get; set; } = null!;
 }
