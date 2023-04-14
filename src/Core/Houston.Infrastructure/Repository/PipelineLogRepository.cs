@@ -15,5 +15,13 @@ namespace Houston.Infrastructure.Repository {
 
 			return logs.Select(x => x.Duration.Ticks).DefaultIfEmpty(0).Average();
 		}
+
+		public async Task<PipelineLog?> GetByIdWithInverseProperties(Guid id) {
+			return await Context.PipelineLog.Include(x => x.TriggeredByNavigation)
+								   .Include(x => x.PipelineInstruction)
+								   .ThenInclude(x => x.ConnectorFunction)
+								   .Where(x => x.Id == id)
+								   .FirstOrDefaultAsync();
+		}
 	}
 }
