@@ -147,8 +147,15 @@ namespace Houston.API.Controllers {
 			return NoContent();
 		}
 
+		/// <summary>
+		/// List of all users
+		/// </summary>
+		/// <param name="pageIndex"></param>
+		/// <param name="pageSize"></param>
+		/// <response code="200">List of all active connectors</response>
 		[HttpGet]
 		[Authorize(Roles = "Admin")]
+		[ProducesResponseType(typeof(PaginatedItemsViewModel<UserViewModel>), (int)HttpStatusCode.OK)]
 		public async Task<IActionResult> GetAll([FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10) {
 			var command = new GetAllUserCommand(pageSize, pageIndex);
 			var response = await _mediator.Send(command);
