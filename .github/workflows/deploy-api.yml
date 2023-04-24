@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: .NET Testing
-        uses: .github/workflows/dotnet-testing.yaml@dev
+        uses: ./.github/workflows/dotnet-testing.yaml@dev
         with:
           dotnet-version: 6.0.x
           ssh-path: /home/runner/work/houston/houston/src/UserInterface/Houston.API.UnitTests/bin/Debug/net6.0/PrivateKey.pem
