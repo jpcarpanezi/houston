@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Houston.Application.ViewModel;
-using Houston.Application.ViewModel.PipelineViewModels;
 using Houston.Application.ViewModel.UserViewModels;
 using Houston.Core.Commands.UserCommands;
-using Houston.Core.Interfaces.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -163,6 +161,25 @@ namespace Houston.API.Controllers {
 			var view = _mapper.Map<List<UserViewModel>>(response.Response);
 
 			return Ok(new PaginatedItemsViewModel<UserViewModel>(response.PageIndex, response.PageSize, response.Count, view));
+		}
+
+		/// <summary>
+		/// Gets the user by id
+		/// </summary>
+		/// <param name="id"></param>
+		/// <response code="200">User response</response>
+		/// <response code="404">The requested user could not be found</response>
+		[HttpGet("item/{id:guid}")]
+		public async Task<IActionResult> Get(Guid id) {
+			var command = new GetUserCommand(id);
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.OK)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
+
+			var view = _mapper.Map<UserViewModel>(response.Response);
+
+			return Ok(view);
 		}
 	}
 }
