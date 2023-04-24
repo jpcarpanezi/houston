@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Houston.Application.ViewModel;
+using Houston.Application.ViewModel.PipelineViewModels;
 using Houston.Application.ViewModel.UserViewModels;
 using Houston.Core.Commands.UserCommands;
 using Houston.Core.Interfaces.Repository;
@@ -144,6 +145,17 @@ namespace Houston.API.Controllers {
 				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			return NoContent();
+		}
+
+		[HttpGet]
+		[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> GetAll([FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10) {
+			var command = new GetAllUserCommand(pageSize, pageIndex);
+			var response = await _mediator.Send(command);
+
+			var view = _mapper.Map<List<UserViewModel>>(response.Response);
+
+			return Ok(new PaginatedItemsViewModel<UserViewModel>(response.PageIndex, response.PageSize, response.Count, view));
 		}
 	}
 }
