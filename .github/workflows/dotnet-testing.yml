@@ -1,22 +1,30 @@
 name: .NET Testing
 
-on: [pull_request, workflow_dispatch, push]
-
+on:
+  workflow_call:
+    inputs:
+      dotnet-version:
+        required: true
+        type: string
+        default: 6.0.x
+      ssh-path:
+        required: true
+        type: string
+  
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: ${{ inputs.dotnet-version }}
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
     - name: Create testing private key
-      run: ssh-keygen -t rsa -b 4096 -m PEM -N "" -f /home/runner/work/houston/houston/src/UserInterface/Houston.API.UnitTests/bin/Debug/net6.0/PrivateKey.pem
+      run: ssh-keygen -t rsa -b 4096 -m PEM -N "" -f ${{ inputs.ssh-path }}
     - name: Test
       run: dotnet test --no-build --verbosity normal
