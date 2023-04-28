@@ -11,9 +11,22 @@ namespace Houston.Infrastructure.Repository {
 			return await Context.Pipeline.Where(x => x.Active).LongCountAsync();
 		}
 
+
+
 		public async Task<Pipeline?> GetActive(Guid id) {
 			return await Context.Pipeline.Include(x => x.CreatedByNavigation)
 								.Include(x => x.UpdatedByNavigation)
+								.Where(x => x.Id == id && x.Active)
+								.FirstOrDefaultAsync();
+		}
+
+		public async Task<Pipeline?> GetActiveWithInverseProperties(Guid id) {
+			return await Context.Pipeline.Include(x => x.CreatedByNavigation)
+								.Include(x => x.UpdatedByNavigation)
+								.Include(x => x.PipelineInstructions)
+								.ThenInclude(x => x.PipelineInstructionInputs)
+								.ThenInclude(x => x.ConnectorFunctionInput)
+								.Include(x => x.PipelineTrigger)
 								.Where(x => x.Id == id && x.Active)
 								.FirstOrDefaultAsync();
 		}

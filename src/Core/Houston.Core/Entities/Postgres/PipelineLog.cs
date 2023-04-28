@@ -13,7 +13,7 @@ public partial class PipelineLog {
 	public Guid PipelineId { get; set; }
 
 	[Column("exit_code")]
-	public int ExitCode { get; set; }
+	public long ExitCode { get; set; }
 
 	[Column("run_n")]
 	public long RunN { get; set; }

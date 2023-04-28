@@ -42,7 +42,7 @@ public partial class PipelineTrigger {
 	public virtual User CreatedByNavigation { get; set; } = null!;
 
 	[ForeignKey(nameof(PipelineId))]
-	[InverseProperty(nameof(Postgres.Pipeline.PipelineTriggers))]
+	[InverseProperty(nameof(Postgres.Pipeline.PipelineTrigger))]
 	public virtual Pipeline Pipeline { get; set; } = null!;
 
 	[InverseProperty(nameof(PipelineTriggerEvent.PipelineTrigger))]
