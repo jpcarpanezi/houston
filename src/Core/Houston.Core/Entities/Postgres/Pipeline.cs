@@ -44,8 +44,8 @@ public partial class Pipeline {
 	[InverseProperty(nameof(PipelineInstruction.Pipeline))]
 	public virtual ICollection<PipelineInstruction> PipelineInstructions { get; } = new List<PipelineInstruction>();
 
-	[InverseProperty(nameof(PipelineTrigger.Pipeline))]
-	public virtual ICollection<PipelineTrigger> PipelineTriggers { get; } = new List<PipelineTrigger>();
+	[InverseProperty(nameof(Postgres.PipelineTrigger.Pipeline))]
+	public virtual PipelineTrigger PipelineTrigger { get; set; } = null!;
 
 	[ForeignKey(nameof(UpdatedBy))]
 	[InverseProperty(nameof(User.PipelineUpdatedByNavigation))]

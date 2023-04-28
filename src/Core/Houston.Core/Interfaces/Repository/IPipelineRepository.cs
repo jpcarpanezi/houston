@@ -7,5 +7,7 @@ namespace Houston.Core.Interfaces.Repository {
 		Task<long> CountActives();
 
 		Task<List<Pipeline>> GetAllActives(int pageSize, int pageIndex);
+
+		Task<Pipeline?> GetActiveWithInverseProperties(Guid id);
 	}
 }

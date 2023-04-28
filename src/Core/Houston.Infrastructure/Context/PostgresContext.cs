@@ -153,7 +153,7 @@ public partial class PostgresContext : DbContext {
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("User_id_created_by_fk");
 
-			entity.HasOne(d => d.Pipeline).WithMany(p => p.PipelineTriggers)
+			entity.HasOne(d => d.Pipeline).WithOne(p => p.PipelineTrigger)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("Pipeline_id_pipeline_id_fk");
 
