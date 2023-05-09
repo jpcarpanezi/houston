@@ -18,6 +18,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Services.AddCors(options => {
+	options.AddDefaultPolicy(build => {
+		build
+			.WithOrigins(builder.Configuration.GetSection("CorsSettings:Origins").Get<string[]>())
+			.AllowAnyMethod()
+			.AllowAnyHeader()
+			.AllowCredentials();
+	});
+});
 builder.Services.AddControllers(opts => {
 	opts.Filters.Add(new ProducesAttribute("application/json"));
 	opts.Filters.Add(new ForeignKeyExceptionFilter());
@@ -58,6 +67,7 @@ if (app.Environment.IsDevelopment()) {
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
+app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
