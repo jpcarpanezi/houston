@@ -6,6 +6,9 @@ import { DomainModule } from './domain/domain.module';
 import { DataModule } from './data/data.module';
 import { InfraModule } from './infra/infra.module';
 import { PresentationModule } from './presentation/presentation.module';
+import { FaConfig, FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
 	declarations: [
@@ -16,9 +19,15 @@ import { PresentationModule } from './presentation/presentation.module';
 		DomainModule,
 		DataModule,
 		InfraModule,
-		PresentationModule
+		PresentationModule,
+  		FontAwesomeModule
 	],
-	providers: [],
+	providers: [CookieService],
 	bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+	constructor(library: FaIconLibrary, faConfig: FaConfig) {
+		faConfig.fixedWidth = true;
+		library.addIcons(faRightToBracket)
+	}
+}

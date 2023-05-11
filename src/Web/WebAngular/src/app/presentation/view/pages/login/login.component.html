@@ -1,1 +1,24 @@
-<p>login works!</p>
+<div class="min-h-screen w-full flex items-center justify-center bg-gray-50">
+	<div class="bg-white prose-zinc shadow p-8 rounded-md border-b-4 border-indigo-400">
+		<h1 class="font-bold text-3xl">Houston</h1>
+		<p>Welcome back, enter your credentials</p>
+
+		<form [formGroup]="loginForm" (submit)="signIn()">
+			<div class="block mt-4">
+				<label for="email">E-mail</label>
+				<input type="email" name="email" id="email" formControlName="email" placeholder="Enter your e-mail" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+			</div>
+
+			<div class="block mt-4">
+				<label for="password">Password</label>
+				<input type="password" name="password" id="password" formControlName="password" placeholder="Enter your password" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+			</div>
+
+			<div class="block mt-4">
+				<button type="submit" class="w-full text-white py-2 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="loginForm.disabled" [disabled]="loginForm.disabled">
+					<span class="spinner-text">Sign In <fa-icon [icon]="['fas', 'right-to-bracket']"></fa-icon></span>
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
