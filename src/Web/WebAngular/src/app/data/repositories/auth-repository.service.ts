@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { GeneralSignInCommand } from 'src/app/domain/commands/general-sign-in.command';
+import { GeneralSignInCommand } from 'src/app/domain/commands/auth-commands/general-sign-in.command';
 import { AuthRepositoryInterface } from 'src/app/domain/interfaces/repositories/auth-repository.interface';
 import { BearerTokenViewModel } from 'src/app/domain/view-models/bearer-token.view-model';
 import { environment } from 'src/environments/environment';

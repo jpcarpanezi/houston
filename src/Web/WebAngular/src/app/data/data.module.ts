@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { AuthRepositoryInterface } from '../domain/interfaces/repositories/auth-repository.interface';
 import { AuthRepositoryService } from './repositories/auth-repository.service';
 import { HttpClientModule } from '@angular/common/http';
+import { UserRepositoryInterface } from '../domain/interfaces/repositories/user-repository.interface';
+import { UserRepositoryService } from './repositories/user-repository.service';
 
 
 
@@ -13,7 +15,8 @@ import { HttpClientModule } from '@angular/common/http';
 		HttpClientModule
 	],
 	providers: [
-		{ provide: AuthRepositoryInterface, useClass: AuthRepositoryService }
+		{ provide: AuthRepositoryInterface, useClass: AuthRepositoryService },
+		{ provide: UserRepositoryInterface, useClass: UserRepositoryService }
 	]
 })
 export class DataModule { }
