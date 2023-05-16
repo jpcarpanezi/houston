@@ -1,0 +1,99 @@
+<div class="min-h-screen w-full flex items-center justify-center bg-gray-50">
+	<div class="bg-white w-auto md:w-96 mx-5 md:mx-0 prose-zinc shadow p-8 rounded-md border-b-4 border-indigo-400 my-5">
+		<h1 class="font-bold text-3xl">First Setup</h1>
+		<p>Welcome, let's start the first instance setup</p>
+
+		<hr class="my-4">
+
+		<form [formGroup]="firstSetupForm" (submit)="firstSetup()">
+			<div [class.hidden]="!firstStep">
+				<h1 class="font-bold text-xl">Docker Hub</h1>
+				<p>Insert your Docker Hub credentials to pull necessary images.</p>
+
+				<div class="block mt-4">
+					<label for="registryAddress">Registry address</label>
+					<input type="text" name="registryAddress" id="registryAddress" formControlName="registryAddress" placeholder="Enter the registry address" class="mb-2 block w-full rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:ring-0" [class.border-red-500]="isFieldInvalid('registryAddress')" readonly>
+				</div>
+
+				<div class="block mt-4">
+					<label for="registryEmail">Registry e-mail</label>
+					<input type="email" name="registryEmail" id="registryEmail" formControlName="registryEmail" placeholder="Enter the registry email" maxlength="50" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" [class.border-red-500]="isFieldInvalid('registryEmail')">
+
+					<app-form-errors controlName="registryEmail" error="required">Registry email required.</app-form-errors>
+					<app-form-errors controlName="registryEmail" error="email">Invalid registry email.</app-form-errors>
+				</div>
+
+				<div class="block mt-4">
+					<label for="registryEmail">Registry username</label>
+					<input type="text" name="registryUsername" id="registryUsername" formControlName="registryUsername" placeholder="Enter the registry username" maxlength="64" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" [class.border-red-500]="isFieldInvalid('registryUsername')">
+
+					<app-form-errors controlName="registryUsername" error="required">Registry username required.</app-form-errors>
+					<app-form-errors controlName="registryUsername" error="maxlength">Maximum characters are 64.</app-form-errors>
+				</div>
+
+				<div class="block mt-4">
+					<label for="registryEmail">Registry password</label>
+					<input type="password" name="registryPassword" id="registryPassword" formControlName="registryPassword" placeholder="Enter the registry username" maxlength="64" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" [class.border-red-500]="isFieldInvalid('registryPassword')">
+
+					<app-form-errors controlName="registryPassword" error="required">Registry password required.</app-form-errors>
+					<app-form-errors controlName="registryPassword" error="maxlength">Maximum characters are 64.</app-form-errors>
+				</div>
+
+				<div class="block mt-4">
+					<button type="button" class="w-full text-white py-2 rounded bg-indigo-500 hover:bg-indigo-600" (click)="changeStep()" [class.spinner]="firstSetupForm.disabled" [disabled]="firstSetupForm.disabled">
+						<span class="spinner-text">Next <fa-icon [icon]="['fas', 'arrow-right']"></fa-icon></span>
+					</button>
+				</div>
+			</div>
+
+			<div [class.hidden]="firstStep">
+				<h1 class="font-bold text-xl mt-4">Houston</h1>
+				<p>Create the first admin user.</p>
+
+				<div class="block mt-4">
+					<label for="registryEmail">Admin name</label>
+					<input type="text" name="userName" id="userName" formControlName="userName" placeholder="Enter the admin name" maxlength="240" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" [class.border-red-500]="isFieldInvalid('userName')">
+
+					<app-form-errors controlName="userName" error="required">Admin name required.</app-form-errors>
+					<app-form-errors controlName="userName" error="maxlength">Maximum characters are 240.</app-form-errors>
+				</div>
+
+				<div class="block mt-4">
+					<label for="userEmail">Admim e-mail</label>
+					<input type="email" name="userEmail" id="userEmail" formControlName="userEmail" placeholder="Enter the admin e-mail" maxlength="64" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" [class.border-red-500]="isFieldInvalid('userEmail')">
+
+					<app-form-errors controlName="userEmail" error="required">Admin email required.</app-form-errors>
+					<app-form-errors controlName="userEmail" error="email">Invalid admin email.</app-form-errors>
+				</div>
+
+				<div class="block mt-4">
+					<label for="userPassword">Admin password</label>
+					<input type="password" name="userPassword" id="userPassword" formControlName="userPassword" placeholder="Enter the admin password" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" [class.border-red-500]="isFieldInvalid('userPassword')">
+
+					<app-form-errors controlName="userPassword" error="required">Admin password required.</app-form-errors>
+					<app-form-errors controlName="userPassword" error="pattern">Weak password.</app-form-errors>
+					<app-form-errors controlName="userPassword" error="maxlength">Maximum characters are 64.</app-form-errors>
+					<app-form-errors controlName="userPassword" error="minlength">Minimum characters are 8.</app-form-errors>
+				</div>
+
+				<div class="block mt-4">
+					<label for="userPassword">Confirm admin password</label>
+					<input type="password" name="confirmPassword" id="confirmPassword" formControlName="confirmPassword" placeholder="Confirm the registry username" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" [class.border-red-500]="isFieldInvalid('userPassword')">
+
+					<app-form-errors controlName="confirmPassword" error="required">Confirm password required.</app-form-errors>
+					<app-form-errors controlName="confirmPassword" error="matching">Password don't match.</app-form-errors>
+				</div>
+
+				<div class="grid grid-cols-2 gap-5 mt-4">
+					<button type="button" class="w-full text-white py-2 rounded bg-indigo-500 hover:bg-indigo-600" (click)="changeStep()" [class.spinner]="firstSetupForm.disabled" [disabled]="firstSetupForm.disabled">
+						<span class="spinner-text"><fa-icon [icon]="['fas', 'arrow-left']"></fa-icon> Back</span>
+					</button>
+
+					<button type="submit" class="w-full text-white py-2 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="firstSetupForm.disabled" [disabled]="firstSetupForm.disabled">
+						<span class="spinner-text">Setup <fa-icon [icon]="['fas', 'wrench']"></fa-icon></span>
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
