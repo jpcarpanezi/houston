@@ -1,0 +1,27 @@
+<div class="min-h-screen w-full flex items-center justify-center bg-gray-50">
+	<div class="bg-white w-auto md:w-96 mx-5 md:mx-0 prose-zinc shadow p-8 rounded-md border-b-4 border-indigo-400" [loader]="isLoading">
+		<h1 class="font-bold text-3xl">Sign In</h1>
+		<p>Welcome back, enter your credentials</p>
+
+		<form [formGroup]="loginForm" (submit)="signIn()">
+			<div class="block mt-4">
+				<label for="email">E-mail</label>
+				<input type="email" name="email" id="email" formControlName="email" placeholder="Enter your e-mail" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" [class.border-red-500]="isFieldInvalid('email')">
+				<app-form-errors controlName="email" error="required">Email required</app-form-errors>
+				<app-form-errors controlName="email" error="email">Invalid email</app-form-errors>
+			</div>
+
+			<div class="block mt-4">
+				<label for="password">Password</label>
+				<input type="password" name="password" id="password" formControlName="password" placeholder="Enter your password" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" [class.border-red-500]="isFieldInvalid('password')">
+				<app-form-errors controlName="password" error="required">Password required</app-form-errors>
+			</div>
+
+			<div class="block mt-4">
+				<button type="submit" class="w-full text-white py-2 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="loginForm.disabled" [disabled]="loginForm.disabled">
+					<span class="spinner-text">Sign In <fa-icon [icon]="['fas', 'right-to-bracket']"></fa-icon></span>
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
