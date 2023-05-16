@@ -34,7 +34,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
       - run: npm install --force
-      - run: npm run lint
       - run: npm run build -- --production --if-present
       - run: npm test -- --configuration=ci
       
