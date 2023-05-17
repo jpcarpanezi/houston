@@ -7,10 +7,11 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { NgxLoaderIndicatorDirective, provideNgxLoaderIndicator } from 'ngx-loader-indicator';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { MiniMenuComponent } from './mini-menu/mini-menu.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
+import { MenuComponent } from './menu/menu.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { SettingsComponent } from './settings/settings.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 
 
@@ -18,10 +19,11 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
 	declarations: [
 		FormErrorsComponent,
 		MiniMenuComponent,
-		SidebarComponent,
+		MenuComponent,
 		NotificationsComponent,
 		SettingsComponent,
-		SearchBarComponent
+		SearchBarComponent,
+  		SidebarComponent
 	],
 	imports: [
 		CommonModule,
@@ -34,11 +36,7 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
 		SweetAlert2Module,
 		FormErrorsComponent,
 		NgxLoaderIndicatorDirective,
-		MiniMenuComponent,
-		SidebarComponent,
-		NotificationsComponent,
-		SettingsComponent,
-		SearchBarComponent
+		SidebarComponent
 	],
 	providers: [
 		provideAnimations(),

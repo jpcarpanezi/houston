@@ -1,31 +1,8 @@
 <div class="flex h-screen antialiased text-gray-900 bg-gray-100">
-	<div class="fixed inset-0 z-10 bg-indigo-800 lg:hidden opacity-50" (click)="toggleSidebar()" [class.hidden]="!(isSidebarOpen && isToolbarEnabled)"></div>
-
-	<aside class="fixed inset-y-0 z-10 flex flex-shrink-0 overflow-hidden bg-white border-r lg:static focus:outline-none" [class.hidden]="!(isSidebarOpen && isToolbarEnabled)">
-		<app-mini-menu [notificationsPanelRef]="notificationsPanelRef" [searchPanelRef]="searchPanelRef" [settingsPanelRef]="settingsPanelRef"></app-mini-menu>
-
-		<app-sidebar></app-sidebar>
-	</aside>
-
-	<!-- Toggle sidebar -->
-	<div class="fixed flex items-center space-x-4 top-5 right-10" [class.hidden]="!isToolbarEnabled">
-		<button class="p-1 text-indigo-400 transition-colors duration-200 rounded-md bg-indigo-50 hover:text-indigo-600 hover:bg-indigo-100 focus:outline-none focus:ring" (click)="toggleSidebar()">
-			<span class="sr-only">Toggle main menu</span>
-			<fa-icon [icon]="isSidebarOpen ? ['fas', 'xmark'] : ['fas', 'bars']"></fa-icon>
-		</button>
-	</div>
+	<app-sidebar [enabled]="isSidebarEnabled"></app-sidebar>
 
 	<!-- Router outlet -->
-	<main class="flex-1 container mx-5 md:mx-auto top-5 md:top-0" [ngClass]="{'my-5': isToolbarEnabled}">
+	<main class="flex-1 container mx-5 md:mx-auto top-5 md:top-0" [ngClass]="{'my-5': isSidebarEnabled}">
 		<router-outlet></router-outlet>
 	</main>
-
-	<!-- Notification -->
-	<app-notifications #notificationsPanelRef></app-notifications>
-
-	<!-- Search -->
-	<app-search-bar #searchPanelRef></app-search-bar>
-
-	<!-- Settings -->
-	<app-settings #settingsPanelRef></app-settings>
 </div>
