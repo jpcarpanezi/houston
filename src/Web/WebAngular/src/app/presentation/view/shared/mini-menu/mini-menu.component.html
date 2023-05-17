@@ -1,0 +1,37 @@
+<div class="flex flex-col flex-shrink-0 h-full px-2 py-4 border-r w-16">
+	<div class="flex-shrink-0 text-center">
+		<a class="inline-block text-xl font-bold tracking-wider text-indigo-700 uppercase">H</a>
+	</div>
+
+	<div class="flex flex-col items-center justify-center flex-1 space-y-4">
+		<button class="p-2 text-indigo-400 transition-colors duration-200 w-10 h-10 rounded-full bg-indigo-50 hover:text-indigo-600 hover:bg-indigo-100 focus:outline-none focus:bg-indigo-100 focus:ring-indigo-800" (click)="toggleNotificationsPanel()">
+			<span class="sr-only">Open notification panel</span>
+			<fa-icon [icon]="['fas', 'bell']"></fa-icon>
+		</button>
+
+		<button class="p-2 text-indigo-400 transition-colors duration-200 w-10 h-10 rounded-full bg-indigo-50 hover:text-indigo-600 hover:bg-indigo-100 focus:outline-none focus:bg-indigo-100 focus:ring-indigo-800" (click)="toggleSearchPanel()">
+			<span class="sr-only">Open search panel</span>
+			<fa-icon [icon]="['fas', 'magnifying-glass']"></fa-icon>
+		</button>
+
+		<button class="p-2 text-indigo-400 transition-colors duration-200 w-10 h-10 rounded-full bg-indigo-50 hover:text-indigo-600 hover:bg-indigo-100 focus:outline-none focus:bg-indigo-100 focus:ring-indigo-800" (click)="toggleSettingsPanel()">
+			<span class="sr-only">Open settings panel</span>
+			<fa-icon [icon]="['fas', 'gear']"></fa-icon>
+		</button>
+	</div>
+
+	<div class="relative flex items-center justify-center flex-shrink-0">
+		<div>
+			<button type="button" class="block transition-opacity duration-200 rounded-full focus:outline-none focus:ring" (click)="toggleUserMenu()">
+				<span class="sr-only">User menu</span>
+				<img class="w-10 h-10 rounded-full" src="https://avatars.githubusercontent.com/u/11728690?v=4" alt="User picture">
+			</button>
+
+			<div tabindex="-1" aria-orientation="vertical" role="menu" class="absolute w-56 py-1 mb-4 bg-white rounded-md shadow-lg min-w-max left-5 bottom-full ring-1 ring-black ring-opacity-5 focus:outline-none" [class.hidden]="!isUserMenuOpen">
+				<a href="#" class="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100" _target="blank">Your profile</a>
+				<a href="#" class="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100" _target="blank">Settings</a>
+				<a href="#" class="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100" (click)="signOut($event)">Logout</a>
+			</div>
+		</div>
+	</div>
+</div>
