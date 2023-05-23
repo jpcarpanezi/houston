@@ -1,0 +1,51 @@
+<app-new-connector #newConnector (submitResponse)="setPage({offset: 0})"></app-new-connector>
+
+<div class="flex justify-between items-center gap-5 mb-8">
+	<div>
+		<h1 class="text-2xl font-semibold">Connectors</h1>
+		<p class="text-slate-500">Create or import connectors.</p>
+	</div>
+
+	<div class="flex gap-5">
+		<button type="button" class="text-white py-2 px-4 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="isLoading" [disabled]="isLoading" (click)="newConnector.open()">
+			<span class="spinner-text">New <fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
+		</button>
+
+		<button type="button" class="text-white py-2 px-4 cursor-not-allowed rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="isLoading" disabled>
+			<span class="spinner-text">Import <fa-icon [icon]="['fas', 'file-import']"></fa-icon></span>
+		</button>
+	</div>
+</div>
+
+<ngx-datatable
+	class="tailwind"
+	[rows]="rows"
+	[columns]="columns"
+	[columnMode]="columnMode"
+	[headerHeight]="50"
+	[footerHeight]="50"
+	rowHeight="auto"
+	[externalPaging]="true"
+	[count]="page.count"
+	[offset]="page.pageIndex"
+	[limit]="page.pageSize"
+	[scrollbarH]="true"
+	(page)="setPage($event)"
+	[loader]="isLoading">
+
+	<ngx-datatable-column *ngFor="let col of columns" [prop]="col.prop" [name]="col.name"></ngx-datatable-column>
+
+	<ngx-datatable-column name="Actions" prop="actions" [sortable]="false">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			<button type="button" [class.spinner]="false" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3">
+				<span class="spinner-text"><fa-icon [icon]="['fas', 'table-list']"></fa-icon></span>
+			</button>
+
+			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></button>
+
+			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3" [class.spinner]="deleteConnectorBtn.disabled" (click)="deleteConnector(deleteConnectorBtn, row)" #deleteConnectorBtn>
+				<span class="spinner-text"><fa-icon [icon]="['fas', 'trash']"></fa-icon></span>
+			</button>
+		</ng-template>
+	</ngx-datatable-column>
+</ngx-datatable>

@@ -1,0 +1,16 @@
+<div class="fixed inset-0 z-50 overflow-y-auto" [class.hidden]="hidden">
+	<div class="flex items-end justify-center min-h-screen px-4 text-center md:items-center sm:block sm:p-0">
+		<div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-50" (click)="close()"></div>
+
+		<div class="inline-block w-full max-w-xl p-8 my-20 overflow-hidden text-left transition-all transform bg-white rounded-lg shadow-xl 2xl:max-w-2xl">
+			<div class="flex items-center justify-between space-x-4">
+				<h1 class="text-xl font-medium"><ng-content select="[title]"></ng-content></h1>
+				<button type="button" class="text-gray-600 focus:outline-none hover:text-black" (click)="close()"><fa-icon [icon]="['fas', 'times']"></fa-icon></button>
+			</div>
+
+			<p class="mt-1 text-sm text-slate-500"><ng-content select="[subhead]"></ng-content></p>
+
+			<ng-content class="mt-5"></ng-content>
+		</div>
+	</div>
+</div>

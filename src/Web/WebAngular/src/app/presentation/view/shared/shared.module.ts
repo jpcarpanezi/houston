@@ -12,6 +12,9 @@ import { NotificationsComponent } from './notifications/notifications.component'
 import { SettingsComponent } from './settings/settings.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { RouterModule } from '@angular/router';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { ModalComponent } from './modal/modal.component';
 
 
 
@@ -23,20 +26,24 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 		NotificationsComponent,
 		SettingsComponent,
 		SearchBarComponent,
-  		SidebarComponent
+  		SidebarComponent,
+    ModalComponent
 	],
 	imports: [
 		CommonModule,
 		FontAwesomeModule,
-		NgxLoaderIndicatorDirective
+		NgxLoaderIndicatorDirective,
+		RouterModule
 	],
 	exports: [
 		ReactiveFormsModule,
 		FontAwesomeModule,
 		SweetAlert2Module,
 		FormErrorsComponent,
+		NgxDatatableModule,
 		NgxLoaderIndicatorDirective,
-		SidebarComponent
+		SidebarComponent,
+		ModalComponent
 	],
 	providers: [
 		provideAnimations(),

@@ -7,7 +7,7 @@ import { DataModule } from './data/data.module';
 import { InfraModule } from './infra/infra.module';
 import { PresentationModule } from './presentation/presentation.module';
 import { FaConfig, FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faArrowLeft, faArrowRight, faBars, faBell, faCircleCheck, faCircleXmark, faGear, faHouse, faMagnifyingGlass, faPuzzlePiece, faRightToBracket, faWrench, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faArrowRight, faBars, faBell, faCircleCheck, faCircleXmark, faFileImport, faGear, faHouse, faMagnifyingGlass, faPencil, faPlus, faPuzzlePiece, faRightToBracket, faTableList, faTrash, faUsers, faWrench, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { CookieService } from 'ngx-cookie-service';
 import { SharedModule } from './presentation/view/shared/shared.module';
 
@@ -30,6 +30,6 @@ import { SharedModule } from './presentation/view/shared/shared.module';
 export class AppModule {
 	constructor(library: FaIconLibrary, faConfig: FaConfig) {
 		faConfig.fixedWidth = true;
-		library.addIcons(faRightToBracket, faCircleCheck, faCircleXmark, faWrench, faArrowLeft, faArrowRight, faBell, faMagnifyingGlass, faGear, faHouse, faPuzzlePiece, faBars, faXmark);
+		library.addIcons(faRightToBracket, faCircleCheck, faCircleXmark, faWrench, faArrowLeft, faArrowRight, faBell, faMagnifyingGlass, faGear, faHouse, faPuzzlePiece, faBars, faXmark, faPlus, faFileImport, faUsers, faPencil, faTrash, faTableList);
 	}
 }

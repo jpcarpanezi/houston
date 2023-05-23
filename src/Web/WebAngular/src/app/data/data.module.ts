@@ -5,6 +5,8 @@ import { AuthRepositoryService } from './repositories/auth-repository.service';
 import { HttpClientModule } from '@angular/common/http';
 import { UserRepositoryInterface } from '../domain/interfaces/repositories/user-repository.interface';
 import { UserRepositoryService } from './repositories/user-repository.service';
+import { ConnectorRepositoryInterface } from '../domain/interfaces/repositories/connector-repository.interface';
+import { ConnectorRepositoryService } from './repositories/connector-repository.service';
 
 
 
@@ -16,7 +18,8 @@ import { UserRepositoryService } from './repositories/user-repository.service';
 	],
 	providers: [
 		{ provide: AuthRepositoryInterface, useClass: AuthRepositoryService },
-		{ provide: UserRepositoryInterface, useClass: UserRepositoryService }
+		{ provide: UserRepositoryInterface, useClass: UserRepositoryService },
+		{ provide: ConnectorRepositoryInterface, useClass: ConnectorRepositoryService }
 	]
 })
 export class DataModule { }
