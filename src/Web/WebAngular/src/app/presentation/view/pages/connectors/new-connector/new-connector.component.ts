@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConnectorViewModel } from 'src/app/domain/view-models/connector.view-model';
 import { ConnectorUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-use-case.interface';
 import Swal from 'sweetalert2';
+import { Toast } from 'src/app/infra/helpers/toast';
 
 @Component({
 	selector: 'app-new-connector',
@@ -38,13 +39,21 @@ export class NewConnectorComponent {
 		this.createConnectorForm.disable();
 
 		this.connectorUseCase.create(this.createConnectorForm.value).subscribe({
-			next: (response: ConnectorViewModel) => this.submitResponse.emit(response),
+			next: (response: ConnectorViewModel) => this.createConnectorNext(response),
 			error: () => Swal.fire("Error", "An error has occurred while trying to create the connector.", "error")
 		}).add(() => {
 			this.createConnectorForm.enable();
 			this.newConnectorModal?.close();
 		});
+	}
 
+	private createConnectorNext(response: ConnectorViewModel): void {
+		Toast.fire({
+			icon: "success",
+			title: "Connector created."
+		});
+
+		this.submitResponse.emit(response);
 	}
 
 	open(): void {

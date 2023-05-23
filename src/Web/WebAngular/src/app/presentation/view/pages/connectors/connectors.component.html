@@ -1,5 +1,7 @@
 <app-new-connector #newConnector (submitResponse)="setPage({offset: 0})"></app-new-connector>
 
+<app-update-connector #updateConnector (onUpdate)="setPage({ offset: page.pageIndex })"></app-update-connector>
+
 <div class="flex justify-between items-center gap-5 mb-8">
 	<div>
 		<h1 class="text-2xl font-semibold">Connectors</h1>
@@ -41,7 +43,7 @@
 				<span class="spinner-text"><fa-icon [icon]="['fas', 'table-list']"></fa-icon></span>
 			</button>
 
-			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></button>
+			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3" (click)="updateConnector.open(row)"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></button>
 
 			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3" [class.spinner]="deleteConnectorBtn.disabled" (click)="deleteConnector(deleteConnectorBtn, row)" #deleteConnectorBtn>
 				<span class="spinner-text"><fa-icon [icon]="['fas', 'trash']"></fa-icon></span>

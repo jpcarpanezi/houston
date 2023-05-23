@@ -61,7 +61,7 @@ export class ConnectorsComponent implements OnInit {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				button.disabled = true;
-				console.log(row.id);
+
 				this.connectorUseCase.delete(row.id).subscribe({
 					next: () => Swal.fire("Deleted!", "The connector has been deleted.", "success").then(() => this.setPage({offset: this.page.pageIndex})),
 					error: () => Swal.fire("Error", "An error has occurred while trying to delete the connector.", "error")
