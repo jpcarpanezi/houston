@@ -6,6 +6,8 @@ import { UserUseCaseInterface } from './interfaces/use-cases/user-use-case.inter
 import { UserUseCaseService } from './use-cases/user-use-case.service';
 import { ConnectorUseCaseInterface } from './interfaces/use-cases/connector-use-case.interface';
 import { ConnectorUseCaseService } from './use-cases/connector-use-case.service';
+import { ConnectorFunctionUseCaseInterface } from './interfaces/use-cases/connector-function-use-case.interface';
+import { ConnectorFunctionUseCaseService } from './use-cases/connector-function-use-case.service';
 
 
 
@@ -17,7 +19,8 @@ import { ConnectorUseCaseService } from './use-cases/connector-use-case.service'
 	providers: [
 		{ provide: AuthUseCaseInterface, useClass: AuthUseCaseService },
 		{ provide: UserUseCaseInterface, useClass: UserUseCaseService },
-		{ provide: ConnectorUseCaseInterface, useClass: ConnectorUseCaseService }
+		{ provide: ConnectorUseCaseInterface, useClass: ConnectorUseCaseService },
+		{ provide: ConnectorFunctionUseCaseInterface, useClass: ConnectorFunctionUseCaseService }
 	]
 })
 export class DomainModule { }

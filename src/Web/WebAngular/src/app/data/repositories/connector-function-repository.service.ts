@@ -1,0 +1,20 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ConnectorFunctionRepositoryInterface } from 'src/app/domain/interfaces/repositories/connector-function-repository.interface';
+import { ConnectorFunctionViewModel } from 'src/app/domain/view-models/connector-function.view-model';
+import { PaginatedItemsViewModel } from 'src/app/domain/view-models/paginated-items.view-model';
+import { environment } from 'src/environments/environment';
+
+@Injectable({
+	providedIn: 'root'
+})
+export class ConnectorFunctionRepositoryService implements ConnectorFunctionRepositoryInterface {
+	constructor(
+		private http: HttpClient
+	) { }
+
+	getAll(connectorId: string, pageSize: number, pageIndex: number): Observable<PaginatedItemsViewModel<ConnectorFunctionViewModel>> {
+		return this.http.get<PaginatedItemsViewModel<ConnectorFunctionViewModel>>(`${environment.apiUrl}/connectorFunction/${connectorId}?pageSize=${pageSize}&pageIndex=${pageIndex}`);
+	}
+}

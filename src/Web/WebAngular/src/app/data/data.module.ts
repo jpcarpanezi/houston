@@ -7,6 +7,8 @@ import { UserRepositoryInterface } from '../domain/interfaces/repositories/user-
 import { UserRepositoryService } from './repositories/user-repository.service';
 import { ConnectorRepositoryInterface } from '../domain/interfaces/repositories/connector-repository.interface';
 import { ConnectorRepositoryService } from './repositories/connector-repository.service';
+import { ConnectorFunctionRepositoryInterface } from '../domain/interfaces/repositories/connector-function-repository.interface';
+import { ConnectorFunctionRepositoryService } from './repositories/connector-function-repository.service';
 
 
 
@@ -19,7 +21,8 @@ import { ConnectorRepositoryService } from './repositories/connector-repository.
 	providers: [
 		{ provide: AuthRepositoryInterface, useClass: AuthRepositoryService },
 		{ provide: UserRepositoryInterface, useClass: UserRepositoryService },
-		{ provide: ConnectorRepositoryInterface, useClass: ConnectorRepositoryService }
+		{ provide: ConnectorRepositoryInterface, useClass: ConnectorRepositoryService },
+		{ provide: ConnectorFunctionRepositoryInterface, useClass: ConnectorFunctionRepositoryService }
 	]
 })
 export class DataModule { }

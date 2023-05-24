@@ -20,7 +20,7 @@
 </div>
 
 <ngx-datatable
-	class="tailwind"
+	class="tailwind expandable"
 	[rows]="rows"
 	[columns]="columns"
 	[columnMode]="columnMode"
@@ -33,15 +33,45 @@
 	[limit]="page.pageSize"
 	[scrollbarH]="true"
 	(page)="setPage($event)"
-	[loader]="isLoading">
+	[loader]="isLoading"
+	#connectorsTable>
+
+	<ngx-datatable-row-detail>
+		<ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" let-expanded="expanded" ngx-datatable-row-detail-template>
+			<div class="pl-6 py-2 divide-y">
+				<div *ngIf="row.connectorFunctions == undefined || row.connectorFunctions.length == 0">No connector function registered.</div>
+
+				<div *ngIf="row.connectorFunctions != undefined && row.connectorFunctions.length > 0">
+					<div class="grid grid-cols-6 gap-x-6 py-5" *ngFor="let connectorFunction of row.connectorFunctions">
+						<strong>{{ connectorFunction.name }}a</strong>
+
+						<span>{{ connectorFunction.createdBy }}a</span>
+
+						<span>{{ connectorFunction.creationDate }}</span>
+
+						<span>{{ connectorFunction.updatedBy }}a</span>
+
+						<span>{{ connectorFunction.lastUpdate }}a</span>
+
+						<span>
+							<a href="" class="text-blue-600 hover:text-blue-900 mr-5">Edit</a>
+							<a href="" class="text-blue-600 hover:text-blue-900">Delete</a>
+						</span>
+					</div>
+				</div>
+			</div>
+		</ng-template>
+	</ngx-datatable-row-detail>
 
 	<ngx-datatable-column *ngFor="let col of columns" [prop]="col.prop" [name]="col.name"></ngx-datatable-column>
 
 	<ngx-datatable-column name="Actions" prop="actions" [sortable]="false">
-		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-			<button type="button" [class.spinner]="false" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3">
-				<span class="spinner-text"><fa-icon [icon]="['fas', 'table-list']"></fa-icon></span>
+		<ng-template let-row="row" let-rowIndex="rowIndex" let-expanded="expanded" let-value="value" ngx-datatable-cell-template>
+			<button type="button" [class.spinner]="false" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="expandRowBtn.disabled" (click)="toggleExpandRow(row, expanded, rowIndex, expandRowBtn)" #expandRowBtn>
+				<span class="spinner-text"><fa-icon [icon]="expanded ? ['fas', 'xmark'] : ['fas', 'table-list']"></fa-icon></span>
 			</button>
+
+			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3"><fa-icon [icon]="['fas', 'plus']"></fa-icon></button>
 
 			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3" (click)="updateConnector.open(row)"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></button>
 
