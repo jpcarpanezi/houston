@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Houston.Core.Commands.ConnectorFunctionCommands {
 	public class UpdateConnectorFunctionCommand : IRequest<ResultCommand<ConnectorFunction>> {
-		public Guid ConnectorFunctionId { get; set; }
+		public Guid Id { get; set; }
 
 		public string Name { get; set; } = null!;
 
@@ -16,7 +16,7 @@ namespace Houston.Core.Commands.ConnectorFunctionCommands {
 		public UpdateConnectorFunctionCommand() { }
 
 		public UpdateConnectorFunctionCommand(Guid connectorFunctionId, string name, string? description, List<UpdateConnectorFunctionInputCommand>? inputs, string[] script) {
-			ConnectorFunctionId = connectorFunctionId;
+			Id = connectorFunctionId;
 			Name = name ?? throw new ArgumentNullException(nameof(name));
 			Description = description;
 			Inputs = inputs;

@@ -17,7 +17,7 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 		}
 
 		public async Task<ResultCommand<ConnectorFunction>> Handle(UpdateConnectorFunctionCommand request, CancellationToken cancellationToken) {
-			var connectorFunction = await _unitOfWork.ConnectorFunctionRepository.GetByIdWithInputs(request.ConnectorFunctionId);
+			var connectorFunction = await _unitOfWork.ConnectorFunctionRepository.GetByIdWithInputs(request.Id);
 			if (connectorFunction is null) {
 				return new ResultCommand<ConnectorFunction>(HttpStatusCode.NotFound, "The requested connector function could not be found.", "connectorFunctionNotFound", null);
 			}
@@ -29,7 +29,7 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 			connectorFunction.LastUpdate = DateTime.UtcNow;
 
 			foreach (var input in connectorFunction.ConnectorFunctionInputs) {
-				var filterInputUpdate = request.Inputs?.FirstOrDefault(x => x.ConnectorFunctionInputId == input.Id);
+				var filterInputUpdate = request.Inputs?.FirstOrDefault(x => x.Id == input.Id);
 				if (filterInputUpdate is null) {
 					_unitOfWork.ConnectorFunctionInputRepository.Remove(input);
 					continue; 
