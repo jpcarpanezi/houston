@@ -2,7 +2,7 @@
 
 namespace Houston.Core.Commands.ConnectorFunctionCommands {
 	public class UpdateConnectorFunctionInputCommand {
-		public Guid? ConnectorFunctionInputId { get; set; }
+		public Guid? Id { get; set; }
 
 		public InputTypeEnum InputType { get; set; }
 
@@ -23,7 +23,7 @@ namespace Houston.Core.Commands.ConnectorFunctionCommands {
 		public UpdateConnectorFunctionInputCommand() { }
 
 		public UpdateConnectorFunctionInputCommand(Guid connectorFunctionInputId, InputTypeEnum inputType, string name, string placeholder, string replace, bool required, string? defaultValue, string[]? values, bool advancedOption) {
-			ConnectorFunctionInputId = connectorFunctionInputId;
+			Id = connectorFunctionInputId;
 			InputType = inputType;
 			Name = name ?? throw new ArgumentNullException(nameof(name));
 			Placeholder = placeholder ?? throw new ArgumentNullException(nameof(placeholder));
