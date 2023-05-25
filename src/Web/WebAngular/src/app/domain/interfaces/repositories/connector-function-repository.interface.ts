@@ -7,4 +7,5 @@ export abstract class ConnectorFunctionRepositoryInterface {
 	abstract getAll(connectorId: string, pageSize: number, pageIndex: number): Observable<PaginatedItemsViewModel<ConnectorFunctionViewModel>>;
 	abstract get(connectorFunctionId: string): Observable<ConnectorFunctionViewModel>;
 	abstract create(body: CreateConnectorFunctionCommand): Observable<ConnectorFunctionViewModel>;
+	abstract delete(connectorFunctionId: string): Observable<any>;
 }

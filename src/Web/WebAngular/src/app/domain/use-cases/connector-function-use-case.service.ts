@@ -14,6 +14,10 @@ export class ConnectorFunctionUseCaseService implements ConnectorFunctionUseCase
 		private connectorFunctionRepository: ConnectorFunctionRepositoryInterface
 	) { }
 
+	delete(connectorFunctionId: string): Observable<any> {
+		return this.connectorFunctionRepository.delete(connectorFunctionId);
+	}
+
 	get(connectorFunctionId: string): Observable<ConnectorFunctionViewModel> {
 		return this.connectorFunctionRepository.get(connectorFunctionId);
 	}

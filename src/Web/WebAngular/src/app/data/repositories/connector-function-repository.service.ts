@@ -15,6 +15,10 @@ export class ConnectorFunctionRepositoryService implements ConnectorFunctionRepo
 		private http: HttpClient
 	) { }
 
+	delete(connectorFunctionId: string): Observable<any> {
+		return this.http.delete<any>(`${environment.apiUrl}/connectorFunction/${connectorFunctionId}`)
+	}
+
 	get(connectorFunctionId: string): Observable<ConnectorFunctionViewModel> {
 		return this.http.get<ConnectorFunctionViewModel>(`${environment.apiUrl}/connectorFunction/item/${connectorFunctionId}`);
 	}

@@ -67,12 +67,32 @@ export class ConnectorsComponent implements OnInit {
 			if (result.isConfirmed) {
 				button.disabled = true;
 
-				this.connectorUseCase.delete(row.id).subscribe({
-					next: () => Swal.fire("Deleted!", "The connector has been deleted.", "success").then(() => this.setPage({offset: this.page.pageIndex})),
-					error: () => Swal.fire("Error", "An error has occurred while trying to delete the connector.", "error")
+				this.connectorFunctionUseCase.delete(row.id).subscribe({});
+			}
+		});
+	}
+
+	deleteConnectorFunction(button: HTMLButtonElement, row: ConnectorViewModel, connectorFunctionId: string): void {
+		Swal.fire({
+			icon: "question",
+			title: "Are you sure?",
+			text: "You won't be able to revert this!",
+			showDenyButton: true,
+			showConfirmButton: true,
+			confirmButtonText: "Yes, delete it",
+			denyButtonText: "No, cancel",
+		}).then((result) => {
+			if (result.isConfirmed) {
+				button.disabled = true;
+
+				this.connectorFunctionUseCase.delete(connectorFunctionId).subscribe({
+					next: () => Swal.fire("Deleted!", "The connector functions has been deleted.", "success").then(() => {
+						row.connectorFunctions = row.connectorFunctions.filter((connectorFunction: ConnectorFunctionViewModel) => connectorFunction.id !== connectorFunctionId);
+					}),
+					error: () => Swal.fire("Error", "An error has occurred while trying to delete the connector function.", "error")
 				}).add(() => button.disabled = false);
 			}
-		})
+		});
 	}
 
 	toggleExpandRow(row: ConnectorViewModel, shrinked: boolean, rowIndex: number, button: HTMLButtonElement): void {
@@ -93,5 +113,4 @@ export class ConnectorsComponent implements OnInit {
 			error: () => Swal.fire("Error", "An error has occurred while trying to get the connector functions.", "error")
 		}).add(() => button.disabled = false);
 	}
-
 }

@@ -64,6 +64,10 @@ export class ConnectorFunctionComponent implements OnInit {
 		return control.get("values") as FormArray;
 	}
 
+	getInputDefaultValue(control: AbstractControl): AbstractControl {
+		return control.get("defaultValue") as AbstractControl;
+	}
+
 	private getConnectorFunction(connectorFunctionId: string): void {
 		this.isLoading = true;
 
@@ -80,7 +84,6 @@ export class ConnectorFunctionComponent implements OnInit {
 			this.addInput();
 
 			input.values?.forEach(() => {
-
 				this.addInputValue(this.inputs.controls[this.inputs.controls.length - 1]);
 			});
 		});
@@ -106,17 +109,12 @@ export class ConnectorFunctionComponent implements OnInit {
 				Validators.required,
 				Validators.maxLength(25)
 			]],
-			required: [false],
-			defaultValue: ["", [
-				Validators.maxLength(100)
+			values: this.fb.array([]),
+			defaultValue: [null, [
+				Validators.maxLength(25)
 			]],
-			values: this.fb.array([
-				this.fb.control("", [
-					Validators.required,
-					Validators.maxLength(25)
-				])
-			]),
-			advancedOptions: [false]
+			required: [false],
+			advancedOption: [false]
 		});
 
 		this.inputs.push(inputFormGroup);
@@ -127,16 +125,20 @@ export class ConnectorFunctionComponent implements OnInit {
 	}
 
 	addInputValue(control: AbstractControl): void {
-		const inputFormControl = this.fb.control("", [
+		const inputValueFormControl = this.fb.control("", [
 			Validators.required,
 			Validators.maxLength(25)
 		]);
 
-		this.getInputValues(control).push(inputFormControl);
+		this.getInputValues(control).push(inputValueFormControl);
 	}
 
 	removeInputValue(control: AbstractControl, index: number): void {
 		this.getInputValues(control).removeAt(index);
+	}
+
+	removeAllInputValues(control: AbstractControl): void {
+		this.getInputValues(control).clear();
 	}
 
 	saveConnectorFunction(): void {
@@ -151,5 +153,26 @@ export class ConnectorFunctionComponent implements OnInit {
 			next: (response: ConnectorFunctionViewModel) => this.router.navigate(["/connector-function", response.id]),
 			error: () => Swal.fire("Error", "An error has occurred while creating the connector function.", "error")
 		}).add(() => this.connectorFunctionForm.enable());
+	}
+
+	deleteConnectorFunction(): void {
+		Swal.fire({
+			icon: "question",
+			title: "Are you sure?",
+			text: "You won't be able to revert this!",
+			showDenyButton: true,
+			showConfirmButton: true,
+			confirmButtonText: "Yes, delete it",
+			denyButtonText: "No, cancel",
+		}).then((result) => {
+			if (result.isConfirmed) {
+				this.isLoading = true;
+
+				this.connectorFunctionUseCase.delete(this.connectorFunctionId!).subscribe({
+					next: () => Swal.fire("Deleted!", "The connector functions has been deleted.", "success").then(() => this.router.navigate(["/connectors"])),
+					error: () => Swal.fire("Error", "An error has occurred while trying to delete the connector function.", "error")
+				}).add(() => this.isLoading = false);
+			}
+		});
 	}
 }
