@@ -20,6 +20,7 @@ namespace Houston.API.Setups {
 				.ForMember(dest => dest.CreatedBy, m => m.MapFrom(src => src.CreatedByNavigation.Name))
 				.ForMember(dest => dest.UpdatedBy, m => m.MapFrom(src => src.UpdatedByNavigation.Name));
 			CreateMap<ConnectorFunctionInput, ConnectorFunctionInputViewModel>()
+				.ForMember(dest => dest.InputType, m => m.MapFrom(src => src.Type))
 				.ForMember(dest => dest.CreatedBy, m => m.MapFrom(src => src.CreatedByNavigation.Name))
 				.ForMember(dest => dest.UpdatedBy, m => m.MapFrom(src => src.UpdatedByNavigation.Name));
 			CreateMap<ConnectorFunction, ConnectorFunctionViewModel>()
