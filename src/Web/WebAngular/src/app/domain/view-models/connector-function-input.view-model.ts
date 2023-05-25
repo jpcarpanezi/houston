@@ -5,7 +5,7 @@ export interface ConnectorFunctionInputViewModel {
 	connectorFunctionId: string;
 	name: string;
 	placeholder: string;
-	type: InputType;
+	inputType: InputType;
 	required: boolean;
 	replace: string;
 	values: string[] | null;

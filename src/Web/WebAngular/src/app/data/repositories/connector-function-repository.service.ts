@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { CreateConnectorFunctionCommand } from 'src/app/domain/commands/connector-function-commands/create-connector-function.command';
 import { ConnectorFunctionRepositoryInterface } from 'src/app/domain/interfaces/repositories/connector-function-repository.interface';
 import { ConnectorFunctionViewModel } from 'src/app/domain/view-models/connector-function.view-model';
 import { PaginatedItemsViewModel } from 'src/app/domain/view-models/paginated-items.view-model';
@@ -13,6 +14,14 @@ export class ConnectorFunctionRepositoryService implements ConnectorFunctionRepo
 	constructor(
 		private http: HttpClient
 	) { }
+
+	get(connectorFunctionId: string): Observable<ConnectorFunctionViewModel> {
+		return this.http.get<ConnectorFunctionViewModel>(`${environment.apiUrl}/connectorFunction/item/${connectorFunctionId}`);
+	}
+
+	create(body: CreateConnectorFunctionCommand): Observable<ConnectorFunctionViewModel> {
+		return this.http.post<ConnectorFunctionViewModel>(`${environment.apiUrl}/connectorFunction`, body);
+	}
 
 	getAll(connectorId: string, pageSize: number, pageIndex: number): Observable<PaginatedItemsViewModel<ConnectorFunctionViewModel>> {
 		return this.http.get<PaginatedItemsViewModel<ConnectorFunctionViewModel>>(`${environment.apiUrl}/connectorFunction/${connectorId}?pageSize=${pageSize}&pageIndex=${pageIndex}`);

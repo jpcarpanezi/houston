@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { PaginatedItemsViewModel } from '../view-models/paginated-items.view-model';
 import { ConnectorFunctionViewModel } from '../view-models/connector-function.view-model';
 import { ConnectorFunctionRepositoryInterface } from '../interfaces/repositories/connector-function-repository.interface';
+import { CreateConnectorFunctionCommand } from '../commands/connector-function-commands/create-connector-function.command';
 
 @Injectable({
 	providedIn: 'root'
@@ -12,6 +13,14 @@ export class ConnectorFunctionUseCaseService implements ConnectorFunctionUseCase
 	constructor(
 		private connectorFunctionRepository: ConnectorFunctionRepositoryInterface
 	) { }
+
+	get(connectorFunctionId: string): Observable<ConnectorFunctionViewModel> {
+		return this.connectorFunctionRepository.get(connectorFunctionId);
+	}
+
+	create(body: CreateConnectorFunctionCommand): Observable<ConnectorFunctionViewModel> {
+		return this.connectorFunctionRepository.create(body);
+	}
 
 	getAll(connectorId: string, pageSize: number, pageIndex: number): Observable<PaginatedItemsViewModel<ConnectorFunctionViewModel>> {
 		return this.connectorFunctionRepository.getAll(connectorId, pageSize, pageIndex);
