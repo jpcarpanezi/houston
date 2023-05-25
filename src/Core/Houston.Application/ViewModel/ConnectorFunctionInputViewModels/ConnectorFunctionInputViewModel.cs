@@ -10,7 +10,7 @@ namespace Houston.Application.ViewModel.ConnectorFunctionInputViewModels {
 
 		public string Placeholder { get; set; } = null!;
 
-		public InputTypeEnum Type { get; set; }
+		public InputTypeEnum InputType { get; set; }
 
 		public bool Required { get; set; }
 
