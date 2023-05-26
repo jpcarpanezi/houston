@@ -2,10 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
-import { InputType } from 'src/app/domain/enums/input-type.enum';
 import { ConnectorFunctionUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-function-use-case.interface';
 import { ConnectorFunctionInputViewModel } from 'src/app/domain/view-models/connector-function-input.view-model';
 import { ConnectorFunctionViewModel } from 'src/app/domain/view-models/connector-function.view-model';
+import { Toast } from 'src/app/infra/helpers/toast';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -149,10 +149,26 @@ export class ConnectorFunctionComponent implements OnInit {
 		this.connectorFunctionForm.value["connectorId"] = this.connectorId;
 		this.connectorFunctionForm.value["script"] = script;
 
-		this.connectorFunctionUseCase.create(this.connectorFunctionForm.value).subscribe({
-			next: (response: ConnectorFunctionViewModel) => this.router.navigate(["/connector-function", response.id]),
-			error: () => Swal.fire("Error", "An error has occurred while creating the connector function.", "error")
-		}).add(() => this.connectorFunctionForm.enable());
+		if (this.connectorFunction) {
+			this.connectorFunctionForm.value["id"] = this.connectorFunction.id;
+
+			this.connectorFunctionUseCase.update(this.connectorFunctionForm.value).subscribe({
+				next: (response: ConnectorFunctionViewModel) => {
+					Toast.fire({
+						icon: "success",
+						title: "Updated successfully."
+					});
+
+					this.connectorFunction = response;
+				},
+				error: () => Swal.fire("Error", "An error has occurred while updating the connector function.", "error")
+			}).add(() => this.connectorFunctionForm.enable());
+		} else {
+			this.connectorFunctionUseCase.create(this.connectorFunctionForm.value).subscribe({
+				next: (response: ConnectorFunctionViewModel) => this.router.navigate(["/connector-function", response.id]),
+				error: () => Swal.fire("Error", "An error has occurred while creating the connector function.", "error")
+			}).add(() => this.connectorFunctionForm.enable());
+		}
 	}
 
 	deleteConnectorFunction(): void {

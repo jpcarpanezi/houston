@@ -86,21 +86,28 @@
 							<option value="String">String</option>
 							<option value="List">List</option>
 						</select>
+						<app-form-errors [control]="input" controlName="inputType">Input type is required.</app-form-errors>
 					</div>
 
 					<div class="block mt-4">
 						<label for="name">Name</label>
 						<input type="text" name="name" id="name" formControlName="name" placeholder="Enter input name" maxlength="25" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+						<app-form-errors [control]="input" controlName="name" error="required">Input name required.</app-form-errors>
+						<app-form-errors [control]="input" controlName="name" error="maxlength">Maximum characters are 25.</app-form-errors>
 					</div>
 
 					<div class="block mt-4">
 						<label for="placeholder">Placeholder</label>
 						<input type="text" name="placeholder" id="placeholder" formControlName="placeholder" placeholder="Enter input placeholder" maxlength="50" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+						<app-form-errors [control]="input" controlName="placeholder" error="required">Placeholder required.</app-form-errors>
+						<app-form-errors [control]="input" controlName="placeholder" error="maxlength">Maximum characters are 50.</app-form-errors>
 					</div>
 
 					<div class="block mt-4">
 						<label for="replace">Replace string</label>
 						<input type="text" name="replace" id="replace" formControlName="replace" placeholder="Enter input replace string" maxlength="25" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+						<app-form-errors [control]="input" controlName="replace" error="required">Replace string required.</app-form-errors>
+						<app-form-errors [control]="input" controlName="replace" error="maxlength">Maximum characters are 25.</app-form-errors>
 					</div>
 
 					<!-- LIST VALUES -->
@@ -133,6 +140,7 @@
 					<div class="block mt-4">
 						<label for="defaultValue">Default value</label>
 						<input type="text" name="defaultValue" id="defaultValue" formControlName="defaultValue" placeholder="Enter input default value" maxlength="25" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+						<app-form-errors [control]="input" controlName="defaultValue" error="maxlength">Maximum characters are 25.</app-form-errors>
 					</div>
 
 					<div class="mt-4">

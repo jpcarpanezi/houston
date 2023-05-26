@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CreateConnectorFunctionCommand } from 'src/app/domain/commands/connector-function-commands/create-connector-function.command';
+import { UpdateConnectorFunctionCommand } from 'src/app/domain/commands/connector-function-commands/update-connector-function.command';
 import { ConnectorFunctionRepositoryInterface } from 'src/app/domain/interfaces/repositories/connector-function-repository.interface';
 import { ConnectorFunctionViewModel } from 'src/app/domain/view-models/connector-function.view-model';
 import { PaginatedItemsViewModel } from 'src/app/domain/view-models/paginated-items.view-model';
@@ -14,6 +15,10 @@ export class ConnectorFunctionRepositoryService implements ConnectorFunctionRepo
 	constructor(
 		private http: HttpClient
 	) { }
+
+	update(body: UpdateConnectorFunctionCommand): Observable<ConnectorFunctionViewModel> {
+		return this.http.put<ConnectorFunctionViewModel>(`${environment.apiUrl}/connectorFunction`, body);
+	}
 
 	delete(connectorFunctionId: string): Observable<any> {
 		return this.http.delete<any>(`${environment.apiUrl}/connectorFunction/${connectorFunctionId}`)
