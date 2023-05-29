@@ -51,4 +51,4 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: jpcarpanezi/houston-front:${{ steps.tag.outputs.tag }}
           file: src/Web/WebAngular/Dockerfile
-          context: ./
+          context: ./src/Web/WebAngular
