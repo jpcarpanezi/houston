@@ -1,0 +1,18 @@
+<div class="fixed inset-0 z-10 bg-indigo-800 opacity-50" [class.hidden]="!isNotificationsOpen" (click)="toggleNotifications()"></div>
+<section class="fixed inset-y-0 left-0 z-20 w-full max-w-xs bg-white sm:max-w-md focus:outline-none" [class.hidden]="!isNotificationsOpen">
+	<button class="absolute right-0 p-2 transform translate-x-full" (click)="toggleNotifications()">
+		<fa-icon [icon]="['fas', 'xmark']" class="text-white text-xl"></fa-icon>
+	</button>
+
+	<div class="flex-shrink-0">
+		<div class="flex items-center justify-between px-4 pt-4 border-b dark:border-indigo-800">
+			<h2 class="pb-4 font-semibold">Notifications</h2>
+		</div>
+	</div>
+
+	<div class="flex-1 pt-4 overflow-y-hidden hover:overflow-y-auto">
+		<div class="space-y-4">
+			<p class="px-4">No notifications to display</p>
+		</div>
+	</div>
+</section>

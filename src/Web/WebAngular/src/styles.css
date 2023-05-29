@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import '~codemirror/lib/codemirror';
+@import '~codemirror/theme/material-darker';
+
 .spinner {
 	position: relative;
 }

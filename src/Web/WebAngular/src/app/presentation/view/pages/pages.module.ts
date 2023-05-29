@@ -6,6 +6,8 @@ import { HomeModule } from './home/home.module';
 import { SharedModule } from '../shared/shared.module';
 import { FirstAccessModule } from './first-access/first-access.module';
 import { FirstSetupModule } from './first-setup/first-setup.module';
+import { ConnectorsModule } from './connectors/connectors.module';
+import { ConnectorFunctionModule } from './connector-function/connector-function.module';
 
 
 
@@ -16,6 +18,8 @@ import { FirstSetupModule } from './first-setup/first-setup.module';
 		LoginModule,
 		FirstSetupModule,
 		HomeModule,
+		ConnectorsModule,
+		ConnectorFunctionModule,
 		FirstAccessModule,
 		SharedModule,
 		PagesRoutingModule

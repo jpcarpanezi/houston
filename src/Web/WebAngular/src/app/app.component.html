@@ -1,1 +1,8 @@
-<router-outlet></router-outlet>
+<div class="flex h-full antialiased text-gray-900 bg-gray-100">
+	<app-sidebar [enabled]="isSidebarEnabled"></app-sidebar>
+
+	<!-- Router outlet -->
+	<main class="flex-1 container mx-5 md:mx-auto top-5 md:top-0" [ngClass]="{'mb-5 mt-16': isSidebarEnabled}">
+		<router-outlet></router-outlet>
+	</main>
+</div>
