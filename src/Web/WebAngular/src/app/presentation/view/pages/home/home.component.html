@@ -1,1 +1,13 @@
-<p>home works!</p>
+<div class="grid grid-cols-1 md:grid-cols-2 items-center mb-8">
+	<div>
+		<h1 class="text-2xl font-semibold">Hello, {{ userInfo?.name!.split(" ")[0] }}!
+		</h1>
+		<p class="text-slate-500">See all your created pipelines.</p>
+	</div>
+
+	<div class="mt-5 md:mt-0 text-right">
+		<button type="button" class="text-white w-full md:w-auto py-2 px-4 rounded bg-indigo-500 hover:bg-indigo-600">
+			<span class="spinner-text">New <fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
+		</button>
+	</div>
+</div>
