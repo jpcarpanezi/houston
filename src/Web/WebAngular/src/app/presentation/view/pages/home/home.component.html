@@ -11,3 +11,22 @@
 		</button>
 	</div>
 </div>
+
+<ngx-datatable
+	class="tailwind"
+	[rows]="rows"
+	[columns]="columns"
+	[columnMode]="columnMode"
+	[headerHeight]="50"
+	[footerHeight]="50"
+	rowHeight="auto"
+	[externalPaging]="true"
+	[count]="page.count"
+	[offset]="page.pageIndex"
+	[limit]="page.pageSize"
+	[scrollbarH]="true"
+	(page)="setPage($event)"
+	[loader]="isLoading">
+
+	<ngx-datatable-column *ngFor="let col of columns" [prop]="col.prop" [name]="col.name"></ngx-datatable-column>
+</ngx-datatable>
