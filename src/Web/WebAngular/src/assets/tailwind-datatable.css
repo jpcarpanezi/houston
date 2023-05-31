@@ -26,6 +26,10 @@
 	@apply px-6 py-4;
 }
 
+.ngx-datatable.tailwind .datatable-body .datatable-body-cell a {
+	@apply text-blue-600 hover:text-blue-900 underline;
+}
+
 .ngx-datatable.tailwind .datatable-body .empty-row {
 	@apply relative py-3 px-5 mb-0 hover:bg-gray-50;
 }

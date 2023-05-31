@@ -21,13 +21,11 @@ export class HomeComponent implements OnInit {
 	public page: PageViewModel = new PageViewModel();
 	public rows: PipelineViewModel[] = [];
 	public columns = [
-		{ prop: "name", name: "Name" },
 		{ prop: "status", name: "Status" },
 		{ prop: "createdBy", name: "Created by" },
 		{ prop: "creationDate", name: "Created at" },
 		{ prop: "updatedBy", name: "Updated by" },
-		{ prop: "lastUpdate", name: "Last update" },
-
+		{ prop: "lastUpdate", name: "Last update" }
 	];
 	public columnMode: ColumnMode = ColumnMode.force;
 	public isLoading: boolean = true;
@@ -98,5 +96,21 @@ export class HomeComponent implements OnInit {
 				Swal.fire("Error", "An error has occurred while trying to delete the pipeline.", "error");
 				break;
 		}
+	}
+
+	togglePipeline(button: HTMLButtonElement, pipelineId: string): void {
+		button.disabled = true;
+
+		this.pipelineUseCase.toggle(pipelineId).subscribe({
+			next: () => {
+				Toast.fire({
+					icon: "success",
+					title: "Pipeline toggled"
+				});
+
+				this.setPage({ offset: this.page.pageIndex });
+			},
+			error: (error: HttpErrorResponse[]) => this.deletePipelineError(error[0])
+		}).add(() => button.disabled = false);
 	}
 }
