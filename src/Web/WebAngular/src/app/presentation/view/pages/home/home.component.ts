@@ -72,7 +72,7 @@ export class HomeComponent implements OnInit {
 
 				this.pipelineUseCase.delete(pipelineId).subscribe({
 					next: () => this.deletePipelineNext(),
-					error: (error: HttpErrorResponse[]) => this.deletePipelineError(error[0])
+					error: (error: HttpErrorResponse[]) => this.handlePipelineError(error[0], "delete")
 				}).add(() => button.disabled = false);
 			}
 		});
@@ -87,13 +87,13 @@ export class HomeComponent implements OnInit {
 		this.setPage({ offset: this.page.pageIndex });
 	}
 
-	private deletePipelineError(error: HttpErrorResponse): void {
+	private handlePipelineError(error: HttpErrorResponse, action: string): void {
 		switch (error.status) {
 			case HttpStatusCode.Locked:
 				Swal.fire("Error", "The pipeline is running, please wait until it finishes.", "error");
 				break;
 			default:
-				Swal.fire("Error", "An error has occurred while trying to delete the pipeline.", "error");
+				Swal.fire("Error", `An error has occurred while trying to ${action} the pipeline.`, "error");
 				break;
 		}
 	}
@@ -110,7 +110,16 @@ export class HomeComponent implements OnInit {
 
 				this.setPage({ offset: this.page.pageIndex });
 			},
-			error: (error: HttpErrorResponse[]) => this.deletePipelineError(error[0])
+			error: (error: HttpErrorResponse[]) => this.handlePipelineError(error[0], "toggle")
+		}).add(() => button.disabled = false);
+	}
+
+	runPipeline(button: HTMLButtonElement, pipelineId: string): void {
+		button.disabled = true;
+
+		this.pipelineUseCase.run({ id: pipelineId }).subscribe({
+			next: () => { },
+			error: (error: HttpErrorResponse[]) => this.handlePipelineError(error[0], "run")
 		}).add(() => button.disabled = false);
 	}
 }
