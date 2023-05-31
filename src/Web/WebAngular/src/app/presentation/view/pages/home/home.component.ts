@@ -7,6 +7,8 @@ import { ColumnMode } from '@swimlane/ngx-datatable';
 import { PipelineUseCaseInterface } from 'src/app/domain/interfaces/use-cases/pipeline-use-case.interface';
 import { PaginatedItemsViewModel } from 'src/app/domain/view-models/paginated-items.view-model';
 import Swal from 'sweetalert2';
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
+import { Toast } from 'src/app/infra/helpers/toast';
 
 @Component({
   selector: 'app-home',
@@ -55,5 +57,46 @@ export class HomeComponent implements OnInit {
 			},
 			error: () => Swal.fire("Error", "An error has occurred while trying to get the pipelines", "error")
 		}).add(() => this.isLoading = false);
+	}
+
+	deletePipeline(button: HTMLButtonElement, pipelineId: string): void {
+		Swal.fire({
+			icon: "question",
+			title: "Are you sure?",
+			text: "You won't be able to revert this!",
+			showDenyButton: true,
+			showConfirmButton: true,
+			confirmButtonText: "Yes, delete it",
+			denyButtonText: "No, cancel",
+		}).then((result) => {
+			if (result.isConfirmed) {
+				button.disabled = true;
+
+				this.pipelineUseCase.delete(pipelineId).subscribe({
+					next: () => this.deletePipelineNext(),
+					error: (error: HttpErrorResponse[]) => this.deletePipelineError(error[0])
+				}).add(() => button.disabled = false);
+			}
+		});
+	}
+
+	private deletePipelineNext(): void {
+		Toast.fire({
+			icon: "success",
+			title: "Pipeline deleted"
+		});
+
+		this.setPage({ offset: this.page.pageIndex });
+	}
+
+	private deletePipelineError(error: HttpErrorResponse): void {
+		switch (error.status) {
+			case HttpStatusCode.Locked:
+				Swal.fire("Error", "The pipeline is running, please wait until it finishes.", "error");
+				break;
+			default:
+				Swal.fire("Error", "An error has occurred while trying to delete the pipeline.", "error");
+				break;
+		}
 	}
 }
