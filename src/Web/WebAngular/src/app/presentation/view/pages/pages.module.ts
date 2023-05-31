@@ -8,6 +8,7 @@ import { FirstAccessModule } from './first-access/first-access.module';
 import { FirstSetupModule } from './first-setup/first-setup.module';
 import { ConnectorsModule } from './connectors/connectors.module';
 import { ConnectorFunctionModule } from './connector-function/connector-function.module';
+import { PipelineModule } from './pipeline/pipeline.module';
 
 
 
@@ -20,6 +21,7 @@ import { ConnectorFunctionModule } from './connector-function/connector-function
 		HomeModule,
 		ConnectorsModule,
 		ConnectorFunctionModule,
+		PipelineModule,
 		FirstAccessModule,
 		SharedModule,
 		PagesRoutingModule

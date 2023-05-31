@@ -6,6 +6,7 @@ import { ConnectorFunctionViewModel } from 'src/app/domain/view-models/connector
 import { ConnectorViewModel } from 'src/app/domain/view-models/connector.view-model';
 import { PageViewModel } from 'src/app/domain/view-models/page.view-model';
 import { PaginatedItemsViewModel } from 'src/app/domain/view-models/paginated-items.view-model';
+import { Toast } from 'src/app/infra/helpers/toast';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -67,9 +68,21 @@ export class ConnectorsComponent implements OnInit {
 			if (result.isConfirmed) {
 				button.disabled = true;
 
-				this.connectorFunctionUseCase.delete(row.id).subscribe({});
+				this.connectorUseCase.delete(row.id).subscribe({
+					next: () => this.deleteConnectorNext(),
+					error: () => Swal.fire("Error", "An error has occurred while trying to delete the connector.", "error")
+				});
 			}
 		});
+	}
+
+	private deleteConnectorNext(): void {
+		Toast.fire({
+			icon: "success",
+			title: "Connector deleted"
+		});
+
+		this.setPage({ offset: this.page.pageIndex });
 	}
 
 	deleteConnectorFunction(button: HTMLButtonElement, row: ConnectorViewModel, connectorFunctionId: string): void {
