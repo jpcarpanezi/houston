@@ -39,7 +39,7 @@ export class HomeComponent implements OnInit {
 		this.userInfo = this.authService.userInfo;
 		this.page.pageSize = 10;
 		this.page.pageIndex = 0;
-		this.setPage({offset: 0});
+		this.setPage({ offset: 0 });
 	}
 
 	setPage(pageInfo: any): void {

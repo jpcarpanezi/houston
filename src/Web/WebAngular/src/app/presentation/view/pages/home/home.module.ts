@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { SharedModule } from '../../shared/shared.module';
+import { NewPipelineComponent } from './new-pipeline/new-pipeline.component';
 
 
 @NgModule({
 	declarations: [
-		HomeComponent
+		HomeComponent,
+		NewPipelineComponent
 	],
 	imports: [
 		CommonModule,
