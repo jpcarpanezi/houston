@@ -1,9 +1,9 @@
-<app-modal #newPipeline (onHide)="createPipelineForm.reset()">
-	<span title>Create pipeline</span>
+<app-modal #updatePipelineModal (onHide)="updatePipelineForm.reset()">
+	<span title>Update pipeline</span>
 
-	<span subhead>Create a new deployment pipeline.</span>
+	<span subhead>Update an existing connector to create pipelines.</span>
 
-	<form [formGroup]="createPipelineForm" (submit)="createPipeline()">
+	<form [formGroup]="updatePipelineForm" (submit)="updatePipeline()">
 		<div class="block mt-4">
 			<label for="name">Name</label>
 			<input type="text" name="name" id="name" formControlName="name" placeholder="Enter pipeline name" maxlength="50" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
@@ -18,8 +18,8 @@
 		</div>
 
 		<div class="block mt-4">
-			<button type="submit" class="w-full text-white py-2 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="createPipelineForm.disabled" [disabled]="createPipelineForm.disabled">
-				<span class="spinner-text">Create <fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
+			<button type="submit" class="w-full text-white py-2 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="updatePipelineForm.disabled" [disabled]="updatePipelineForm.disabled">
+				<span class="spinner-text">Update <fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
 			</button>
 		</div>
 	</form>

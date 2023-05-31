@@ -1,5 +1,7 @@
 <app-new-pipeline #pipelineModal (submitResponse)="setPage({ offset: 0 })"></app-new-pipeline>
 
+<app-update-pipeline #updatePipeline (onUpdate)="setPage({ offset: page.pageIndex })"></app-update-pipeline>
+
 <div class="grid grid-cols-1 md:grid-cols-2 items-center mb-8">
 	<div>
 		<h1 class="text-2xl font-semibold">Hello, {{ userInfo?.name!.split(" ")[0] }}!
@@ -31,4 +33,24 @@
 	[loader]="isLoading">
 
 	<ngx-datatable-column *ngFor="let col of columns" [prop]="col.prop" [name]="col.name"></ngx-datatable-column>
+
+	<ngx-datatable-column name="Actions" prop="actions" [sortable]="false" [width]="256">
+		<ng-template let-row="row" let-rowIndex="rowIndex" let-expanded="expanded" let-value="value" ngx-datatable-cell-template>
+			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600">
+				<span class="spinner-text"><fa-icon [icon]="['fas', 'play']"></fa-icon></span>
+			</button>
+
+			<button type="button" class="text-white py-2 px-3 ml-3 rounded bg-indigo-500 hover:bg-indigo-600" (click)="updatePipeline.open(row)">
+				<span class="spinner-text"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></span>
+			</button>
+
+			<button type="button" class="text-white py-2 px-3 ml-3 rounded bg-indigo-500 hover:bg-indigo-600">
+				<span class="spinner-text"><fa-icon [icon]="row.status == 'Stopped' ? ['fas', 'toggle-off'] : ['fas', 'toggle-on']"></fa-icon></span>
+			</button>
+
+			<button type="button" class="text-white py-2 px-3 ml-3 rounded bg-rose-500 hover:bg-rose-600">
+				<span class="spinner-text"><fa-icon [icon]="['fas', 'trash']"></fa-icon></span>
+			</button>
+		</ng-template>
+	</ngx-datatable-column>
 </ngx-datatable>
