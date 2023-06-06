@@ -5,5 +5,7 @@ namespace Houston.Core.Interfaces.Repository {
 		Task<bool> AnyPipelineTrigger(Guid pipelineId);
 
 		Task<PipelineTrigger?> GetByIdWithInverseProperties(Guid id);
+
+		Task<PipelineTrigger?> GetByPipelineId(Guid pipelineId);
 	}
 }

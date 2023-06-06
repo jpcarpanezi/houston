@@ -3,10 +3,10 @@ using MediatR;
 
 namespace Houston.Core.Commands.PipelineTriggerCommands {
 	public class GetPipelineTriggerCommand : IRequest<ResultCommand<PipelineTrigger>> {
-		public Guid Id { get; set; }
+		public Guid PipelineId { get; set; }
 
-		public GetPipelineTriggerCommand(Guid id) {
-			Id = id;
+		public GetPipelineTriggerCommand(Guid pipelineId) {
+			PipelineId = pipelineId;
 		}
 	}
 }
