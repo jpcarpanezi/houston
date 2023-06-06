@@ -2,7 +2,7 @@
 	<app-sidebar [enabled]="isSidebarEnabled"></app-sidebar>
 
 	<!-- Router outlet -->
-	<main class="flex-1 container mx-5 md:mx-auto top-5 md:top-0" [ngClass]="{'mb-5 mt-16': isSidebarEnabled}">
+	<main class="flex-1 container mx-5 md:mx-auto md:px-5 top-5 md:top-0" [ngClass]="{'mb-5 mt-16': isSidebarEnabled}">
 		<router-outlet></router-outlet>
 	</main>
 </div>

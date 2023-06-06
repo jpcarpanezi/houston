@@ -1,1 +1,25 @@
-<p>pipeline works!</p>
+<div class="grid grid-cols-1 md:grid-cols-2 items-center mb-8">
+	<div>
+		<h1 class="text-2xl font-semibold">Pipeline</h1>
+		<p class="text-slate-500">Edit your pipeline instructions.</p>
+	</div>
+
+	<div class="mt-5 md:mt-0 text-right">
+		<button type="submit" class="text-white w-full md:w-auto py-2 px-4 rounded bg-indigo-500 hover:bg-indigo-600">
+			<span class="spinner-text">Save <fa-icon [icon]="['fas', 'floppy-disk']"></fa-icon></span>
+		</button>
+
+		<button type="button" class="text-white w-full md:w-auto py-2 px-4 md:ml-5 mt-5 md:mt-0 cursor-not-allowed rounded bg-emerald-500 hover:bg-emerald-600">
+			<span class="spinner-text">Run <fa-icon [icon]="['fas', 'play']"></fa-icon></span>
+		</button>
+	</div>
+</div>
+
+<!-- DETAILS -->
+<app-pipeline-details></app-pipeline-details>
+
+<!-- TRIGGER -->
+<app-pipeline-trigger></app-pipeline-trigger>
+
+<!-- INSTRUCTIONS -->
+<app-pipeline-instructions></app-pipeline-instructions>
