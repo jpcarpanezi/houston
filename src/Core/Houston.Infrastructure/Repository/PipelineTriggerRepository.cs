@@ -20,5 +20,16 @@ namespace Houston.Infrastructure.Repository {
 									   .Where(x => x.Id == id)
 									   .FirstOrDefaultAsync();
 		}
+
+		public async Task<PipelineTrigger?> GetByPipelineId(Guid pipelineId) {
+			return await Context.PipelineTrigger.Include(x => x.Pipeline)
+									   .Include(x => x.PipelineTriggerEvents)
+									   .ThenInclude(x => x.TriggerEvent)
+									   .Include(x => x.PipelineTriggerEvents)
+									   .ThenInclude(x => x.PipelineTriggerFilters)
+									   .ThenInclude(x => x.TriggerFilter)
+									   .Where(x => x.Pipeline.Id == pipelineId)
+									   .FirstOrDefaultAsync();
+		}
 	}
 }

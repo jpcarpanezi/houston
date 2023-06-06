@@ -101,17 +101,17 @@ namespace Houston.API.Controllers {
 		}
 
 		/// <summary>
-		/// Gets a pipeline trigger by id
+		/// Gets a pipeline trigger by pipeline id
 		/// </summary>
-		/// <param name="pipelineTriggerId"></param>
+		/// <param name="pipelineId"></param>
 		/// <response code="200">Pipeline trigger object response</response>
 		/// <response code="404">The requested pipeline trigger could not be found</response>
-		[HttpGet("{pipelineTriggerId:guid}")]
+		[HttpGet("{pipelineId:guid}")]
 		[Authorize]
 		[ProducesResponseType(typeof(PipelineTriggerViewModel), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
-		public async Task<IActionResult> Get(Guid pipelineTriggerId) {
-			var command = new GetPipelineTriggerCommand(pipelineTriggerId);
+		public async Task<IActionResult> Get(Guid pipelineId) {
+			var command = new GetPipelineTriggerCommand(pipelineId);
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.OK)
