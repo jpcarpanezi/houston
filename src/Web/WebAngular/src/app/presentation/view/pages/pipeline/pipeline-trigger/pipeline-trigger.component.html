@@ -1,5 +1,5 @@
 <form [formGroup]="pipelineTriggerForm">
-	<div class="px-6 py-4 mt-5 bg-white shadow border border-b-4 border-b-indigo-400 rounded-md">
+	<div class="px-6 py-4 mt-5 bg-white shadow border border-b-4 border-b-indigo-400 rounded-md" [loader]="isLoading">
 		<details class="group">
 			<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
 				<span>Trigger</span>

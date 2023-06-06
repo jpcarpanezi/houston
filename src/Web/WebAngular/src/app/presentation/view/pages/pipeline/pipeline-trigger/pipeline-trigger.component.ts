@@ -1,17 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { PipelineTriggerUseCaseInterface } from 'src/app/domain/interfaces/use-cases/pipeline-trigger-use-case.interface';
 
 @Component({
 	selector: 'app-pipeline-trigger',
 	templateUrl: './pipeline-trigger.component.html',
 	styleUrls: ['./pipeline-trigger.component.css']
 })
-export class PipelineTriggerComponent {
+export class PipelineTriggerComponent implements OnInit {
+	public isLoading: boolean = true;
 	public pipelineTriggerForm: FormGroup = this.initializePipelineTriggerForm();
+	public pipelineId: string | null = null;
+	public pipelineTriggerId: string | null = null;
 
 	constructor(
-		private fb: FormBuilder
+		private fb: FormBuilder,
+		private route: ActivatedRoute,
+		private pipelineTriggerUseCase: PipelineTriggerUseCaseInterface
 	) { }
+
+	ngOnInit(): void {
+		this.pipelineId = this.route.snapshot.paramMap.get("id");
+	}
 
 	private initializePipelineTriggerForm(): FormGroup {
 		return this.pipelineTriggerForm = this.fb.group({

@@ -11,6 +11,8 @@ import { ConnectorFunctionRepositoryInterface } from '../domain/interfaces/repos
 import { ConnectorFunctionRepositoryService } from './repositories/connector-function-repository.service';
 import { PipelineRepositoryInterface } from '../domain/interfaces/repositories/pipeline-repository.interface';
 import { PipelineRepositoryService } from './repositories/pipeline-repository.service';
+import { PipelineTriggerRepositoryInterface } from '../domain/interfaces/repositories/pipeline-trigger-repository.interface';
+import { PipelineTriggerRepositoryService } from './repositories/pipeline-trigger-repository.service';
 
 
 
@@ -25,7 +27,8 @@ import { PipelineRepositoryService } from './repositories/pipeline-repository.se
 		{ provide: UserRepositoryInterface, useClass: UserRepositoryService },
 		{ provide: ConnectorRepositoryInterface, useClass: ConnectorRepositoryService },
 		{ provide: ConnectorFunctionRepositoryInterface, useClass: ConnectorFunctionRepositoryService },
-		{ provide: PipelineRepositoryInterface, useClass: PipelineRepositoryService }
+		{ provide: PipelineRepositoryInterface, useClass: PipelineRepositoryService },
+		{ provide: PipelineTriggerRepositoryInterface, useClass: PipelineTriggerRepositoryService }
 	]
 })
 export class DataModule { }
