@@ -6,5 +6,10 @@ import { Component } from '@angular/core';
 	styleUrls: ['./pipeline-instructions.component.css']
 })
 export class PipelineInstructionsComponent {
+	public isConnectorPanelVisible: boolean = false;
+	public isLoading: boolean = false;
 
+	toggleConnectorPanel(): void {
+		this.isConnectorPanelVisible = !this.isConnectorPanelVisible;
+	}
 }
