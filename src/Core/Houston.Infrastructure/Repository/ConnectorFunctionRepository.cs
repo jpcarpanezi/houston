@@ -29,6 +29,7 @@ namespace Houston.Infrastructure.Repository {
 			return await Context.ConnectorFunction.Include(x => x.CreatedByNavigation)
 								 .Include(x => x.UpdatedByNavigation)
 								 .Include(x => x.Connector)
+								 .Include(x => x.ConnectorFunctionInputs)
 								 .OrderBy(x => x.Name)
 								 .Where(x => x.ConnectorId == connectorId && x.Active && x.Connector.Active)
 								 .Skip(pageSize * pageIndex)
