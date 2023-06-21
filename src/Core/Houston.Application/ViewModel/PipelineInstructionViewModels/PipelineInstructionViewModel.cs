@@ -10,6 +10,8 @@ namespace Houston.Application.ViewModel.PipelineInstructionViewModels {
 
 		public Guid? Connection { get; set; }
 
+		public int? ConnectedToArrayIndex { get; set; }
+
 		public string[] Script { get; set; } = null!;
 
 		public List<PipelineInstructionInputViewModel> PipelineInstructionInputs { get; set; } = new();
