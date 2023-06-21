@@ -16,7 +16,7 @@ public partial class PipelineInstructionInput {
 	public Guid InstructionId { get; set; }
 
 	[Column("replace_value")]
-	public string ReplaceValue { get; set; } = null!;
+	public string? ReplaceValue { get; set; } = null!;
 
 	[Column("created_by")]
 	public Guid CreatedBy { get; set; }
