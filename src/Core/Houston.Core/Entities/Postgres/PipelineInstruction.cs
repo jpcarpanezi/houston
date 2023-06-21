@@ -18,6 +18,9 @@ public partial class PipelineInstruction {
 	[Column("connection")]
 	public Guid? Connection { get; set; }
 
+	[Column("connected_to_array_index")]
+	public int? ConnectedToArrayIndex { get; set; }
+
 	[Column("script", TypeName = "character varying[]")]
 	public string[] Script { get; set; } = null!;
 

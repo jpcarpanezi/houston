@@ -58,6 +58,7 @@ namespace Houston.Application.CommandHandlers.PipelineInstructionCommandHandlers
 					PipelineId = request.PipelineId,
 					ConnectorFunctionId = instruction.ConnectorFunctionId,
 					Connection = instruction.ConnectedToArrayIndex is null ? null : instructionsIndexes[(int)instruction.ConnectedToArrayIndex],
+					ConnectedToArrayIndex = instruction.ConnectedToArrayIndex,
 					Script = instruction.Script,
 					CreatedBy = _claims.Id,
 					CreationDate = DateTime.UtcNow,
