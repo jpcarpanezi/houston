@@ -5,7 +5,7 @@
 	</div>
 
 	<div class="mt-5 md:mt-0 text-right">
-		<button type="button" class="text-white w-full md:w-auto py-2 px-4 rounded bg-indigo-500 hover:bg-indigo-600" (click)="savePipeline()" [class.spinner]="pipelineDetails.isLoading || pipelineTrigger.isLoading" [disabled]="pipelineDetails.isLoading || pipelineTrigger.isLoading">
+		<button type="button" class="text-white w-full md:w-auto py-2 px-4 rounded bg-indigo-500 hover:bg-indigo-600" (click)="savePipeline()" [class.spinner]="pipelineDetails.isLoading || pipelineTrigger.isLoading || pipelineInstructions.isLoading" [disabled]="pipelineDetails.isLoading || pipelineTrigger.isLoading || pipelineInstructions.isLoading">
 			<span class="spinner-text">Save <fa-icon [icon]="['fas', 'floppy-disk']"></fa-icon></span>
 		</button>
 
@@ -22,4 +22,4 @@
 <app-pipeline-trigger #pipelineTrigger></app-pipeline-trigger>
 
 <!-- INSTRUCTIONS -->
-<app-pipeline-instructions></app-pipeline-instructions>
+<app-pipeline-instructions #pipelineInstructions></app-pipeline-instructions>

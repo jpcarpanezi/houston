@@ -4,5 +4,5 @@ import { PipelineInstructionViewModel } from "../../view-models/pipeline-instruc
 
 export abstract class PipelineInstructionUseCaseInterface {
 	abstract save(body: SavePipelineInstructionCommand): Observable<PipelineInstructionViewModel>;
-	abstract get(pipelineId: string): Observable<PipelineInstructionViewModel>;
+	abstract get(pipelineId: string): Observable<PipelineInstructionViewModel[]>;
 }

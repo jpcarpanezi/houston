@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { PipelineDetailsComponent } from './pipeline-details/pipeline-details.component';
 import { PipelineTriggerComponent } from './pipeline-trigger/pipeline-trigger.component';
+import { PipelineInstructionsComponent } from './pipeline-instructions/pipeline-instructions.component';
 
 @Component({
 	selector: 'app-pipeline',
@@ -8,8 +9,9 @@ import { PipelineTriggerComponent } from './pipeline-trigger/pipeline-trigger.co
 	styleUrls: ['./pipeline.component.css']
 })
 export class PipelineComponent {
-	@ViewChild("pipelineDetails") public pipelineDetails?: PipelineDetailsComponent;
-	@ViewChild("pipelineTrigger") public pipelineTrigger?: PipelineTriggerComponent;
+	@ViewChild("pipelineDetails") private pipelineDetails?: PipelineDetailsComponent;
+	@ViewChild("pipelineTrigger") private pipelineTrigger?: PipelineTriggerComponent;
+	@ViewChild("pipelineInstructions") private pipelineInstructions?: PipelineInstructionsComponent
 
 	constructor() { }
 
@@ -22,5 +24,6 @@ export class PipelineComponent {
 
 		this.pipelineDetails?.savePipelineDetails();
 		this.pipelineTrigger?.savePipelineTrigger();
+		this.pipelineInstructions?.savePipelineInstructions();
 	}
 }

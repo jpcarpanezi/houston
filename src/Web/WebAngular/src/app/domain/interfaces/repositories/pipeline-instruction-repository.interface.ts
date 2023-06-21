@@ -4,5 +4,5 @@ import { SavePipelineInstructionCommand } from "../../commands/pipeline-instruct
 
 export abstract class PipelineInstructionRepositoryInterface {
 	abstract save(body: SavePipelineInstructionCommand): Observable<PipelineInstructionViewModel>;
-	abstract get(pipelineId: string): Observable<PipelineInstructionViewModel>;
+	abstract get(pipelineId: string): Observable<PipelineInstructionViewModel[]>;
 }

@@ -17,7 +17,7 @@ export class PipelineInstructionUseCaseService implements PipelineInstructionUse
 		return this.pipelineInstructionRepository.save(body);
 	}
 
-	get(pipelineId: string): Observable<PipelineInstructionViewModel> {
+	get(pipelineId: string): Observable<PipelineInstructionViewModel[]> {
 		return this.pipelineInstructionRepository.get(pipelineId);
 	}
 }

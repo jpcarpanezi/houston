@@ -18,7 +18,7 @@ export class PipelineInstructionRepositoryService implements PipelineInstruction
 		return this.http.post<PipelineInstructionViewModel>(`${environment.apiUrl}/pipelineInstruction`, body);
 	}
 
-	get(pipelineId: string): Observable<PipelineInstructionViewModel> {
-		return this.http.get<PipelineInstructionViewModel>(`${environment.apiUrl}/pipelineInstruction/${pipelineId}`);
+	get(pipelineId: string): Observable<PipelineInstructionViewModel[]> {
+		return this.http.get<PipelineInstructionViewModel[]>(`${environment.apiUrl}/pipelineInstruction/${pipelineId}`);
 	}
 }
