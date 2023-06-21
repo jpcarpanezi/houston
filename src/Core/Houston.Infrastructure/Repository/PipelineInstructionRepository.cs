@@ -10,8 +10,7 @@ namespace Houston.Infrastructure.Repository {
 		public async Task<List<PipelineInstruction>> GetByPipelineId(Guid pipelineId) {
 			return await Context.PipelineInstruction.Include(x => x.Pipeline)
 										   .Include(x => x.PipelineInstructionInputs)
-										   .OrderBy(x => x.ConnectedToArrayIndex == null)
-										   .ThenBy(x => x.ConnectedToArrayIndex)
+										   .OrderBy(x => x.ConnectedToArrayIndex)
 										   .Where(x => x.PipelineId == pipelineId && x.Pipeline.Active)
 										   .ToListAsync();
 		}
