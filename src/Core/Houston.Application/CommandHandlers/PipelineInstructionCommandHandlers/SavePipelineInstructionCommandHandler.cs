@@ -33,7 +33,7 @@ namespace Houston.Application.CommandHandlers.PipelineInstructionCommandHandlers
 					return new ResultCommand<List<PipelineInstruction>>(HttpStatusCode.Conflict, "Could not complete request due to a foreign key constraint violation.", "foreignKeyViolation", null);
 				}
 
-				if (instruction.Inputs is not null && connectorFunction.ConnectorFunctionInputs.Count != instruction.Inputs.Count) {
+				if (connectorFunction.ConnectorFunctionInputs.Count != instruction.Inputs?.Count) {
 					return new ResultCommand<List<PipelineInstruction>>(HttpStatusCode.Forbidden, "The number of inserted inputs is not the same as the connector function.", "invalidConnectorFunctionInputs", null);
 				}
 

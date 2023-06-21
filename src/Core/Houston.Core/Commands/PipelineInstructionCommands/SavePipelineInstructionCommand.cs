@@ -21,11 +21,11 @@ namespace Houston.Core.Commands.PipelineInstructionCommands {
 
 			public string[] Script { get; set; } = null!;
 
-			public Dictionary<Guid, string>? Inputs { get; set; } = new Dictionary<Guid, string>();
+			public Dictionary<Guid, string?> Inputs { get; set; } = new Dictionary<Guid, string?>();
 
 			public PipelineInstruction() { }
 
-			public PipelineInstruction(Guid connectorFunctionId, int? connectedToArrayIndex, string[] script, Dictionary<Guid, string> inputs) {
+			public PipelineInstruction(Guid connectorFunctionId, int? connectedToArrayIndex, string[] script, Dictionary<Guid, string?> inputs) {
 				ConnectorFunctionId = connectorFunctionId;
 				ConnectedToArrayIndex = connectedToArrayIndex;
 				Script = script ?? throw new ArgumentNullException(nameof(script));
