@@ -6,13 +6,13 @@ on:
     branches: ["dev"]
     tags: ["v*"]
     paths:
-      - src/UserInterface/**
+      - src/UserInterface/Houston.API/**
       - src/Core/**
       - .github/workflows/deploy-api.yml
   pull_request:
     branches: ["dev"]
     paths:
-      - src/UserInterface/**
+      - src/UserInterface/Houston.API/**
       - src/Core/**
       - .github/workflows/deploy-api.yml
   
