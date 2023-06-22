@@ -4,7 +4,7 @@ using Houston.Core.Entities.Postgres;
 using Houston.Core.Exceptions;
 using Houston.Core.Interfaces.Services;
 using Houston.Core.Models;
-using System.ComponentModel;
+using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 
 namespace Houston.Application.ChainNodes.DockerContainerBuilder {
@@ -12,19 +12,25 @@ namespace Houston.Application.ChainNodes.DockerContainerBuilder {
 		public IContainerBuilderChainService Next { get; set; }
 
 		private readonly IDockerClient _client;
+		private readonly ILogger<CreatePipelineScriptsNode> _logger;
 
-		public CreatePipelineScriptsNode(IContainerBuilderChainService next, IDockerClient client) {
+		public CreatePipelineScriptsNode(IContainerBuilderChainService next, IDockerClient client, ILogger<CreatePipelineScriptsNode> logger) {
 			Next = next;
 			_client = client ?? throw new ArgumentNullException(nameof(client));
+			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
 
 		public async Task<ContainerChainResponse> Handler(ContainerChainResponse solicitation, ContainerBuilderParameters parameters) {
+			_logger.LogInformation("Creating pipeline scripts for container {ContainerId}", parameters.ContainerId);
+
 			foreach (var instruction in parameters.PipelineInstructions) {
 				string? instructionScript = string.Join("\n", instruction.Script);
 
 				if (instruction.PipelineInstructionInputs is not null) {
 					instructionScript = ReplaceVariables(instruction.PipelineInstructionInputs.ToList(), instructionScript);
 				}
+
+				_logger.LogInformation("Generating script create response for container: {ContainerId}, instruction: {InstructionId}", parameters.ContainerId, instruction.Id);
 
 				var generateScriptCreateResponse = await _client.Exec.ExecCreateContainerAsync(parameters.ContainerId, new ContainerExecCreateParameters {
 					Cmd = new List<string> {
@@ -36,13 +42,20 @@ namespace Houston.Application.ChainNodes.DockerContainerBuilder {
 					Tty = true
 				}, default);
 
+				_logger.LogInformation("Started and attached container exec for script generate response for container: {ContainerId}, instruction: {InstructionId}", parameters.ContainerId, instruction.Id);
+
 				var stream = await _client.Exec.StartAndAttachContainerExecAsync(generateScriptCreateResponse.ID, false, default);
 				var inspectContainer = await _client.Exec.InspectContainerExecAsync(generateScriptCreateResponse.ID);
 				var (stdout, stderr) = await stream.ReadOutputToEndAsync(default);
 
 				if (inspectContainer.ExitCode != 0)
 					throw new ContainerBuilderException("An error occurred when creating the pipeline scripts.", $"{stdout}\n{stderr}\n");
+
+				_logger.LogInformation("Finished container exec and inspect for script generate response for container: {ContainerId}, instruction: {InstructionId}", parameters.ContainerId, instruction.Id);
 			}
+
+
+			_logger.LogInformation("Finished pipeline script execution for container {ContainerId}", parameters.ContainerId);
 
 			return await Next.Handler(solicitation, parameters);
 		}
