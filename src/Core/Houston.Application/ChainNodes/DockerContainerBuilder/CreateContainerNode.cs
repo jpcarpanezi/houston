@@ -3,7 +3,6 @@ using Docker.DotNet.Models;
 using Houston.Core.Interfaces.Services;
 using Houston.Core.Models;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel;
 
 namespace Houston.Application.ChainNodes.DockerContainerBuilder {
 	public class CreateContainerNode : IContainerBuilderChainService {
@@ -19,22 +18,25 @@ namespace Houston.Application.ChainNodes.DockerContainerBuilder {
 		}
 
 		public async Task<ContainerChainResponse> Handler(ContainerChainResponse solicitation, ContainerBuilderParameters parameters) {
-			_logger.LogInformation("Creating container image...");
+			_logger.LogInformation("Creating container {containerName} from image {fromImage}:{tag}...", parameters.ContainerName, parameters.FromImage, parameters.Tag);
 
-			await _client.Images.CreateImageAsync(
-				new ImagesCreateParameters() {
-					FromImage = parameters.FromImage,
-					Tag = parameters.Tag
-				},
-				new AuthConfig() {
-					Email = parameters.RegistryEmail,
-					Username = parameters.RegistryUsername,
-					Password = parameters.RegistryPassword
-				},
-				new Progress<JSONMessage>() { ProgressHandler = new ProgressHandle(_logger.LogDebug) } // added to log debug information for progress
-			);
+			var container = await _client.Containers.CreateContainerAsync(new CreateContainerParameters {
+				Image = $"{parameters.FromImage}:{parameters.Tag}",
+				Name = parameters.ContainerName,
+				Tty = true,
+				AttachStdout = true,
+				AttachStderr = true,
+				AttachStdin = true,
+				HostConfig = new HostConfig {
+					Privileged = true,
+					Binds = parameters.Binds
+				}
+			});
 
-			_logger.LogInformation("Container image created");
+			parameters.ContainerId = container.ID[..12];
+			await _client.Containers.StartContainerAsync(parameters.ContainerId, new ContainerStartParameters());
+
+			_logger.LogInformation("Container {containerName} created with id {containerId}.", parameters.ContainerName, parameters.ContainerId);
 
 			return await Next.Handler(solicitation, parameters);
 		}
