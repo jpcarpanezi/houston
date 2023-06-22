@@ -31,8 +31,11 @@ namespace Houston.Application.ChainNodes.DockerContainerBuilder {
 					"-c",
 					$"mkdir /root/.ssh; echo '{deployKey}' >> /root/.ssh/id_rsa"
 				},
-				AttachStdin = true,
-				Tty = true
+				Detach = false,
+				Tty = false,
+				AttachStdout = true,
+				AttachStderr = true,
+				AttachStdin = true
 			}, default);
 
 			var stream = await _client.Exec.StartAndAttachContainerExecAsync(generateSSHKeyCreateResponse.ID, false, default);
