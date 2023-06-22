@@ -67,7 +67,7 @@ namespace Houston.Workers.MessageHandlers {
 					response.InstructionWithError = null;
 				} catch (Exception ex) {
 					response.ExitCode = -1;
-					response.Stdout = $"An unhandled exception has occurred during the pipeline execution.\nError message: {ex.Message}";
+					response.Stdout = $"An unhandled exception has occurred during the pipeline execution.\nException: {ex}";
 					response.InstructionWithError = null;
 				}
 
