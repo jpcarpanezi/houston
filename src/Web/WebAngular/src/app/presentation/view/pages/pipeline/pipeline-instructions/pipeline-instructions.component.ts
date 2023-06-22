@@ -132,8 +132,6 @@ export class PipelineInstructionsComponent implements OnInit {
 	}
 
 	savePipelineInstructions(): void {
-		if (this.pipelineInstructions.length == 0) return;
-
 		this.isLoading = true;
 
 		const command: SavePipelineInstructionCommand = {
