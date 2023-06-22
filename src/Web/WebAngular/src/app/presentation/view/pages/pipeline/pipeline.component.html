@@ -5,14 +5,18 @@
 	</div>
 
 	<div class="mt-5 md:mt-0 text-right">
-		<button type="button" class="text-white w-full md:w-auto py-2 px-4 rounded bg-indigo-500 hover:bg-indigo-600" (click)="savePipeline()" [class.spinner]="pipelineDetails.isLoading || pipelineTrigger.isLoading || pipelineInstructions.isLoading" [disabled]="pipelineDetails.isLoading || pipelineTrigger.isLoading || pipelineInstructions.isLoading">
+		<button type="button" class="text-white w-full md:w-auto py-2 px-4 rounded bg-indigo-500 hover:bg-indigo-600" (click)="savePipeline()" [class.spinner]="pipelineDetails.isLoading || pipelineTrigger.isLoading || pipelineInstructions.isLoading || isRunning" [disabled]="pipelineDetails.isLoading || pipelineTrigger.isLoading || pipelineInstructions.isLoading || isRunning">
 			<span class="spinner-text">Save <fa-icon [icon]="['fas', 'floppy-disk']"></fa-icon></span>
 		</button>
 
-		<button type="button" class="text-white w-full md:w-auto py-2 px-4 md:ml-5 mt-5 md:mt-0 rounded bg-emerald-500 hover:bg-emerald-600">
+		<button type="button" class="text-white w-full md:w-auto py-2 px-4 md:ml-5 mt-5 md:mt-0 rounded bg-emerald-500 hover:bg-emerald-600" (click)="runPipeline()" [class.spinner]="pipelineDetails.isLoading || pipelineTrigger.isLoading || pipelineInstructions.isLoading || isRunning" [disabled]="pipelineDetails.isLoading || pipelineTrigger.isLoading || pipelineInstructions.isLoading || isRunning">
 			<span class="spinner-text">Run <fa-icon [icon]="['fas', 'play']"></fa-icon></span>
 		</button>
 	</div>
+</div>
+
+<div class="w-full mb-4 select-none rounded-md border-l-4 border-yellow-400 bg-yellow-100 px-4 py-2 hover:border-yellow-500" *ngIf="isRunning">
+	Pipeline is running...
 </div>
 
 <!-- DETAILS -->
