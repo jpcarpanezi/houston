@@ -63,5 +63,5 @@ jobs:
         with:
           push: ${{ github.event_name != 'pull_request' }}
           tags: jpcarpanezi/houston-worker:${{ steps.tag.outputs.tag }}
-          file: src/UserInterface/Houston.Worker/Dockerfile
+          file: src/UserInterface/Houston.Workers/Dockerfile
           context: ./
