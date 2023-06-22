@@ -3,7 +3,6 @@ using Docker.DotNet.Models;
 using Houston.Core.Interfaces.Services;
 using Houston.Core.Models;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel;
 
 namespace Houston.Application.ChainNodes.DockerContainerBuilder {
 	public class CreateContainerNode : IContainerBuilderChainService {
