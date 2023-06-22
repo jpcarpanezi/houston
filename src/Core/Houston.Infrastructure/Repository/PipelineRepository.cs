@@ -23,7 +23,7 @@ namespace Houston.Infrastructure.Repository {
 		public async Task<Pipeline?> GetActiveWithInverseProperties(Guid id) {
 			return await Context.Pipeline.Include(x => x.CreatedByNavigation)
 								.Include(x => x.UpdatedByNavigation)
-								.Include(x => x.PipelineInstructions)
+								.Include(x => x.PipelineInstructions.OrderBy(x => x.ConnectedToArrayIndex == null ? 0 : 1).ThenBy(x => x.ConnectedToArrayIndex))
 								.ThenInclude(x => x.PipelineInstructionInputs)
 								.ThenInclude(x => x.ConnectorFunctionInput)
 								.Include(x => x.PipelineTrigger)

@@ -38,8 +38,11 @@ namespace Houston.Application.ChainNodes.DockerContainerBuilder {
 						"-c",
 						$"mkdir scripts; echo '{instructionScript?.Replace("\r\n", "\n").Replace("\r", "\n")}' >> /scripts/script-{instruction.Id}.sh"
 					},
-					AttachStdin = true,
-					Tty = true
+					Detach = false,
+					Tty = false,
+					AttachStdout = true,
+					AttachStderr = true,
+					AttachStdin = true
 				}, default);
 
 				_logger.LogInformation("Started and attached container exec for script generate response for container: {ContainerId}, instruction: {InstructionId}", parameters.ContainerId, instruction.Id);
