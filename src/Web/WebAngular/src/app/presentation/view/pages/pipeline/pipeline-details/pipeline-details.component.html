@@ -1,0 +1,30 @@
+<div class="px-6 py-4 bg-white shadow border border-b-4 border-b-indigo-400 rounded-md" [loader]="isLoading">
+	<details class="group">
+		<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+			<span>Details</span>
+
+			<span class="transition group-open:rotate-180"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></span>
+		</summary>
+
+		<div class="text-neutral-600 group-open:animate-fadeIn">
+			<p class="text-neutral-600 group-open:animate-fadeIn">
+				Enter the basic details about this pipeline.
+			</p>
+
+			<form [formGroup]="pipelineDetailsForm">
+				<div class="block mt-4">
+					<label for="name">Name</label>
+					<input type="text" name="name" id="name" formControlName="name" placeholder="Enter connector function name" maxlength="50" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+					<app-form-errors controlName="name" error="required">Pipeline name required.</app-form-errors>
+					<app-form-errors controlName="name" error="maxlength">Maximum characters are 50.</app-form-errors>
+				</div>
+
+				<div class="block mt-4">
+					<label for="description">Description</label>
+					<textarea name="description" id="description" formControlName="description" rows="3" placeholder="Enter connector function description" maxlength="5000" class="mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
+					<app-form-errors controlName="description" error="maxlength">Maximum characters are 5000.</app-form-errors>
+				</div>
+			</form>
+		</div>
+	</details>
+</div>

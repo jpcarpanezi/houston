@@ -1,6 +1,6 @@
 export enum PipelineStatus {
-	Running,
-	Stopped,
-	Canceled,
-	Awaiting
+	Running = "Running",
+	Stopped = "Stopped",
+	Canceled = "Canceled",
+	Awaiting = "Awaiting"
 }

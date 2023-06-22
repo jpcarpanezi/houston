@@ -10,6 +10,10 @@ import { ConnectorFunctionUseCaseInterface } from './interfaces/use-cases/connec
 import { ConnectorFunctionUseCaseService } from './use-cases/connector-function-use-case.service';
 import { PipelineUseCaseInterface } from './interfaces/use-cases/pipeline-use-case.interface';
 import { PipelineUseCaseService } from './use-cases/pipeline-use-case.service';
+import { PipelineTriggerUseCaseInterface } from './interfaces/use-cases/pipeline-trigger-use-case.interface';
+import { PipelineTriggerUseCaseService } from './use-cases/pipeline-trigger-use-case.service';
+import { PipelineInstructionUseCaseInterface } from './interfaces/use-cases/pipeline-instruction-use-case.interface';
+import { PipelineInstructionUseCaseService } from './use-cases/pipeline-instruction-use-case.service';
 
 
 
@@ -23,7 +27,9 @@ import { PipelineUseCaseService } from './use-cases/pipeline-use-case.service';
 		{ provide: UserUseCaseInterface, useClass: UserUseCaseService },
 		{ provide: ConnectorUseCaseInterface, useClass: ConnectorUseCaseService },
 		{ provide: ConnectorFunctionUseCaseInterface, useClass: ConnectorFunctionUseCaseService },
-		{ provide: PipelineUseCaseInterface, useClass: PipelineUseCaseService }
+		{ provide: PipelineUseCaseInterface, useClass: PipelineUseCaseService },
+		{ provide: PipelineTriggerUseCaseInterface, useClass: PipelineTriggerUseCaseService },
+		{ provide: PipelineInstructionUseCaseInterface, useClass: PipelineInstructionUseCaseService }
 	]
 })
 export class DomainModule { }

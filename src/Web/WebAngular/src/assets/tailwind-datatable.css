@@ -2,6 +2,10 @@
 	@apply overflow-hidden rounded-md shadow w-full border-collapse bg-white text-left text-sm text-gray-500 border-b-4 border-indigo-400;
 }
 
+.ngx-datatable.tailwind-borderless {
+	@apply border border-gray-200 shadow-none;
+}
+
 .datatable-row-detail {
 	@apply !h-full bg-gray-50 hover:bg-gray-100;
 }
