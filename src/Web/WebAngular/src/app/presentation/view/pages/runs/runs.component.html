@@ -1,0 +1,55 @@
+<div class="grid grid-cols-1 md:grid-cols-2 items-center mb-8">
+	<div>
+		<h1 class="text-2xl font-semibold">Pipeline runs
+		</h1>
+		<p class="text-slate-500">See all runs statuses from a pipeline.</p>
+	</div>
+</div>
+
+<ngx-datatable
+	class="tailwind expandable"
+	[rows]="rows"
+	[columnMode]="columnMode"
+	[headerHeight]="50"
+	[footerHeight]="50"
+	rowHeight="auto"
+	[externalPaging]="true"
+	[count]="page.count"
+	[offset]="page.pageIndex"
+	[limit]="page.pageSize"
+	[scrollbarH]="true"
+	(page)="setPage($event)"
+	[loader]="isLoading">
+
+	<ngx-datatable-column name="" prop="status" [sortable]="false" [maxWidth]="25">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			<fa-icon [icon]="['fas', 'circle-check']" class="text-emerald-600 fa-lg" *ngIf="row.exitCode == 0"></fa-icon>
+
+			<fa-icon [icon]="['fas', 'circle-xmark']" class="text-red-600 fa-lg" *ngIf="row.exitCode != 0"></fa-icon>
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column name="Id" prop="id" [sortable]="false">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			<a [routerLink]="['/run', row.id]">{{ value }}</a>
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column name="Start time" prop="startTime" [sortable]="false">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			<fa-icon [icon]="['far', 'calendar']"></fa-icon> {{ value }}
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column name="Duration" prop="duration" [sortable]="false">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			<fa-icon [icon]="['fas', 'stopwatch']"></fa-icon> {{ value | duration }}
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column name="Triggered by" prop="triggeredBy" [sortable]="false">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			{{ value == '' ? 'Automatic' : value }}
+		</ng-template>
+	</ngx-datatable-column>
+</ngx-datatable>
