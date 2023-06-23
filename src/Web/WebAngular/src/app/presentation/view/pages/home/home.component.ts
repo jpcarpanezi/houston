@@ -113,13 +113,4 @@ export class HomeComponent implements OnInit {
 			error: (error: HttpErrorResponse[]) => this.handlePipelineError(error[0], "toggle")
 		}).add(() => button.disabled = false);
 	}
-
-	runPipeline(button: HTMLButtonElement, pipelineId: string): void {
-		button.disabled = true;
-
-		this.pipelineUseCase.run({ id: pipelineId }).subscribe({
-			next: () => { },
-			error: (error: HttpErrorResponse[]) => this.handlePipelineError(error[0], "run")
-		}).add(() => button.disabled = false);
-	}
 }

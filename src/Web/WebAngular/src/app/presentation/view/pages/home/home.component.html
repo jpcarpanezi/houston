@@ -42,8 +42,8 @@
 
 	<ngx-datatable-column name="Actions" prop="actions" [sortable]="false" [width]="256">
 		<ng-template let-row="row" let-rowIndex="rowIndex" let-expanded="expanded" let-value="value" ngx-datatable-cell-template>
-			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="runPipelineBtn.disabled" (click)="runPipeline(runPipelineBtn, row.id)" #runPipelineBtn>
-				<span class="spinner-text"><fa-icon [icon]="['fas', 'play']"></fa-icon></span>
+			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600" [routerLink]="['/runs', row.id]">
+				<span class="spinner-text"><fa-icon [icon]="['fas', 'file-lines']"></fa-icon></span>
 			</button>
 
 			<button type="button" class="text-white py-2 px-3 ml-3 rounded bg-indigo-500 hover:bg-indigo-600" (click)="updatePipeline.open(row)">
