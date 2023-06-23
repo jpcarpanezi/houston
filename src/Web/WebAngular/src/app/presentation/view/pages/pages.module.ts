@@ -10,6 +10,8 @@ import { ConnectorsModule } from './connectors/connectors.module';
 import { ConnectorFunctionModule } from './connector-function/connector-function.module';
 import { PipelineModule } from './pipeline/pipeline.module';
 import { RunsModule } from './runs/runs.module';
+import { RunComponent } from './run/run.component';
+import { RunModule } from './run/run.module';
 
 
 
@@ -26,6 +28,7 @@ import { RunsModule } from './runs/runs.module';
 		FirstAccessModule,
 		SharedModule,
 		RunsModule,
+		RunModule,
 		PagesRoutingModule
 	],
 	exports: [PagesRoutingModule]
