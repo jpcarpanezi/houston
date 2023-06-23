@@ -12,6 +12,7 @@ import { PipelineModule } from './pipeline/pipeline.module';
 import { RunsModule } from './runs/runs.module';
 import { RunComponent } from './run/run.component';
 import { RunModule } from './run/run.module';
+import { UsersModule } from './users/users.module';
 
 
 
@@ -29,6 +30,7 @@ import { RunModule } from './run/run.module';
 		SharedModule,
 		RunsModule,
 		RunModule,
+		UsersModule,
 		PagesRoutingModule
 	],
 	exports: [PagesRoutingModule]
