@@ -4,7 +4,7 @@ import { RunsComponent } from './runs.component';
 import { authGuard } from 'src/app/infra/auth/auth.guard';
 
 const routes: Routes = [
-	{ path: "runs/:id", component: RunsComponent, canActivate: [authGuard], data: { title: "Pipeline"} }
+	{ path: "runs/:id", component: RunsComponent, canActivate: [authGuard], data: { title: "Runs"} }
 ];
 
 @NgModule({

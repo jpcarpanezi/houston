@@ -31,7 +31,7 @@
 
 	<ngx-datatable-column name="Id" prop="id" [sortable]="false">
 		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-			<a [routerLink]="['/run', row.pipelineId]">{{ value }}</a>
+			<a [routerLink]="['/run', row.id]">{{ value }}</a>
 		</ng-template>
 	</ngx-datatable-column>
 
