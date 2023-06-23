@@ -6,6 +6,8 @@ namespace Houston.Application.ViewModel.UserViewModels {
 
 		public string Name { get; set; } = null!;
 
+		public bool Active { get; set; }
+
 		public UserRoleEnum UserRole { get; set; }
 	}
 }
