@@ -17,7 +17,7 @@ export class UserRepositoryService implements UserRepositoryInterface {
 	constructor(private http: HttpClient) { }
 
 	getAll(pageSize: number, pageIndex: number): Observable<PaginatedItemsViewModel<UserViewModel>> {
-		return this.http.get<PaginatedItemsViewModel<UserViewModel>>(`${environment.apiUrl}/user?pageSize=${pageSize}&pageIndex=${pageIndex}}`);
+		return this.http.get<PaginatedItemsViewModel<UserViewModel>>(`${environment.apiUrl}/user?pageSize=${pageSize}&pageIndex=${pageIndex}`);
 	}
 
 	create(body: CreateUserCommand): Observable<UserViewModel> {
