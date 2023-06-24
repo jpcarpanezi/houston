@@ -1,5 +1,7 @@
 <app-new-user #createUserModal (onCreate)="setPage({ offset: 0 })"></app-new-user>
 
+<app-change-password #changePasswordModal></app-change-password>
+
 <div class="grid grid-cols-1 md:grid-cols-2 items-center mb-8">
 	<div>
 		<h1 class="text-2xl font-semibold">Users</h1>
@@ -37,7 +39,7 @@
 				<span class="spinner-text"><fa-icon [icon]="row.active == false ? ['fas', 'toggle-off'] : ['fas', 'toggle-on']"></fa-icon></span>
 			</button>
 
-			<button type="button" [class.spinner]="false" class="text-white py-2 px-3 ml-3 rounded bg-indigo-500 hover:bg-indigo-600">
+			<button type="button" [class.spinner]="false" class="text-white py-2 px-3 ml-3 rounded bg-indigo-500 hover:bg-indigo-600" (click)="changePasswordModal.open(row.id)">
 				<span class="spinner-text"><fa-icon [icon]="['fas', 'unlock']"></fa-icon></span>
 			</button>
 		</ng-template>

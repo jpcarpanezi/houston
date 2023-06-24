@@ -1,5 +1,5 @@
 export interface UpdatePasswordCommand {
 	userId: string;
-	oldPassword: string;
+	oldPassword?: string;
 	newPassword: string;
 }
