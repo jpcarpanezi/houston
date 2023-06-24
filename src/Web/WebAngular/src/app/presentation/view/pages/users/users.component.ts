@@ -21,7 +21,7 @@ export class UsersComponent implements OnInit {
 	public columns = [
 		{prop: "name", name: "Name"},
 		{prop: "email", name: "E-mail"},
-		{prop: "userRole", name: "User role"}
+		{prop: "role", name: "Role"}
 	];
 	public columnMode: ColumnMode = ColumnMode.force;
 	public isLoading: boolean = true;

@@ -5,5 +5,5 @@ export interface UserViewModel {
 	email: string;
 	name: string;
 	active: boolean;
-	userRole: UserRole;
+	role: UserRole;
 }
