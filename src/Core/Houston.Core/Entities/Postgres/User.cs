@@ -42,7 +42,7 @@ public partial class User {
 	[Column("updated_by")]
 	public Guid UpdatedBy { get; set; }
 
-	[Column("last_update", TypeName = "timestamp with time zone")]
+	[Column("last_update", TypeName = "timestamp(3) with time zone")]
 	public DateTime LastUpdate { get; set; }
 
 	[InverseProperty(nameof(Connector.CreatedByNavigation))]
