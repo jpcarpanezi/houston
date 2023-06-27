@@ -65,11 +65,11 @@ namespace Houston.API.Controllers {
 		/// Generates new pipeline trigger deploy keys
 		/// </summary>
 		/// <param name="pipelineId"></param>
-		/// <response code="200">New deploy keys generated successfully.</response>
-		/// <response code="404">The requested pipeline trigger could not be found.</response>
+		/// <response code="204">New deploy keys generated successfully</response>
+		/// <response code="404">The requested pipeline trigger could not be found</response>
 		[HttpPatch("deployKeys/{pipelineId:guid}")]
 		[Authorize]
-		[ProducesResponseType(typeof(PipelineTriggerViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		public async Task<IActionResult> UpdateDeployKeys(Guid pipelineId) {
 			var command = new UpdateDeployKeyCommand(pipelineId);
