@@ -42,6 +42,7 @@ namespace Houston.API.Setups {
 				.ForMember(dest => dest.InstructionWithError, m => m.MapFrom(src => src.PipelineInstruction.ConnectorFunction.Name))
 				.ForMember(dest => dest.TriggeredById, m => m.MapFrom(src => src.TriggeredBy))
 				.ForMember(dest => dest.TriggeredBy, m => m.MapFrom(src => src.TriggeredByNavigation.Name));
+			CreateMap<PipelineTrigger, PipelineTriggerKeysViewModel>();
 		}
 	}
 }

@@ -147,8 +147,6 @@ public partial class PostgresContext : DbContext {
 
 			entity.Property(e => e.Id).ValueGeneratedNever();
 
-			entity.Ignore(e => e.PublicKey);
-
 			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.PipelineTriggerCreatedByNavigation)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("User_id_created_by_fk");
