@@ -25,7 +25,7 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 			}
 
 			Guid pipelineTriggerId = Guid.NewGuid();
-			var deployKeys = DeployKeysService.Create($"houston-{pipelineTriggerId}");
+			var deployKeys = DeployKeysService.Create(pipelineTriggerId.ToString());
 			var PipelineTriggerEvents = new List<PipelineTriggerEvent>();
 
 			foreach (var @event in request.Events) {
