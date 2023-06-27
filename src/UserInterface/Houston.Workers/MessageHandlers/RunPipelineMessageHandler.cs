@@ -53,7 +53,7 @@ namespace Houston.Workers.MessageHandlers {
 							  .AddContainerName(containerName)
 							  .AddBind("/var/run/docker.sock:/var/run/docker.sock")
 							  .AddInstructions(pipeline.PipelineInstructions.ToList())
-							  .AddDeployKey(pipeline.PipelineTrigger.DeployKey)
+							  .AddDeployKey(pipeline.PipelineTrigger.PrivateKey)
 							  .AddSourceGit(pipeline.PipelineTrigger.SourceGit)
 							  .AddAuthentication(configurations!.RegistryUsername, configurations.RegistryAddress, configurations.RegistryPassword, configurations.RegistryAddress)
 							  .Build();

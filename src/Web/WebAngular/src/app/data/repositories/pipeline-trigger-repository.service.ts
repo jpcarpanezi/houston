@@ -5,6 +5,7 @@ import { ChangeSecretPipelineTriggerCommand } from 'src/app/domain/commands/pipe
 import { CreatePipelineTriggerCommand } from 'src/app/domain/commands/pipeline-trigger-commands/create-pipeline-trigger.command';
 import { UpdatePipelineTriggerCommand } from 'src/app/domain/commands/pipeline-trigger-commands/update-pipeline-trigger.command';
 import { PipelineTriggerRepositoryInterface } from 'src/app/domain/interfaces/repositories/pipeline-trigger-repository.interface';
+import { PipelineTriggerKeysViewModel } from 'src/app/domain/view-models/pipeline-trigger-keys.view-model';
 import { PipelineTriggerViewModel } from 'src/app/domain/view-models/pipeline-trigger.view-model';
 import { environment } from 'src/environments/environment';
 
@@ -15,6 +16,14 @@ export class PipelineTriggerRepositoryService implements PipelineTriggerReposito
 	constructor(
 		private http: HttpClient
 	) { }
+
+	updateDeployKeys(pipelineId: string): Observable<any> {
+		return this.http.patch<any>(`${environment.apiUrl}/pipelineTrigger/deployKeys/${pipelineId}`, null);
+	}
+
+	revealKeys(pipelineId: string): Observable<PipelineTriggerKeysViewModel> {
+		return this.http.get<PipelineTriggerKeysViewModel>(`${environment.apiUrl}/pipelineTrigger/deployKeys/${pipelineId}`);
+	}
 
 	create(body: CreatePipelineTriggerCommand): Observable<PipelineTriggerViewModel> {
 		return this.http.post<PipelineTriggerViewModel>(`${environment.apiUrl}/pipelineTrigger`, body);

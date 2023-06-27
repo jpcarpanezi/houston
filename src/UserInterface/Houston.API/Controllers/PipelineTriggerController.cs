@@ -62,6 +62,26 @@ namespace Houston.API.Controllers {
 		}
 
 		/// <summary>
+		/// Generates new pipeline trigger deploy keys
+		/// </summary>
+		/// <param name="pipelineId"></param>
+		/// <response code="204">New deploy keys generated successfully</response>
+		/// <response code="404">The requested pipeline trigger could not be found</response>
+		[HttpPatch("deployKeys/{pipelineId:guid}")]
+		[Authorize]
+		[ProducesResponseType((int)HttpStatusCode.NoContent)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
+		public async Task<IActionResult> UpdateDeployKeys(Guid pipelineId) {
+			var command = new UpdateDeployKeyCommand(pipelineId);
+			var response = await _mediator.Send(command);
+			
+			if (response.StatusCode != HttpStatusCode.NoContent)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
+
+			return NoContent();
+		}
+
+		/// <summary>
 		/// Changes the pipeline trigger secret
 		/// </summary>
 		/// <param name="command"></param>
@@ -118,6 +138,30 @@ namespace Houston.API.Controllers {
 				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
+
+			return Ok(view);
+		}
+
+		/// <summary>
+		/// Reveals the pipeline trigger deploy keys
+		/// </summary>
+		/// <param name="pipelineId"></param>
+		/// <response code="200">Pipeline trigger deploy keys object response</response>
+		/// <response code="404">The requested pipeline trigger could not be found</response>
+		/// <response code="403">The deploy keys are already revealed</response>
+		[HttpGet("deployKeys/{pipelineId:guid}")]
+		[Authorize]
+		[ProducesResponseType(typeof(PipelineTriggerKeysViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
+		public async Task<IActionResult> RevealKeys(Guid pipelineId) {
+			var command = new RevealPipelineTriggerKeysCommand(pipelineId);
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.OK)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
+
+			var view = _mapper.Map<PipelineTriggerKeysViewModel>(response.Response);
 
 			return Ok(view);
 		}

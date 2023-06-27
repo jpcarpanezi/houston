@@ -3,7 +3,7 @@ import { PipelineTriggerEventViewModel } from "./pipeline-trigger-event.view-mod
 export interface PipelineTriggerViewModel {
 	id: string;
 	pipelineId: string;
-	deployKey: string;
-	publicKey: string;
+	sourceGit: string;
+	keyRevealed: boolean;
 	pipelineTriggerEvents: PipelineTriggerEventViewModel[];
 }
