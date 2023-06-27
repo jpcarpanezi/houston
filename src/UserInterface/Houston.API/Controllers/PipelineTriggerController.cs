@@ -75,7 +75,7 @@ namespace Houston.API.Controllers {
 			var command = new UpdateDeployKeyCommand(pipelineId);
 			var response = await _mediator.Send(command);
 			
-			if (response.StatusCode != HttpStatusCode.OK)
+			if (response.StatusCode != HttpStatusCode.NoContent)
 				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			return NoContent();
