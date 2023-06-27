@@ -30,6 +30,9 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 			pipelineTrigger.UpdatedBy = _claims.Id;
 			pipelineTrigger.LastUpdate = DateTime.UtcNow;
 
+			_unitOfWork.PipelineTriggerRepository.Update(pipelineTrigger);
+			await _unitOfWork.Commit();
+
 			return new ResultCommand<PipelineTrigger>(HttpStatusCode.NoContent);
 		}
 	}
