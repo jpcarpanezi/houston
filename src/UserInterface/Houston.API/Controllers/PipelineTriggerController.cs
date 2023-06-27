@@ -57,7 +57,6 @@ namespace Houston.API.Controllers {
 				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
-			view.DeployKey = null;
 
 			return Ok(view);
 		}
@@ -79,9 +78,7 @@ namespace Houston.API.Controllers {
 			if (response.StatusCode != HttpStatusCode.OK)
 				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
-			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
-
-			return Ok(view);
+			return NoContent();
 		}
 
 		/// <summary>
@@ -141,7 +138,19 @@ namespace Houston.API.Controllers {
 				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
-			view.DeployKey = null;
+
+			return Ok(view);
+		}
+
+		[HttpGet("deployKeys/{pipelineId:guid}")]
+		public async Task<IActionResult> RevealKeys(Guid pipelineId) {
+			var command = new RevealPipelineTriggerKeysCommand(pipelineId);
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.OK)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
+
+			var view = _mapper.Map<PipelineTriggerKeysViewModel>(response.Response);
 
 			return Ok(view);
 		}

@@ -1,5 +1,4 @@
 ﻿using Houston.Application.ViewModel.PipelineTriggerEventViewModels;
-using Houston.Core.Entities.Postgres;
 
 namespace Houston.Application.ViewModel.PipelineTriggerViewModels {
 	public class PipelineTriggerViewModel {
@@ -9,9 +8,7 @@ namespace Houston.Application.ViewModel.PipelineTriggerViewModels {
 
 		public string SourceGit { get; set; } = null!;
 
-		public string? DeployKey { get; set; }
-
-		public string? PublicKey { get; set; }
+		public bool KeyRevealed { get; set; }
 
 		public List<PipelineTriggerEventViewModel> PipelineTriggerEvents { get; set; } = new List<PipelineTriggerEventViewModel>();
 	}

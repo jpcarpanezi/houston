@@ -15,11 +15,14 @@ public partial class PipelineTrigger {
 	[Column("source_git", TypeName = "character varying")]
 	public string SourceGit { get; set; } = null!;
 
-	[Column("deploy_key", TypeName = "character varying")]
-	public string DeployKey { get; set; } = null!;
+	[Column("private_key", TypeName = "character varying")]
+	public string PrivateKey { get; set; } = null!;
 
-	[NotMapped]
+	[Column("public_key", TypeName = "character varying")]
 	public string PublicKey { get; set; } = null!;
+
+	[Column("key_revealed")]
+	public bool KeyRevealed { get; set; }
 
 	[Column("secret")]
 	[StringLength(256)]
