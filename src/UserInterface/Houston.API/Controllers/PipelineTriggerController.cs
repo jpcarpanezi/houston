@@ -62,6 +62,28 @@ namespace Houston.API.Controllers {
 		}
 
 		/// <summary>
+		/// Generates new pipeline trigger deploy keys
+		/// </summary>
+		/// <param name="pipelineId"></param>
+		/// <response code="200">New deploy keys generated successfully.</response>
+		/// <response code="404">The requested pipeline trigger could not be found.</response>
+		[HttpPatch("deployKeys/{pipelineId:guid}")]
+		[Authorize]
+		[ProducesResponseType(typeof(PipelineTriggerViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
+		public async Task<IActionResult> UpdateDeployKeys(Guid pipelineId) {
+			var command = new UpdateDeployKeyCommand(pipelineId);
+			var response = await _mediator.Send(command);
+			
+			if (response.StatusCode != HttpStatusCode.OK)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
+
+			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
+
+			return Ok(view);
+		}
+
+		/// <summary>
 		/// Changes the pipeline trigger secret
 		/// </summary>
 		/// <param name="command"></param>
