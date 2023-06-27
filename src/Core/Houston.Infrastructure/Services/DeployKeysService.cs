@@ -1,19 +1,14 @@
 ﻿using Houston.Core.Models;
-using System.Security.Cryptography;
 
 namespace Houston.Infrastructure.Services {
 	public static class DeployKeysService {
-		public static DeployKeys Create(int keySize = 4096) {
-			using var rsa = RSA.Create();
-			rsa.KeySize = keySize;
+		public static DeployKeys Create(string comment, int keySize = 2048) {
+			var keygen = new SshKeyGenerator.SshKeyGenerator(keySize);
 
-			var privateKeyBytes = rsa.ExportRSAPrivateKey();
-			var privateKeyString = Convert.ToBase64String(privateKeyBytes);
+			string privateKey = keygen.ToPrivateKey();
+			string publicKey = keygen.ToRfcPublicKey(comment);
 
-			var publicKeyBytes = rsa.ExportRSAPublicKey();
-			var publicKeyString = Convert.ToBase64String(publicKeyBytes);
-
-			return new DeployKeys(privateKeyString, publicKeyString);
+			return new DeployKeys(privateKey, publicKey);
 		}
 	}
 }

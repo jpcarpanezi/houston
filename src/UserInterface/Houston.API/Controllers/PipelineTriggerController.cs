@@ -118,6 +118,7 @@ namespace Houston.API.Controllers {
 				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
 
 			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
+			view.DeployKey = null;
 
 			return Ok(view);
 		}

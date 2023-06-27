@@ -25,7 +25,7 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 			}
 
 			Guid pipelineTriggerId = Guid.NewGuid();
-			var deployKeys = DeployKeysService.Create();
+			var deployKeys = DeployKeysService.Create(pipelineTriggerId.ToString());
 			var PipelineTriggerEvents = new List<PipelineTriggerEvent>();
 
 			foreach (var @event in request.Events) {
@@ -50,8 +50,8 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 				Id = pipelineTriggerId,
 				PipelineId = request.PipelineId,
 				SourceGit = request.SourceGit,
-				DeployKey = deployKeys.PrivateKey,
-				PublicKey = deployKeys.PublicKey,
+				DeployKey = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(deployKeys.PrivateKey)),
+				PublicKey = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(deployKeys.PublicKey)),
 				Secret = PasswordService.HashPassword(request.Secret),
 				CreatedBy = _claims.Id,
 				CreationDate = DateTime.UtcNow,
