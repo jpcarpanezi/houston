@@ -1,6 +1,14 @@
+<app-pipeline-trigger-keys #deployKeysModal (onHide)="pipelineTrigger!.keyRevealed = true"></app-pipeline-trigger-keys>
+
+<div class="w-full mt-5 select-none text-yellow-700 rounded-md border-l-4 border-yellow-400 bg-yellow-100 px-4 py-2 hover:border-yellow-500" *ngIf="!pipelineTrigger?.keyRevealed && !isLoading">
+	<p><a href="#" class="underline" (click)="$event.preventDefault(); deployKeysModal.open()">Click here</a> to reveal your pipeline deploy keys!</p>
+
+	<p><strong>Warning:</strong> After shown, you will not be able to see them again unless you generate a new one.</p>
+</div>
+
 <form [formGroup]="pipelineTriggerForm">
 	<div class="px-6 py-4 mt-5 bg-white shadow border border-b-4 border-b-indigo-400 rounded-md" [loader]="isLoading">
-		<details class="group" [open]="!pipelineTriggerId">
+		<details class="group" [open]="!pipelineTrigger?.id">
 			<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
 				<span>Trigger</span>
 
@@ -13,15 +21,27 @@
 				</p>
 
 				<div class="block mt-4">
-					<label for="sourceGit">Git Source</label>
-					<input type="text" name="sourceGit" id="sourceGit" formControlName="sourceGit" placeholder="Enter the URL to the git repository" maxlength="6000" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+					<div class="flex items-center gap-4">
+						<div class="flex-auto">
+							<label for="sourceGit">Git Source</label>
+							<input type="text" name="sourceGit" id="sourceGit" formControlName="sourceGit" placeholder="Enter the URL to the git repository" maxlength="6000" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+						</div>
+
+						<button type="submit" class="text-white md:w-auto h-auto mt-3 py-2 px-4 rounded bg-indigo-500 hover:bg-indigo-600" *ngIf="pipelineTrigger?.keyRevealed" (click)="updateDeployKeys()">
+							<span class="spinner-text">
+								<span class="hidden md:inline mr-1">Update deploy keys</span>
+								<fa-icon [icon]="['fas', 'rotate']"></fa-icon>
+							</span>
+						</button>
+					</div>
+
 					<app-form-errors controlName="sourceGit" error="required">Source git required.</app-form-errors>
-					<app-form-errors controlName="sourceGit" error="maxlength">Maximum characters are 50.</app-form-errors>
-					<app-form-errors controlName="sourceGit" error="pattern">Git repository must be SSH.</app-form-errors>
+						<app-form-errors controlName="sourceGit" error="maxlength">Maximum characters are 50.</app-form-errors>
+						<app-form-errors controlName="sourceGit" error="pattern">Git repository must be SSH.</app-form-errors>
 				</div>
 
 				<div class="block mt-4">
-					<div class="w-full mb-2 select-none rounded-md border-l-4 border-yellow-400 bg-yellow-100 px-4 py-2 font-medium hover:border-yellow-500" *ngIf="!secretInput.disabled && pipelineTriggerId">
+					<div class="w-full mb-2 select-none rounded-md border-l-4 border-yellow-400 bg-yellow-100 px-4 py-2 font-medium hover:border-yellow-500" *ngIf="!secretInput.disabled && pipelineTrigger?.id">
 						Remember to change secret in your git repository.
 					</div>
 
@@ -31,7 +51,7 @@
 							<input type="password" name="secret" id="secret" formControlName="secret" placeholder="Enter the trigger secret" maxlength="64" autocomplete="new-password" class="block w-full mb-2 rounded-md disabled:bg-gray-100 border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" #secretInput>
 						</div>
 
-						<button type="submit" class="text-white md:w-auto h-auto mt-3 py-2 px-4 rounded bg-indigo-500 hover:bg-indigo-600" [class.cursor-not-allowed]="!pipelineTriggerId" *ngIf="pipelineTriggerId" (click)="togglePasswordChange()">
+						<button type="submit" class="text-white md:w-auto h-auto mt-3 py-2 px-4 rounded bg-indigo-500 hover:bg-indigo-600" [class.cursor-not-allowed]="!pipelineTrigger?.id" *ngIf="pipelineTrigger?.id" (click)="togglePasswordChange()">
 							<span class="spinner-text">
 								<span class="hidden md:inline mr-1">Change</span>
 								<fa-icon [icon]="['fas', 'rotate']"></fa-icon>

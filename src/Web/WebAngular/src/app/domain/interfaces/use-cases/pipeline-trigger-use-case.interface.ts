@@ -3,6 +3,7 @@ import { ChangeSecretPipelineTriggerCommand } from "../../commands/pipeline-trig
 import { CreatePipelineTriggerCommand } from "../../commands/pipeline-trigger-commands/create-pipeline-trigger.command";
 import { UpdatePipelineTriggerCommand } from "../../commands/pipeline-trigger-commands/update-pipeline-trigger.command";
 import { PipelineTriggerViewModel } from "../../view-models/pipeline-trigger.view-model";
+import { PipelineTriggerKeysViewModel } from "../../view-models/pipeline-trigger-keys.view-model";
 
 export abstract class PipelineTriggerUseCaseInterface {
 	abstract create(body: CreatePipelineTriggerCommand): Observable<PipelineTriggerViewModel>;
@@ -10,4 +11,6 @@ export abstract class PipelineTriggerUseCaseInterface {
 	abstract changeSecret(body: ChangeSecretPipelineTriggerCommand): Observable<any>;
 	abstract delete(pipelineTriggerId: string): Observable<any>;
 	abstract get(pipelineId: string): Observable<PipelineTriggerViewModel>;
+	abstract updateDeployKeys(pipelineId: string): Observable<any>;
+	abstract revealKeys(pipelineId: string): Observable<PipelineTriggerKeysViewModel>;
 }

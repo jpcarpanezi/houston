@@ -1,0 +1,17 @@
+<app-modal #revealDeployKeysModal (onHide)="emitOnHide(); privateKey.value = ''; publicKey.value = ''">
+	<span title>Deploy keys</span>
+
+	<span subhead>Your pipeline deploy keys for your SSH source.</span>
+
+	<div [loader]="isLoading">
+		<div class="mt-3">
+			<label for="description">Private key</label>
+			<textarea name="privateKey" rows="3" class="mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" #privateKey readonly></textarea>
+		</div>
+
+		<div class="mt-3">
+			<label for="description">Public key</label>
+			<textarea name="publicKey" rows="3" class="mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" #publicKey readonly></textarea>
+		</div>
+	</div>
+</app-modal>

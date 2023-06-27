@@ -16,7 +16,7 @@ export class PipelineTriggerComponent implements OnInit {
 	public isLoading: boolean = true;
 	public pipelineTriggerForm: FormGroup = this.initializePipelineTriggerForm();
 	public pipelineId: string | null = null;
-	public pipelineTriggerId: string | null = null;
+	public pipelineTrigger?: PipelineTriggerViewModel;
 
 	constructor(
 		private fb: FormBuilder,
@@ -70,7 +70,7 @@ export class PipelineTriggerComponent implements OnInit {
 
 		this.pipelineTriggerForm.get("secret")?.disable();
 		this.pipelineTriggerForm.patchValue(response);
-		this.pipelineTriggerId = response.id;
+		this.pipelineTrigger = response;
 	}
 
 	private getPipelineTriggerError(error: HttpErrorResponse): void {
@@ -85,7 +85,7 @@ export class PipelineTriggerComponent implements OnInit {
 		if (this.pipelineTriggerForm.invalid) return;
 		this.isLoading = true;
 
-		if (!this.pipelineTriggerId) {
+		if (!this.pipelineTrigger) {
 			this.createPipelineTrigger();
 		} else {
 			this.updatePipelineTrigger();
@@ -102,7 +102,7 @@ export class PipelineTriggerComponent implements OnInit {
 	}
 
 	private updatePipelineTrigger(): void {
-		this.pipelineTriggerForm.value["pipelineTriggerId"] = this.pipelineTriggerId;
+		this.pipelineTriggerForm.value["pipelineTriggerId"] = this.pipelineTrigger?.id;
 		this.pipelineTriggerUseCase.update(this.pipelineTriggerForm.value).subscribe({
 			next: () => Toast.fire({ icon: "success", title: "Saved successfully" }),
 			error: () => Swal.fire("Error", "An error has occurred while trying to update the pipeline trigger. Please try again later.", "error")
@@ -114,7 +114,7 @@ export class PipelineTriggerComponent implements OnInit {
 			return;
 		}
 
-		this.pipelineTriggerForm.value["pipelineTriggerId"] = this.pipelineTriggerId;
+		this.pipelineTriggerForm.value["pipelineTriggerId"] = this.pipelineTrigger?.id;
 		this.pipelineTriggerForm.value["newSecret"] = this.pipelineTriggerForm.value["secret"];
 		this.pipelineTriggerUseCase.changeSecret(this.pipelineTriggerForm.value).subscribe({
 			next: () => Toast.fire({ icon: "success", title: "Secret changed successfully" }),
@@ -194,5 +194,14 @@ export class PipelineTriggerComponent implements OnInit {
 		}
 
 		secretControl?.updateValueAndValidity();
+	}
+
+	updateDeployKeys(): void {
+		this.isLoading = true;
+
+		this.pipelineTriggerUseCase.updateDeployKeys(this.pipelineId as string).subscribe({
+			next: () => this.pipelineTrigger!.keyRevealed = false,
+			error: () => Swal.fire("Error", "An error has occurred while trying to update the deploy keys. Please try again later.", "error")
+		}).add(() => this.isLoading = false);
 	}
 }

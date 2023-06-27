@@ -7,6 +7,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { PipelineDetailsComponent } from './pipeline-details/pipeline-details.component';
 import { PipelineTriggerComponent } from './pipeline-trigger/pipeline-trigger.component';
 import { PipelineInstructionsComponent } from './pipeline-instructions/pipeline-instructions.component';
+import { PipelineTriggerKeysComponent } from './pipeline-trigger/pipeline-trigger-keys/pipeline-trigger-keys.component';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { PipelineInstructionsComponent } from './pipeline-instructions/pipeline-
 		PipelineComponent,
 		PipelineDetailsComponent,
 		PipelineTriggerComponent,
-		PipelineInstructionsComponent
+		PipelineInstructionsComponent,
+		PipelineTriggerKeysComponent
 	],
 	imports: [
 		CommonModule,
