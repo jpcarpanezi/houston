@@ -142,7 +142,18 @@ namespace Houston.API.Controllers {
 			return Ok(view);
 		}
 
+		/// <summary>
+		/// Reveals the pipeline trigger deploy keys
+		/// </summary>
+		/// <param name="pipelineId"></param>
+		/// <response code="200">Pipeline trigger deploy keys object response</response>
+		/// <response code="404">The requested pipeline trigger could not be found</response>
+		/// <response code="403">The deploy keys are already revealed</response>
 		[HttpGet("deployKeys/{pipelineId:guid}")]
+		[Authorize]
+		[ProducesResponseType(typeof(PipelineTriggerKeysViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		public async Task<IActionResult> RevealKeys(Guid pipelineId) {
 			var command = new RevealPipelineTriggerKeysCommand(pipelineId);
 			var response = await _mediator.Send(command);
