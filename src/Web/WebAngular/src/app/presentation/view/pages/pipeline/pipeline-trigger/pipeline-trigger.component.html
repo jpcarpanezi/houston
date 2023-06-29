@@ -1,6 +1,6 @@
 <app-pipeline-trigger-keys #deployKeysModal (onHide)="pipelineTrigger!.keyRevealed = true"></app-pipeline-trigger-keys>
 
-<div class="w-full mt-5 select-none text-yellow-700 rounded-md border-l-4 border-yellow-400 bg-yellow-100 px-4 py-2 hover:border-yellow-500" *ngIf="!pipelineTrigger?.keyRevealed && !isLoading">
+<div class="w-full mt-5 select-none text-yellow-700 rounded-md border-l-4 border-yellow-400 bg-yellow-100 px-4 py-2 hover:border-yellow-500" *ngIf="!(!pipelineTrigger?.keyRevealed && !pipelineTrigger) && !isLoading">
 	<p><a href="#" class="underline" (click)="$event.preventDefault(); deployKeysModal.open()">Click here</a> to reveal your pipeline deploy keys!</p>
 
 	<p><strong>Warning:</strong> After shown, you will not be able to see them again unless you generate a new one.</p>

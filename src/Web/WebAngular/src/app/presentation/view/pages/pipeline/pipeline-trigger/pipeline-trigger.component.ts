@@ -97,7 +97,10 @@ export class PipelineTriggerComponent implements OnInit {
 	private createPipelineTrigger(): void {
 		this.pipelineTriggerForm.value["pipelineId"] = this.pipelineId;
 		this.pipelineTriggerUseCase.create(this.pipelineTriggerForm.value).subscribe({
-			next: () => Toast.fire({ icon: "success", title: "Saved successfully" }),
+			next: (response: PipelineTriggerViewModel) => {
+				 Toast.fire({ icon: "success", title: "Saved successfully" });
+				 this.pipelineTrigger = response;
+			},
 			error: () => Swal.fire("Error", "An error has occurred while trying to create the pipeline trigger. Please try again later.", "error")
 		}).add(() => this.isLoading = false);
 	}
