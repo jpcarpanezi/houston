@@ -25,7 +25,7 @@
 			<div class="mt-3">
 				<p><fa-icon [icon]="['fas', 'bolt']" matTooltip="Triggered by"></fa-icon> {{ pipelineRun?.triggeredBy == null ? 'Automatic' : pipelineRun?.triggeredBy }}</p>
 
-				<p><fa-icon [icon]="['far', 'calendar']" matTooltip="Start time"></fa-icon> {{ pipelineRun?.startTime }}</p>
+				<p><fa-icon [icon]="['far', 'calendar']" matTooltip="Start time"></fa-icon> {{ pipelineRun?.startTime | utcToLocalTime : 'short' }}</p>
 
 				<p><fa-icon [icon]="['fas', 'stopwatch']" matTooltip="Duration"></fa-icon> {{ pipelineRun?.duration | duration }}</p>
 			</div>

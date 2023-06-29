@@ -3,13 +3,14 @@ import { AuthService } from 'src/app/infra/auth/auth.service';
 import { UserSessionViewModel } from 'src/app/domain/view-models/user-session.view-model';
 import { PageViewModel } from 'src/app/domain/view-models/page.view-model';
 import { PipelineViewModel } from 'src/app/domain/view-models/pipeline.view-model';
-import { ColumnMode } from '@swimlane/ngx-datatable';
+import { ColumnMode, TableColumn } from '@swimlane/ngx-datatable';
 import { PipelineUseCaseInterface } from 'src/app/domain/interfaces/use-cases/pipeline-use-case.interface';
 import { PaginatedItemsViewModel } from 'src/app/domain/view-models/paginated-items.view-model';
 import Swal from 'sweetalert2';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Toast } from 'src/app/infra/helpers/toast';
 import { Subscription, interval, startWith, switchMap } from 'rxjs';
+import { UtcToLocalTimePipe } from 'src/app/infra/helpers/utc-to-local-time.pipe';
 
 @Component({
   selector: 'app-home',
@@ -22,11 +23,7 @@ export class HomeComponent implements OnInit {
 	public page: PageViewModel = new PageViewModel();
 	public rows: PipelineViewModel[] = [];
 	public columns = [
-		{ prop: "status", name: "Status" },
-		{ prop: "createdBy", name: "Created by" },
-		{ prop: "creationDate", name: "Created at" },
-		{ prop: "updatedBy", name: "Updated by" },
-		{ prop: "lastUpdate", name: "Last update" }
+		{ prop: "status", name: "Status" }
 	];
 	public columnMode: ColumnMode = ColumnMode.force;
 	public isLoading: boolean = true;

@@ -17,6 +17,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ModalComponent } from './modal/modal.component';
 import {MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipModule} from '@angular/material/tooltip';
 import { NgxJdenticonModule } from 'ngx-jdenticon';
+import { InfraModule } from 'src/app/infra/infra.module';
 
 
 
@@ -47,7 +48,8 @@ import { NgxJdenticonModule } from 'ngx-jdenticon';
 		NgxLoaderIndicatorDirective,
 		SidebarComponent,
 		ModalComponent,
-		MatTooltipModule
+		MatTooltipModule,
+		InfraModule
 	],
 	providers: [
 		provideAnimations(),

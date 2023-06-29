@@ -8,8 +8,8 @@ import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
 	declarations: [
-    FirstAccessComponent
-  ],
+		FirstAccessComponent
+	],
 	imports: [
 		CommonModule,
 		FirstAccessRoutingModule,

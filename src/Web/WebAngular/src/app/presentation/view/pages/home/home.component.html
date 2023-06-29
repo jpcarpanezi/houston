@@ -40,6 +40,30 @@
 
 	<ngx-datatable-column *ngFor="let col of columns" [prop]="col.prop" [name]="col.name"></ngx-datatable-column>
 
+	<ngx-datatable-column name="Created by" prop="createdBy" [sortable]="true">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			{{ value }}
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column name="Creation date" prop="creationDate" [sortable]="true">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			{{ value | utcToLocalTime: 'short' }}
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column name="Updated by" prop="updatedBy" [sortable]="true">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			{{ value }}
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column name="Last update" prop="lastUpdate" [sortable]="true">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			{{ value | utcToLocalTime: 'short' }}
+		</ng-template>
+	</ngx-datatable-column>
+
 	<ngx-datatable-column name="Actions" prop="actions" [sortable]="false" [width]="256">
 		<ng-template let-row="row" let-rowIndex="rowIndex" let-expanded="expanded" let-value="value" ngx-datatable-cell-template>
 			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600" [routerLink]="['/pipeline', row.id]" matTooltip="Edit">
