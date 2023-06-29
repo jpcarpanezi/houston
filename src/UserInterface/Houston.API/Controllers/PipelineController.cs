@@ -177,7 +177,19 @@ namespace Houston.API.Controllers
 			return NoContent();
 		}
 
+		/// <summary>
+		/// Webhook handler to trigger pipeline run
+		/// </summary>
+		/// <param name="origin">Webhook origin (ex: github)</param>
+		/// <param name="pipelineId">Pipeline id to trigger</param>
+		/// <response code="204">Pipeline triggered with success</response>
+		/// <response code="404">The requested pipeline was not found</response>
+		/// <response code="423">The requested pipeline is locked by another proccess</response>
 		[HttpPost("webhook/{origin}/{pipelineId:guid}")]
+		[Authorize]
+		[ProducesResponseType((int)HttpStatusCode.NoContent)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
+		[ProducesResponseType(typeof(LockedMessageViewModel), (int)HttpStatusCode.Locked)]
 		public async Task<IActionResult> Webhook(string origin, Guid pipelineId) {
 			using var reader = new StreamReader(Request.Body);
 			string jsonPayload = await reader.ReadToEndAsync();

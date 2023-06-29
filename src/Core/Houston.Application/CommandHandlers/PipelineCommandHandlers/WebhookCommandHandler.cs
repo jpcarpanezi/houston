@@ -28,17 +28,17 @@ namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
 
 			Type? type = Type.GetType($"Houston.Application.Webhooks.{origin}");
 			if (type is null) {
-				return new ResultCommand(HttpStatusCode.BadRequest, "The requested webhook origin does not exists.", "invalidWebhookOrigin");
+				return new ResultCommand(HttpStatusCode.NotFound, "The requested webhook origin does not exists.", "invalidWebhookOrigin");
 			}
 
 			var webhookService = Activator.CreateInstance(type, _context) as IWebhookService;
 			if (webhookService is null) {
-				return new ResultCommand(HttpStatusCode.BadRequest, "The requested webhook origin does not exists.", "invalidWebhookOrigin");
+				return new ResultCommand(HttpStatusCode.NotFound, "The requested webhook origin does not exists.", "invalidWebhookOrigin");
 			}
 
 			var sourceGit = webhookService.DeserializeOrigin(request.JsonPayload);
 			if (sourceGit is null) {
-				return new ResultCommand(HttpStatusCode.BadRequest, "The requested webhook origin does not exists.", "invalidWebhookOrigin");
+				return new ResultCommand(HttpStatusCode.NotFound, "The requested webhook origin does not exists.", "invalidWebhookOrigin");
 			}
 
 			var triggerEvents = await _unitOfWork.PipelineTriggerRepository.GetByPipelineId(request.PipelineId);
