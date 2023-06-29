@@ -25,6 +25,7 @@ namespace Houston.Infrastructure.Repository {
 								   .Include(x => x.PipelineInstruction)
 								   .ThenInclude(x => x.ConnectorFunction)
 								   .Where(x => x.PipelineId == pipelineId)
+								   .OrderByDescending(x => x.StartTime)
 								   .Skip(pageSize * pageIndex)
 								   .Take(pageSize)
 								   .ToListAsync();
