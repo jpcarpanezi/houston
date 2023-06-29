@@ -6,11 +6,11 @@
 	<div>
 		<h1 class="text-2xl font-semibold">Hello, {{ userInfo?.name!.split(" ")[0] }}!
 		</h1>
-		<p class="text-slate-500">See all your created pipelines.</p>
+		<p class="text-slate-500 dark:text-slate-600">See all your created pipelines.</p>
 	</div>
 
 	<div class="mt-5 md:mt-0 text-right">
-		<button type="button" class="text-white w-full md:w-auto py-2 px-4 rounded bg-indigo-500 hover:bg-indigo-600" (click)="pipelineModal.open()">
+		<button type="button" class="text-white w-full md:w-auto btn-primary" (click)="pipelineModal.open()">
 			<span class="spinner-text">New <fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
 		</button>
 	</div>
@@ -66,19 +66,19 @@
 
 	<ngx-datatable-column name="Actions" prop="actions" [sortable]="false" [width]="256">
 		<ng-template let-row="row" let-rowIndex="rowIndex" let-expanded="expanded" let-value="value" ngx-datatable-cell-template>
-			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600" [routerLink]="['/pipeline', row.id]" matTooltip="Edit">
+			<button type="button" class="!px-3 btn-primary" [routerLink]="['/pipeline', row.id]" matTooltip="Edit">
 				<span class="spinner-text"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></span>
 			</button>
 
-			<button type="button" class="text-white py-2 px-3 ml-3 rounded bg-indigo-500 hover:bg-indigo-600" [routerLink]="['/runs', row.id]" matTooltip="Logs">
+			<button type="button" class="!px-3 ml-3 btn-primary" [routerLink]="['/runs', row.id]" matTooltip="Logs">
 				<span class="spinner-text"><fa-icon [icon]="['fas', 'file-lines']"></fa-icon></span>
 			</button>
 
-			<button type="button" class="text-white py-2 px-3 ml-3 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="togglePipelineBtn.disabled" (click)="togglePipeline(togglePipelineBtn, row.id)" [matTooltip]="row.status == 'Stopped' ? 'Toggle enable' : 'Toggle disable'" #togglePipelineBtn>
+			<button type="button" class="!px-3 ml-3 btn-primary" [class.spinner]="togglePipelineBtn.disabled" (click)="togglePipeline(togglePipelineBtn, row.id)" [matTooltip]="row.status == 'Stopped' ? 'Toggle enable' : 'Toggle disable'" #togglePipelineBtn>
 				<span class="spinner-text"><fa-icon [icon]="row.status == 'Stopped' ? ['fas', 'toggle-off'] : ['fas', 'toggle-on']"></fa-icon></span>
 			</button>
 
-			<button type="button" class="text-white py-2 px-3 ml-3 rounded bg-rose-500 hover:bg-rose-600" [class.spinner]="deletePipelineBtn.disabled" (click)="deletePipeline(deletePipelineBtn, row.id)" matTooltip="Delete" #deletePipelineBtn>
+			<button type="button" class="!px-3 ml-3 btn-danger" [class.spinner]="deletePipelineBtn.disabled" (click)="deletePipeline(deletePipelineBtn, row.id)" matTooltip="Delete" #deletePipelineBtn>
 				<span class="spinner-text"><fa-icon [icon]="['fas', 'trash']"></fa-icon></span>
 			</button>
 		</ng-template>
