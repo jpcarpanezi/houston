@@ -17,6 +17,7 @@ export class PipelineTriggerComponent implements OnInit {
 	public pipelineTriggerForm: FormGroup = this.initializePipelineTriggerForm();
 	public pipelineId: string | null = null;
 	public pipelineTrigger?: PipelineTriggerViewModel;
+	public originPath = location.origin;
 
 	constructor(
 		private fb: FormBuilder,
@@ -203,5 +204,16 @@ export class PipelineTriggerComponent implements OnInit {
 			next: () => this.pipelineTrigger!.keyRevealed = false,
 			error: () => Swal.fire("Error", "An error has occurred while trying to update the deploy keys. Please try again later.", "error")
 		}).add(() => this.isLoading = false);
+	}
+
+	copyToClipboard(input: HTMLInputElement, button: HTMLButtonElement): void {
+		navigator.clipboard.writeText(input.value).then(() => {
+			const defaultValue = button.innerHTML;
+			button.innerHTML = "Copied!";
+
+			setTimeout(() => {
+				button.innerHTML = defaultValue;
+			}, 500);
+		});
 	}
 }
