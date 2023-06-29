@@ -87,7 +87,7 @@
 		<details class="group" #triggerEventsDetail>
 			<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
 				<span>
-					<button type="button" class="text-white w-auto py-0.5 px-1 mr-1 rounded bg-indigo-500 hover:bg-indigo-600" (click)="addEvent(); triggerEventsDetail.open = true">
+					<button type="button" class="text-white w-auto py-0.5 px-1 mr-1 rounded bg-indigo-500 hover:bg-indigo-600" (click)="addEvent(); triggerEventsDetail.open = true" matTooltip="Add event">
 						<span class="spinner-text"><fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
 					</button>
 
@@ -110,7 +110,7 @@
 				<details class="group" [formGroupName]="i" open>
 					<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
 						<span>
-							<button type="button" class="text-white w-auto py-0.5 px-1 mr-1 rounded bg-rose-500 hover:bg-rose-600 text-sm" (click)="removeEvent(i)">
+							<button type="button" class="text-white w-auto py-0.5 px-1 mr-1 rounded bg-rose-500 hover:bg-rose-600 text-sm" (click)="removeEvent(i)" matTooltip="Remove event">
 								<span class="spinner-text"><fa-icon [icon]="['fas', 'minus']"></fa-icon></span>
 							</button>
 
@@ -146,7 +146,7 @@
 						<details class="group" [formGroupName]="j" open>
 							<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
 								<span>
-									<button type="button" class="text-white w-auto py-0.5 px-1 mr-1 rounded bg-rose-500 hover:bg-rose-600 text-sm" (click)="removeEventFilter(event, j)">
+									<button type="button" class="text-white w-auto py-0.5 px-1 mr-1 rounded bg-rose-500 hover:bg-rose-600 text-sm" (click)="removeEventFilter(event, j)" matTooltip="Remove filter">
 										<span class="spinner-text"><fa-icon [icon]="['fas', 'minus']"></fa-icon></span>
 									</button>
 
@@ -174,11 +174,11 @@
 								<div class="relative">
 									<input type="text" name="filterValues" id="filterValues" [formControlName]="k" placeholder="Enter the filter value {{ k + 1 }}" maxlength="25" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
 
-									<button type="button" class="text-white absolute right-0 top-1/2 -translate-y-1/2 w-auto py-0.5 px-1 mr-2 rounded bg-indigo-500 hover:bg-indigo-600 text-sm" (click)="addEventFilterValue(filter)" *ngIf="k == 0">
+									<button type="button" class="text-white absolute right-0 top-1/2 -translate-y-1/2 w-auto py-0.5 px-1 mr-2 rounded bg-indigo-500 hover:bg-indigo-600 text-sm" (click)="addEventFilterValue(filter)" *ngIf="k == 0" matTooltip="Add value">
 										<span class="spinner-text"><fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
 									</button>
 
-									<button type="button" class="text-white absolute right-0 top-1/2 -translate-y-1/2 w-auto py-0.5 px-1 mr-2 rounded bg-rose-500 hover:bg-rose-600 text-sm" (click)="removeEventFilterValue(filter, k)" *ngIf="k > 0">
+									<button type="button" class="text-white absolute right-0 top-1/2 -translate-y-1/2 w-auto py-0.5 px-1 mr-2 rounded bg-rose-500 hover:bg-rose-600 text-sm" (click)="removeEventFilterValue(filter, k)" *ngIf="k > 0" matTooltip="Remove value">
 										<span class="spinner-text"><fa-icon [icon]="['fas', 'minus']"></fa-icon></span>
 									</button>
 								</div>

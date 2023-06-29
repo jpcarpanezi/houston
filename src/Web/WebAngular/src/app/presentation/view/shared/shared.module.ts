@@ -15,6 +15,8 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { RouterModule } from '@angular/router';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ModalComponent } from './modal/modal.component';
+import {MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipModule} from '@angular/material/tooltip';
+import { NgxJdenticonModule } from 'ngx-jdenticon';
 
 
 
@@ -27,13 +29,14 @@ import { ModalComponent } from './modal/modal.component';
 		SettingsComponent,
 		SearchBarComponent,
   		SidebarComponent,
-    ModalComponent
+    	ModalComponent
 	],
 	imports: [
 		CommonModule,
 		FontAwesomeModule,
 		NgxLoaderIndicatorDirective,
-		RouterModule
+		RouterModule,
+		NgxJdenticonModule
 	],
 	exports: [
 		ReactiveFormsModule,
@@ -43,11 +46,13 @@ import { ModalComponent } from './modal/modal.component';
 		NgxDatatableModule,
 		NgxLoaderIndicatorDirective,
 		SidebarComponent,
-		ModalComponent
+		ModalComponent,
+		MatTooltipModule
 	],
 	providers: [
 		provideAnimations(),
-		provideNgxLoaderIndicator()
+		provideNgxLoaderIndicator(),
+		{ provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: { position: "above" } }
 	]
 })
 export class SharedModule { }
