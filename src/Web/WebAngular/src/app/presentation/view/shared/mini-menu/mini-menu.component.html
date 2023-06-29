@@ -29,8 +29,8 @@
 				<svg class="w-10 h-10 rounded-full" [data-jdenticon-value]="userInfo?.email"></svg>
 			</button>
 
-			<div tabindex="-1" aria-orientation="vertical" role="menu" class="absolute w-56 py-1 mb-4 bg-white rounded-md shadow-lg min-w-max left-5 bottom-full ring-1 ring-black ring-opacity-5 focus:outline-none" [class.hidden]="!isUserMenuOpen">
-				<a href="#" class="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100" (click)="signOut($event)">Logout</a>
+			<div tabindex="-1" aria-orientation="vertical" role="menu" class="absolute w-56 py-1 mb-4 bg-white dark:bg-slate-800 rounded-md shadow-lg min-w-max left-5 bottom-full ring-1 ring-black ring-opacity-5 focus:outline-none" [class.hidden]="!isUserMenuOpen">
+				<a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-white transition-colors hover:bg-gray-100 dark:hover:bg-slate-900" (click)="signOut($event)">Logout</a>
 			</div>
 		</div>
 	</div>
