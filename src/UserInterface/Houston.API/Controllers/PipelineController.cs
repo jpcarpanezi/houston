@@ -2,14 +2,16 @@
 using Houston.Application.ViewModel;
 using Houston.Application.ViewModel.PipelineViewModels;
 using Houston.Core.Commands.PipelineCommands;
+using Houston.Core.Models.GitHub.Base;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using System.Net;
 
-namespace Houston.API.Controllers {
-	[Route("api/[controller]")]
+namespace Houston.API.Controllers
+{
+    [Route("api/[controller]")]
 	[ApiController]
 	public class PipelineController : ControllerBase {
 		private readonly IMediator _mediator;
@@ -162,6 +164,25 @@ namespace Houston.API.Controllers {
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		[ProducesResponseType(typeof(LockedMessageViewModel), (int)HttpStatusCode.Locked)]
 		public async Task<IActionResult> Run([FromBody] RunPipelineCommand command) {
+			var response = await _mediator.Send(command);
+
+			if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.Locked)
+				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
+
+			if (response.StatusCode == HttpStatusCode.Locked) {
+				DateTime convertedEstimateTime = DateTime.ParseExact(response.ErrorMessage!, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("Server is processing a request from this pipeline. Please try again later.", "pipelineRunning", convertedEstimateTime));
+			}
+
+			return NoContent();
+		}
+
+		[HttpPost("webhook/{origin}/{pipelineId:guid}")]
+		public async Task<IActionResult> Webhook(string origin, Guid pipelineId) {
+			using var reader = new StreamReader(Request.Body);
+			string jsonPayload = await reader.ReadToEndAsync();
+
+			var command = new WebhookCommand(origin, pipelineId, jsonPayload);
 			var response = await _mediator.Send(command);
 
 			if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.Locked)
