@@ -1,15 +1,15 @@
-<nav class="flex-1 w-64 px-2 py-4 space-y-2 overflow-y-hidden hover:overflow-y-auto">
-	<a routerLink="/home" routerLinkActive="bg-indigo-100" class="flex items-center p-2 text-gray-500 transition-colors rounded-md hover:bg-indigo-100">
+<nav class="flex-1 w-64 px-2 py-4 space-y-2 overflow-y-hidden hover:overflow-y-auto bg-white dark:bg-slate-700 text-gray-500 dark:text-white">
+	<a routerLink="/home" routerLinkActive="bg-indigo-100 dark:bg-slate-800" class="flex items-center p-2 transition-colors rounded-md hover:bg-indigo-100">
 		<span aria-hidden="true"><fa-icon [icon]="['fas', 'house']"></fa-icon></span>
 		<span class="ml-2 text-sm">Home</span>
 	</a>
 
-	<a routerLink="/connectors" routerLinkActive="bg-indigo-100" class="flex items-center p-2 text-gray-500 transition-colors rounded-md hover:bg-indigo-100">
+	<a routerLink="/connectors" routerLinkActive="bg-indigo-100 dark:bg-slate-800" class="flex items-center p-2 transition-colors rounded-md hover:bg-indigo-100 dark:hover:bg-slate-800">
 		<span aria-hidden="true"><fa-icon [icon]="['fas', 'puzzle-piece']"></fa-icon></span>
 		<span class="ml-2 text-sm">Connectors</span>
 	</a>
 
-	<a routerLink="/users" class="flex items-center p-2 text-gray-500 transition-colors rounded-md hover:bg-indigo-100">
+	<a routerLink="/users" routerLinkActive="bg-indigo-100 dark:bg-slate-800"class="flex items-center p-2 transition-colors rounded-md hover:bg-indigo-100 dark:hover:bg-slate-800">
 		<span aria-hidden="true"><fa-icon [icon]="['fas', 'users']"></fa-icon></span>
 		<span class="ml-2 text-sm">Users</span>
 	</a>

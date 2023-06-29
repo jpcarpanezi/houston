@@ -1,4 +1,4 @@
-<div class="flex flex-col flex-shrink-0 h-full px-2 py-4 border-r w-16">
+<div class="flex flex-col flex-shrink-0 h-full px-2 py-4 border-r dark:border-gray-800 w-16 bg-white dark:bg-slate-800">
 	<div class="flex-shrink-0 text-center">
 		<a class="inline-block text-xl font-bold tracking-wider text-indigo-700 uppercase" routerLink="/home">
 			<img src="assets/houston.png" alt="Website logo" class="w-10">
@@ -6,17 +6,17 @@
 	</div>
 
 	<div class="flex flex-col items-center justify-center flex-1 space-y-4">
-		<button class="p-2 text-indigo-400 transition-colors duration-200 w-10 h-10 rounded-full bg-indigo-50 hover:text-indigo-600 hover:bg-indigo-100 focus:outline-none focus:bg-indigo-100 focus:ring-indigo-800" (click)="toggleNotificationsPanel()">
+		<button class="p-2 text-indigo-400 dark:text-purple-400 transition-colors duration-200 w-10 h-10 rounded-full bg-indigo-50 dark:bg-purple-100 hover:text-indigo-600 dark:hover:text-purple-600 hover:bg-indigo-100 dark:hover:bg-purple-100 focus:outline-none focus:bg-indigo-100 focus:ring-indigo-800" (click)="toggleNotificationsPanel()">
 			<span class="sr-only">Open notification panel</span>
 			<fa-icon [icon]="['fas', 'bell']"></fa-icon>
 		</button>
 
-		<button class="p-2 text-indigo-400 transition-colors duration-200 w-10 h-10 rounded-full bg-indigo-50 hover:text-indigo-600 hover:bg-indigo-100 focus:outline-none focus:bg-indigo-100 focus:ring-indigo-800" (click)="toggleSearchPanel()">
+		<button class="p-2 text-indigo-400 dark:text-purple-400 transition-colors duration-200 w-10 h-10 rounded-full bg-indigo-50 dark:bg-purple-100 hover:text-indigo-600 dark:hover:text-purple-600 hover:bg-indigo-100 dark:hover:bg-purple-100 focus:outline-none focus:bg-indigo-100 focus:ring-indigo-800" (click)="toggleSearchPanel()">
 			<span class="sr-only">Open search panel</span>
 			<fa-icon [icon]="['fas', 'magnifying-glass']"></fa-icon>
 		</button>
 
-		<button class="p-2 text-indigo-400 transition-colors duration-200 w-10 h-10 rounded-full bg-indigo-50 hover:text-indigo-600 hover:bg-indigo-100 focus:outline-none focus:bg-indigo-100 focus:ring-indigo-800" (click)="toggleSettingsPanel()">
+		<button class="p-2 text-indigo-400 dark:text-purple-400 transition-colors duration-200 w-10 h-10 rounded-full bg-indigo-50 dark:bg-purple-100 hover:text-indigo-600 dark:hover:text-purple-600 hover:bg-indigo-100 dark:hover:bg-purple-100 focus:outline-none focus:bg-indigo-100 focus:ring-indigo-800" (click)="toggleSettingsPanel()">
 			<span class="sr-only">Open settings panel</span>
 			<fa-icon [icon]="['fas', 'gear']"></fa-icon>
 		</button>
@@ -24,7 +24,7 @@
 
 	<div class="relative flex items-center justify-center flex-shrink-0">
 		<div>
-			<button type="button" class="block transition-opacity duration-200 rounded-full focus:outline-none focus:ring border" (click)="toggleUserMenu()">
+			<button type="button" class="block bg-white transition-opacity duration-200 rounded-full focus:outline-none focus:ring border" (click)="toggleUserMenu()">
 				<span class="sr-only">User menu</span>
 				<svg class="w-10 h-10 rounded-full" [data-jdenticon-value]="userInfo?.email"></svg>
 			</button>
