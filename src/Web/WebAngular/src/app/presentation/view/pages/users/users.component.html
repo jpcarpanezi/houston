@@ -35,11 +35,11 @@
 
 	<ngx-datatable-column name="Actions" prop="actions" [sortable]="false" [width]="256">
 		<ng-template let-row="row" let-rowIndex="rowIndex" let-expanded="expanded" let-value="value" ngx-datatable-cell-template>
-			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="toggleUserBtn.disabled" (click)="toggleStatus(row.id, toggleUserBtn)" #toggleUserBtn>
+			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="toggleUserBtn.disabled" (click)="toggleStatus(row.id, toggleUserBtn)" [matTooltip]="row.active ? 'Toggle enable' : 'Toggle disable'" #toggleUserBtn>
 				<span class="spinner-text"><fa-icon [icon]="row.active == false ? ['fas', 'toggle-off'] : ['fas', 'toggle-on']"></fa-icon></span>
 			</button>
 
-			<button type="button" [class.spinner]="false" class="text-white py-2 px-3 ml-3 rounded bg-indigo-500 hover:bg-indigo-600" (click)="changePasswordModal.open(row.id)">
+			<button type="button" [class.spinner]="false" class="text-white py-2 px-3 ml-3 rounded bg-indigo-500 hover:bg-indigo-600" (click)="changePasswordModal.open(row.id)" matTooltip="Change password">
 				<span class="spinner-text"><fa-icon [icon]="['fas', 'unlock']"></fa-icon></span>
 			</button>
 		</ng-template>

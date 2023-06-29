@@ -12,7 +12,7 @@ import { UpdatePipelineComponent } from './update-pipeline/update-pipeline.compo
 	declarations: [
 		HomeComponent,
 		NewPipelineComponent,
-  UpdatePipelineComponent
+  		UpdatePipelineComponent
 	],
 	imports: [
 		CommonModule,

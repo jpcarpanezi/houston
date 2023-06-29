@@ -20,11 +20,7 @@ export class ConnectorsComponent implements OnInit {
 	public rows: ConnectorViewModel[] = [];
 	public expanded: ConnectorViewModel = {} as ConnectorViewModel;
 	public columns = [
-		{prop: "name", name: "Name"},
-		{prop: "createdBy", name: "Created by"},
-		{prop: "creationDate", name: "Created at"},
-		{prop: "updatedBy", name: "Updated by"},
-		{prop: "lastUpdate", name: "Last update"}
+		{prop: "name", name: "Name"}
 	];
 	public columnMode: ColumnMode = ColumnMode.force;
 	public isLoading: boolean = true;

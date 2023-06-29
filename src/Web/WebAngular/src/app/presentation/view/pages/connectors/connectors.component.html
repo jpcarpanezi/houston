@@ -47,18 +47,17 @@
 
 						<span>{{ connectorFunction.createdBy }}</span>
 
-						<span>{{ connectorFunction.creationDate }}</span>
+						<span>{{ connectorFunction.creationDate | utcToLocalTime : 'short' }}</span>
 
 						<span>{{ connectorFunction.updatedBy }}</span>
 
-						<span>{{ connectorFunction.lastUpdate }}</span>
+						<span>{{ connectorFunction.lastUpdate | utcToLocalTime: 'short' }}</span>
 
 						<span>
 							<a class="text-blue-600 hover:text-blue-900 mr-5" [routerLink]="['/connector-function', connectorFunction.id]">Edit</a>
 							<button type="button" class="text-blue-600 hover:text-blue-900" [class.spinner]="deleteConnectorFunctionBtn.disabled" (click)="deleteConnectorFunction(deleteConnectorFunctionBtn, row, connectorFunction.id)" #deleteConnectorFunctionBtn>
 								<span class="spinner-text !text-blue-600">Delete</span>
 							</button>
-							<!-- <a href="#" class="text-blue-600 hover:text-blue-900" #deleteConnectorFunctionBtn (click)="deleteConnectorFunction(deleteConnectorFunctionBtn, $event, row, connectorFunction.id)">Delete</a> -->
 						</span>
 					</div>
 				</div>
@@ -68,17 +67,41 @@
 
 	<ngx-datatable-column *ngFor="let col of columns" [prop]="col.prop" [name]="col.name" [width]="256"></ngx-datatable-column>
 
+	<ngx-datatable-column name="Created by" prop="createdBy" [sortable]="true" [width]="256">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			{{ value }}
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column name="Creation date" prop="creationDate" [sortable]="true" [width]="256">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			{{ value | utcToLocalTime: 'short' }}
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column name="Updated by" prop="updatedBy" [sortable]="true" [width]="256">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			{{ value }}
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column name="Last update" prop="lastUpdate" [sortable]="true" [width]="256">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			{{ value | utcToLocalTime: 'short' }}
+		</ng-template>
+	</ngx-datatable-column>
+
 	<ngx-datatable-column name="Actions" prop="actions" [sortable]="false" [width]="256">
 		<ng-template let-row="row" let-rowIndex="rowIndex" let-expanded="expanded" let-value="value" ngx-datatable-cell-template>
-			<button type="button" [class.spinner]="false" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="expandRowBtn.disabled" (click)="toggleExpandRow(row, expanded, rowIndex, expandRowBtn)" #expandRowBtn>
+			<button type="button" [class.spinner]="false" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="expandRowBtn.disabled" (click)="toggleExpandRow(row, expanded, rowIndex, expandRowBtn)" [matTooltip]="expanded ? 'Close' : 'Expand functions'" #expandRowBtn>
 				<span class="spinner-text"><fa-icon [icon]="expanded ? ['fas', 'xmark'] : ['fas', 'table-list']"></fa-icon></span>
 			</button>
 
-			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3" [routerLink]="['/connector-function']" [queryParams]="{connectorId: row.id}"><fa-icon [icon]="['fas', 'plus']"></fa-icon></button>
+			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3" [routerLink]="['/connector-function']" [queryParams]="{connectorId: row.id}" matTooltip="New function"><fa-icon [icon]="['fas', 'plus']"></fa-icon></button>
 
-			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3" (click)="updateConnector.open(row)"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></button>
+			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3" (click)="updateConnector.open(row)" matTooltip="Edit"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></button>
 
-			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3" [class.spinner]="deleteConnectorBtn.disabled" (click)="deleteConnector(deleteConnectorBtn, row)" #deleteConnectorBtn>
+			<button type="button" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600 ml-3" [class.spinner]="deleteConnectorBtn.disabled" (click)="deleteConnector(deleteConnectorBtn, row)" matTooltip="Delete" #deleteConnectorBtn>
 				<span class="spinner-text"><fa-icon [icon]="['fas', 'trash']"></fa-icon></span>
 			</button>
 		</ng-template>

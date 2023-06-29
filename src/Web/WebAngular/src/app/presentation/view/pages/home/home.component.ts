@@ -3,12 +3,14 @@ import { AuthService } from 'src/app/infra/auth/auth.service';
 import { UserSessionViewModel } from 'src/app/domain/view-models/user-session.view-model';
 import { PageViewModel } from 'src/app/domain/view-models/page.view-model';
 import { PipelineViewModel } from 'src/app/domain/view-models/pipeline.view-model';
-import { ColumnMode } from '@swimlane/ngx-datatable';
+import { ColumnMode, TableColumn } from '@swimlane/ngx-datatable';
 import { PipelineUseCaseInterface } from 'src/app/domain/interfaces/use-cases/pipeline-use-case.interface';
 import { PaginatedItemsViewModel } from 'src/app/domain/view-models/paginated-items.view-model';
 import Swal from 'sweetalert2';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Toast } from 'src/app/infra/helpers/toast';
+import { Subscription, interval, startWith, switchMap } from 'rxjs';
+import { UtcToLocalTimePipe } from 'src/app/infra/helpers/utc-to-local-time.pipe';
 
 @Component({
   selector: 'app-home',
@@ -21,14 +23,11 @@ export class HomeComponent implements OnInit {
 	public page: PageViewModel = new PageViewModel();
 	public rows: PipelineViewModel[] = [];
 	public columns = [
-		{ prop: "status", name: "Status" },
-		{ prop: "createdBy", name: "Created by" },
-		{ prop: "creationDate", name: "Created at" },
-		{ prop: "updatedBy", name: "Updated by" },
-		{ prop: "lastUpdate", name: "Last update" }
+		{ prop: "status", name: "Status" }
 	];
 	public columnMode: ColumnMode = ColumnMode.force;
 	public isLoading: boolean = true;
+	public longPooling?: Subscription;
 
 	constructor(
 		private authService: AuthService,
@@ -43,6 +42,7 @@ export class HomeComponent implements OnInit {
 	}
 
 	setPage(pageInfo: any): void {
+		this.longPooling?.unsubscribe();
 		this.isLoading = true;
 		this.page.pageIndex = pageInfo.offset;
 
@@ -52,9 +52,28 @@ export class HomeComponent implements OnInit {
 				this.page.pageSize = response.pageSize;
 				this.page.count = response.count;
 				this.rows = response.data;
+				this.triggerLongPooling();
 			},
 			error: () => Swal.fire("Error", "An error has occurred while trying to get the pipelines", "error")
 		}).add(() => this.isLoading = false);
+	}
+
+	private triggerLongPooling(): void {
+		this.longPooling = interval(5000).pipe(
+			startWith(0),
+			switchMap(() => this.pipelineUseCase.getAll(this.page.pageSize, this.page.pageIndex))
+		).subscribe({
+			next: (response: PaginatedItemsViewModel<PipelineViewModel>) => {
+				this.page.pageIndex = response.pageIndex;
+				this.page.pageSize = response.pageSize;
+				this.page.count = response.count;
+				this.rows = response.data;
+			},
+			error: () => {
+				Swal.fire("Error", "An error has occurred while trying to get the pipelines", "error");
+				this.longPooling?.unsubscribe();
+			}
+		});
 	}
 
 	deletePipeline(button: HTMLButtonElement, pipelineId: string): void {

@@ -25,6 +25,7 @@
 							"src/assets"
 						],
 						"styles": [
+							"@angular/material/prebuilt-themes/indigo-pink.css",
 							"src/styles.css",
 							"./node_modules/@swimlane/ngx-datatable/index.css",
 							"src/assets/tailwind-datatable.css"
@@ -95,6 +96,7 @@
 							"src/assets"
 						],
 						"styles": [
+							"@angular/material/prebuilt-themes/indigo-pink.css",
 							"src/styles.css",
 							"./node_modules/@swimlane/ngx-datatable/index.css",
 							"src/assets/tailwind-datatable.css"
