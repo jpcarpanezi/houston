@@ -5,6 +5,14 @@
 @import '~codemirror/lib/codemirror';
 @import '~codemirror/theme/material-darker';
 
+.text-input {
+	@apply rounded-md shadow-sm dark:bg-gray-900 border-gray-300 focus:ring focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50;
+}
+
+.btn-primary {
+	@apply text-white py-2 rounded dark:bg-purple-500 dark:hover:bg-purple-600 bg-indigo-500 hover:bg-indigo-600;
+}
+
 .spinner {
 	position: relative;
 }
