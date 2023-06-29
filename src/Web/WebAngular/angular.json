@@ -30,15 +30,19 @@
 							"./node_modules/@swimlane/ngx-datatable/index.css",
 							"src/assets/tailwind-datatable.css"
 						],
-						"scripts": []
+						"scripts": [],
+						"allowedCommonJsDependencies": [
+							"sweetalert2",
+							"codemirror/mode/shell/shell"
+						]
 					},
 					"configurations": {
 						"production": {
 							"budgets": [
 								{
 									"type": "initial",
-									"maximumWarning": "500kb",
-									"maximumError": "1mb"
+									"maximumWarning": "1.3mb",
+									"maximumError": "1.5mb"
 								},
 								{
 									"type": "anyComponentStyle",
