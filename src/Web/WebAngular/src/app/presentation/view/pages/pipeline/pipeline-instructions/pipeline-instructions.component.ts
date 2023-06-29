@@ -139,6 +139,11 @@ export class PipelineInstructionsComponent implements OnInit {
 			pipelineInstructions: this.pipelineInstructions
 		};
 
+		if (command.pipelineInstructions.length == 0) {
+			this.isLoading = false;
+			return;
+		}
+
 		this.pipelineInstructionUseCase.save(command).subscribe({
 			next: () => Toast.fire({ icon: "success", title: "Saved successfully" }),
 			error: () => Swal.fire("Error", "An error has occurred while trying to update the pipeline instructions. Please try again later.", "error")
