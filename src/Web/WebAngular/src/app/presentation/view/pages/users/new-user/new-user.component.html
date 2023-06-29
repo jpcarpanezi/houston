@@ -6,21 +6,21 @@
 	<form [formGroup]="createUserForm" (click)="createUser()">
 		<div class="block mt-4">
 			<label for="name">Name</label>
-			<input type="text" name="name" id="name" formControlName="name" placeholder="Enter user name" maxlength="240" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+			<input type="text" name="name" id="name" formControlName="name" placeholder="Enter user name" maxlength="240" class="w-full mb-2 text-input">
 			<app-form-errors controlName="name" error="required">User name required.</app-form-errors>
 			<app-form-errors controlName="name" error="maxlength">Maximum characters are 50.</app-form-errors>
 		</div>
 
 		<div class="block mt-4">
 			<label for="email">E-mail</label>
-			<input type="email" name="email" id="email" formControlName="email" placeholder="Enter user email" maxlength="64" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+			<input type="email" name="email" id="email" formControlName="email" placeholder="Enter user email" maxlength="64" class="w-full mb-2 text-input">
 			<app-form-errors controlName="email" error="required">User email required.</app-form-errors>
 			<app-form-errors controlName="email" error="email">Invalid user email.</app-form-errors>
 		</div>
 
 		<div class="block mt-4">
 			<label for="userRole">User role</label>
-			<select name="userRole" id="userRole" formControlName="userRole" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+			<select name="userRole" id="userRole" formControlName="userRole" class="w-full mb-2 text-input">
 				<option value="User" selected>User</option>
 				<option value="Admin">Admin</option>
 			</select>
@@ -29,7 +29,7 @@
 
 		<div class="block mt-4">
 			<label for="tempPassword">Temporary password</label>
-			<input type="password" name="tempPassword" id="tempPassword" formControlName="tempPassword" placeholder="Enter temporary password" autocomplete="new-password" maxlength="64" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+			<input type="password" name="tempPassword" id="tempPassword" formControlName="tempPassword" placeholder="Enter temporary password" autocomplete="new-password" maxlength="64" class="w-full mb-2 text-input">
 			<app-form-errors controlName="tempPassword" error="required">Password required.</app-form-errors>
 			<app-form-errors controlName="tempPassword" error="pattern">Weak password.</app-form-errors>
 			<app-form-errors controlName="tempPassword" error="maxlength">Maximum characters are 64.</app-form-errors>
@@ -38,13 +38,13 @@
 
 		<div class="block mt-4">
 			<label for="confirmTempPassword">Confirm temporary password</label>
-			<input type="password" name="confirmTempPassword" id="confirmTempPassword" formControlName="confirmTempPassword" placeholder="Confirm temporary password" autocomplete="new-password" maxlength="64" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+			<input type="password" name="confirmTempPassword" id="confirmTempPassword" formControlName="confirmTempPassword" placeholder="Confirm temporary password" autocomplete="new-password" maxlength="64" class="w-full mb-2 text-input">
 			<app-form-errors controlName="confirmTempPassword" error="required">Confirm password required.</app-form-errors>
 			<app-form-errors controlName="confirmTempPassword" error="matching">Password don't match.</app-form-errors>
 		</div>
 
 		<div class="block mt-4">
-			<button type="submit" class="w-full text-white py-2 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="createUserForm.disabled" [disabled]="createUserForm.disabled">
+			<button type="submit" class="w-full btn-primary" [class.spinner]="createUserForm.disabled" [disabled]="createUserForm.disabled">
 				<span class="spinner-text">Create <fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
 			</button>
 		</div>
