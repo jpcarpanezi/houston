@@ -24,14 +24,12 @@
 
 	<div class="relative flex items-center justify-center flex-shrink-0">
 		<div>
-			<button type="button" class="block transition-opacity duration-200 rounded-full focus:outline-none focus:ring" (click)="toggleUserMenu()">
+			<button type="button" class="block transition-opacity duration-200 rounded-full focus:outline-none focus:ring border" (click)="toggleUserMenu()">
 				<span class="sr-only">User menu</span>
-				<img class="w-10 h-10 rounded-full" src="https://avatars.githubusercontent.com/u/11728690?v=4" alt="User picture">
+				<svg class="w-10 h-10 rounded-full" [data-jdenticon-value]="userInfo?.email"></svg>
 			</button>
 
 			<div tabindex="-1" aria-orientation="vertical" role="menu" class="absolute w-56 py-1 mb-4 bg-white rounded-md shadow-lg min-w-max left-5 bottom-full ring-1 ring-black ring-opacity-5 focus:outline-none" [class.hidden]="!isUserMenuOpen">
-				<a href="#" class="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100" _target="blank">Your profile</a>
-				<a href="#" class="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100" _target="blank">Settings</a>
 				<a href="#" class="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100" (click)="signOut($event)">Logout</a>
 			</div>
 		</div>
