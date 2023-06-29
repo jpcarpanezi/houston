@@ -14,13 +14,11 @@ namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
 	public class WebhookCommandHandler : IRequestHandler<WebhookCommand, ResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IEventBus _eventBus;
-		private readonly IUserClaimsService _claims;
 		private readonly IHttpContextAccessor _context;
 
-		public WebhookCommandHandler(IUnitOfWork unitOfWork, IEventBus eventBus, IUserClaimsService claims, IHttpContextAccessor context) {
+		public WebhookCommandHandler(IUnitOfWork unitOfWork, IEventBus eventBus, IHttpContextAccessor context) {
 			_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			_eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
-			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
 			_context = context ?? throw new ArgumentNullException(nameof(context));
 		}
 
@@ -49,7 +47,7 @@ namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
 			var runPipeline = webhookService.RunPipeline(request.JsonPayload, pipelineTriggerEvents);
 
 			if (runPipeline) {
-				_eventBus.Publish(new RunPipelineMessage(request.PipelineId, _claims.Id));
+				_eventBus.Publish(new RunPipelineMessage(request.PipelineId, null));
 			}
 
 			return new ResultCommand(HttpStatusCode.NoContent);
