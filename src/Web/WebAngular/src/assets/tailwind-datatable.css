@@ -1,3 +1,11 @@
+.ngx-datatable.tailwind .datatable-body::-webkit-scrollbar {
+	@apply w-1 cursor-pointer h-2;
+}
+
+.ngx-datatable.tailwind .datatable-body::-webkit-scrollbar-thumb {
+	@apply cursor-pointer bg-gray-300 hover:bg-gray-400 dark:bg-gray-900 dark:hover:bg-gray-950 rounded-lg;
+}
+
 .ngx-datatable.tailwind {
 	@apply overflow-hidden rounded-md shadow w-full border-collapse bg-white dark:bg-slate-800 text-left text-sm text-gray-500 dark:text-white border-b-4 border-indigo-400 dark:border-purple-400;
 }
