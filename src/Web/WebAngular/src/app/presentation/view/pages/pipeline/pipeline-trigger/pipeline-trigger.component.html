@@ -23,6 +23,20 @@
 				<div class="block mt-4">
 					<div class="flex items-center gap-4">
 						<div class="flex-auto">
+							<label for="webhook">Webhook payload URL</label>
+							<input type="text" name="webhook" [value]="originPath + '/api/pipeline/webhook/github/' + pipelineId " maxlength="6000" class="block w-full mb-2 rounded-md read-only:bg-gray-100 border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" readonly #webhook>
+						</div>
+
+						<button type="submit" class="text-white md:w-auto h-auto mt-3 py-2 px-4 rounded bg-indigo-500 hover:bg-indigo-600" (click)="copyToClipboard(webhook, webhookBtn)" #webhookBtn>
+							<span class="hidden md:inline mr-1">Copy to clipboard</span>
+							<fa-icon [icon]="['fas', 'paste']"></fa-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="block mt-4">
+					<div class="flex items-center gap-4">
+						<div class="flex-auto">
 							<label for="sourceGit">Git Source</label>
 							<input type="text" name="sourceGit" id="sourceGit" formControlName="sourceGit" placeholder="Enter the URL to the git repository" maxlength="6000" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
 						</div>
