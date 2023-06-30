@@ -57,10 +57,6 @@ export class FirstSetupComponent {
 		});
 	}
 
-	isFieldInvalid(field: string): boolean | null {
-		return this.firstSetupForm.controls[field].errors && this.firstSetupForm.controls[field].touched;
-	}
-
 	changeStep(): void {
 		if (this.firstStep) {
 			const registryAddressErrors = this.firstSetupForm.controls["registryAddress"].errors;

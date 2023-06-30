@@ -56,10 +56,6 @@ export class FirstAccessComponent implements OnInit {
 		});
 	}
 
-	isFieldInvalid(field: string): boolean | null {
-		return this.firstAccessForm.controls[field].errors && this.firstAccessForm.controls[field].touched;
-	}
-
 	firstAccess(): void {
 		if (this.firstAccessForm.invalid) return;
 		this.firstAccessForm.disable();

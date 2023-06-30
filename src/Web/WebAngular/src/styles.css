@@ -5,6 +5,26 @@
 @import '~codemirror/lib/codemirror';
 @import '~codemirror/theme/material-darker';
 
+.text-input {
+	@apply rounded-md shadow-sm dark:bg-gray-900 border-gray-300 focus:ring focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50;
+}
+
+.btn-primary {
+	@apply text-white py-2 px-4 rounded dark:bg-purple-500 dark:hover:bg-purple-600 bg-indigo-500 hover:bg-indigo-600;
+}
+
+.btn-danger {
+	@apply text-white py-2 px-4 rounded bg-rose-500 hover:bg-rose-600;
+}
+
+.btn-success {
+	@apply text-white py-2 px-4 rounded bg-emerald-500 hover:bg-emerald-600;
+}
+
+.card {
+	@apply px-6 py-4 bg-white dark:bg-slate-800 shadow border dark:border-0 border-b-4 border-b-indigo-400 dark:border-b-purple-400 rounded-md;
+}
+
 .spinner {
 	position: relative;
 }

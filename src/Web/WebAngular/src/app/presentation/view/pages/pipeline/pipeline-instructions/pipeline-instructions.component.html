@@ -1,4 +1,4 @@
-<div class="px-6 py-4 mt-5 bg-white shadow border border-b-4 border-b-indigo-400 rounded-md" [loader]="isLoading">
+<div class="card mt-5" [loader]="isLoading">
 	<details class="group" open>
 		<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
 			<span>Instructions</span>
@@ -6,27 +6,27 @@
 			<span class="transition group-open:rotate-180"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></span>
 		</summary>
 
-		<p class="text-neutral-600 group-open:animate-fadeIn">
+		<p class="text-neutral-600 dark:text-white">
 			Add instructions to run when the pipeline is triggered.
 		</p>
 
-		<div class="mt-5 w-full md:w-1/2 mx-auto">
+		<div class="mt-5 w-full md:w-1/2 mx-auto text-neutral-600 dark:text-white">
 			<div *ngFor="let instruction of pipelineInstructions; let i = index;">
-				<div class="px-6 py-4 bg-gray-50 border rounded-md">
+				<div class="px-6 py-4 bg-gray-50 dark:bg-slate-700 border dark:border-0 rounded-md">
 					<details class="group">
 						<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
 							<span>{{ getConnectorFunctionById(instruction.connectorFunctionId).name }}</span>
 
 							<span class="flex gap-x-2">
-								<button type="button" class="text-white w-auto py-0.5 px-1 rounded bg-indigo-500 hover:bg-indigo-600 text-sm" (click)="movePipelineInstruction(i, 'down')" *ngIf="i + 1 != pipelineInstructions.length">
+								<button type="button" class="w-auto !py-0.5 !px-1 text-sm btn-primary" (click)="movePipelineInstruction(i, 'down')" *ngIf="i + 1 != pipelineInstructions.length" matTooltip="Move down">
 									<span class="spinner-text"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></span>
 								</button>
 
-								<button type="button" class="text-white w-auto py-0.5 px-1 rounded bg-indigo-500 hover:bg-indigo-600 text-sm" (click)="movePipelineInstruction(i, 'up')" *ngIf="i != 0">
+								<button type="button" class="w-auto !py-0.5 !px-1 text-sm btn-primary" (click)="movePipelineInstruction(i, 'up')" *ngIf="i != 0" matTooltip="Move up">
 									<span class="spinner-text"><fa-icon [icon]="['fas', 'chevron-up']"></fa-icon></span>
 								</button>
 
-								<button type="button" class="text-white w-auto py-0.5 px-1 rounded bg-rose-500 hover:bg-rose-600 text-sm" (click)="removeInstruction(i)">
+								<button type="button" class="w-auto !py-0.5 !px-1 text-sm btn-danger" (click)="removeInstruction(i)" matTooltip="Remove">
 									<span class="spinner-text"><fa-icon [icon]="['fas', 'trash']"></fa-icon></span>
 								</button>
 							</span>
@@ -41,11 +41,11 @@
 								<label [htmlFor]="input.id">{{ input.name }} <small class="text-red-500" *ngIf="input.required">(required)</small></label>
 
 								<div *ngIf="input.inputType.toString() == 'String'">
-									<input type="text" [id]="input.id" [id]="input.id" [placeholder]="input.placeholder" [value]="input.defaultValue" (input)="changeInputValue(i, input.id, connectorInput.value)" class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" #connectorInput>
+									<input type="text" [id]="input.id" [id]="input.id" [placeholder]="input.placeholder" [value]="input.defaultValue" (input)="changeInputValue(i, input.id, connectorInput.value)" class="w-full mb-2 text-input" #connectorInput>
 								</div>
 
 								<div *ngIf="input.inputType.toString() == 'List'">
-									<select class="block w-full mb-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" (change)="changeInputValue(i, input.id, connectorInput.value)" #connectorInput>
+									<select class="w-full mb-2 text-input" (change)="changeInputValue(i, input.id, connectorInput.value)" #connectorInput>
 										<option value="">{{ input.placeholder }}</option>
 										<option *ngFor="let value of input.values" [selected]="instruction.inputs![input.id] == value || value == input.defaultValue">{{ value }}</option>
 									</select>
@@ -94,12 +94,12 @@
 
 					<ngx-datatable-row-detail>
 						<ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" let-expanded="expanded" ngx-datatable-row-detail-template>
-							<div class="pl-6 py-2 divide-y">
+							<div class="pl-6 py-2 divide-y dark:text-white dark:bg-gray-900">
 								<div *ngIf="row.connectorFunctions == undefined || row.connectorFunctions.length == 0">No connector function registered.</div>
 
 								<div *ngIf="row.connectorFunctions != undefined && row.connectorFunctions.length > 0">
 									<div class="grid grid-cols-6 gap-x-6 py-2" *ngFor="let connectorFunction of row.connectorFunctions">
-										<strong><a href="#" class="text-blue-600 hover:text-blue-900" (click)="selectInstruction(connectorFunction, $event)">{{ connectorFunction.name }}</a></strong>
+										<strong><a href="#" class="text-blue-600 dark:text-cyan-300 hover:text-blue-900 dark:hover:text-cyan-500 underline" (click)="selectInstruction(connectorFunction, $event)">{{ connectorFunction.name }}</a></strong>
 									</div>
 								</div>
 							</div>
@@ -110,7 +110,7 @@
 
 					<ngx-datatable-column name="Actions" prop="actions" [sortable]="false" [width]="256">
 						<ng-template let-row="row" let-rowIndex="rowIndex" let-expanded="expanded" let-value="value" ngx-datatable-cell-template>
-							<button type="button" [class.spinner]="false" class="text-white py-2 px-3 rounded bg-indigo-500 hover:bg-indigo-600" [class.spinner]="expandRowBtn.disabled" (click)="toggleExpandRow(row, expanded, rowIndex, expandRowBtn)" [matTooltip]="expanded ? 'Close' : 'List functions'" #expandRowBtn>
+							<button type="button" [class.spinner]="false" class="!px-3 btn-primary" [class.spinner]="expandRowBtn.disabled" (click)="toggleExpandRow(row, expanded, rowIndex, expandRowBtn)" [matTooltip]="expanded ? 'Close' : 'List functions'" #expandRowBtn>
 								<span class="spinner-text"><fa-icon [icon]="expanded ? ['fas', 'xmark'] : ['fas', 'table-list']"></fa-icon></span>
 							</button>
 						</ng-template>
