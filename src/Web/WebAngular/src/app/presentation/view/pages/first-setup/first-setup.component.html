@@ -6,7 +6,7 @@
 		<hr class="my-4">
 
 		<form [formGroup]="firstSetupForm" (submit)="firstSetup()">
-			<div [class.hidden]="!firstSetup">
+			<div [class.hidden]="!firstStep">
 				<h1 class="font-bold text-xl">Docker Hub</h1>
 				<p>Insert your Docker Hub credentials to pull necessary images.</p>
 
@@ -46,7 +46,7 @@
 				</div>
 			</div>
 
-			<div [class.hidden]="firstSetup">
+			<div [class.hidden]="firstStep">
 				<h1 class="font-bold text-xl mt-4">Houston</h1>
 				<p>Create the first admin user.</p>
 
