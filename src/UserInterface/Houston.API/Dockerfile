@@ -19,4 +19,6 @@ RUN dotnet publish "Houston.API.csproj" -c Release -o /app/publish /p:UseAppHost
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN apt-get update && \ 
+    apt-get install -y openssh-client
 ENTRYPOINT ["dotnet", "Houston.API.dll"]
