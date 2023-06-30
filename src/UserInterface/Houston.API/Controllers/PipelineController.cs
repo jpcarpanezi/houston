@@ -186,7 +186,6 @@ namespace Houston.API.Controllers
 		/// <response code="404">The requested pipeline was not found</response>
 		/// <response code="423">The requested pipeline is locked by another proccess</response>
 		[HttpPost("webhook/{origin}/{pipelineId:guid}")]
-		[Authorize]
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		[ProducesResponseType(typeof(LockedMessageViewModel), (int)HttpStatusCode.Locked)]
