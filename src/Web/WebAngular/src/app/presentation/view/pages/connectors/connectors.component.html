@@ -94,7 +94,7 @@
 
 	<ngx-datatable-column name="Actions" prop="actions" [sortable]="false" [width]="256">
 		<ng-template let-row="row" let-rowIndex="rowIndex" let-expanded="expanded" let-value="value" ngx-datatable-cell-template>
-			<button type="button" [class.spinner]="false" class="!px-3 btn-primary" [class.spinner]="expandRowBtn.disabled" (click)="toggleExpandRow(row, expanded, rowIndex, expandRowBtn)" [matTooltip]="expanded ? 'Close' : 'Expand functions'" #expandRowBtn>
+			<button type="button" class="!px-3 btn-primary" [class.spinner]="expandRowBtn.disabled" (click)="toggleExpandRow(row, expanded, rowIndex, expandRowBtn)" [matTooltip]="expanded ? 'Close' : 'Expand functions'" #expandRowBtn>
 				<span class="spinner-text"><fa-icon [icon]="expanded ? ['fas', 'xmark'] : ['fas', 'table-list']"></fa-icon></span>
 			</button>
 

@@ -43,7 +43,7 @@
 }
 
 .ngx-datatable.tailwind .datatable-body .empty-row {
-	@apply relative py-3 px-5 mb-0 hover:bg-gray-50;
+	@apply relative py-3 px-5 mb-0 hover:bg-gray-50 dark:hover:bg-slate-900;
 }
 
 .ngx-datatable.tailwind .datatable-footer {

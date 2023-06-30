@@ -51,7 +51,7 @@
 		<details class="group" #inputDetails>
 			<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
 				<span>
-					<button type="button" class="text-white w-auto py-0.5 px-1 mr-1 rounded bg-indigo-500 hover:bg-indigo-600" (click)="addInput(); inputDetails.open = true" matTooltip="Add input">
+					<button type="button" class="w-auto !py-0.5 !px-1 mr-1 btn-primary" (click)="addInput(); inputDetails.open = true" matTooltip="Add input">
 						<span class="spinner-text"><fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
 					</button>
 
