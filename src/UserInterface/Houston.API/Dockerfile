@@ -18,5 +18,8 @@ RUN dotnet publish "Houston.API.csproj" -c Release -o /app/publish /p:UseAppHost
 
 FROM base AS final
 WORKDIR /app
+RUN apt-get update && \ 
+	apt-get install -y openssh-client
+	ssh-keygen -t rsa -b 4096 -m PEM -N "" -f ./AuthConfigurations/PrivateKey.pem
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Houston.API.dll"]
