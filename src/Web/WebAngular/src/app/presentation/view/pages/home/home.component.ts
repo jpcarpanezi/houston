@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/infra/auth/auth.service';
 import { UserSessionViewModel } from 'src/app/domain/view-models/user-session.view-model';
 import { PageViewModel } from 'src/app/domain/view-models/page.view-model';
@@ -17,7 +17,7 @@ import { UtcToLocalTimePipe } from 'src/app/infra/helpers/utc-to-local-time.pipe
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
 	public userInfo: UserSessionViewModel | null = null;
 
 	public page: PageViewModel = new PageViewModel();
@@ -39,6 +39,10 @@ export class HomeComponent implements OnInit {
 		this.page.pageSize = 10;
 		this.page.pageIndex = 0;
 		this.setPage({ offset: 0 });
+	}
+
+	ngOnDestroy(): void {
+		this.longPooling?.unsubscribe();
 	}
 
 	setPage(pageInfo: any): void {

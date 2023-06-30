@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { PipelineDetailsComponent } from './pipeline-details/pipeline-details.component';
 import { PipelineTriggerComponent } from './pipeline-trigger/pipeline-trigger.component';
 import { PipelineInstructionsComponent } from './pipeline-instructions/pipeline-instructions.component';
@@ -16,7 +16,7 @@ import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 	templateUrl: './pipeline.component.html',
 	styleUrls: ['./pipeline.component.css']
 })
-export class PipelineComponent implements OnInit {
+export class PipelineComponent implements OnInit, OnDestroy {
 	@ViewChild("pipelineDetails") private pipelineDetails?: PipelineDetailsComponent;
 	@ViewChild("pipelineTrigger") private pipelineTrigger?: PipelineTriggerComponent;
 	@ViewChild("pipelineInstructions") private pipelineInstructions?: PipelineInstructionsComponent
@@ -32,6 +32,10 @@ export class PipelineComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.pipelineId = this.route.snapshot.paramMap.get("id");
+	}
+
+	ngOnDestroy(): void {
+		this.runInterval?.unsubscribe();
 	}
 
 	savePipeline(): void {

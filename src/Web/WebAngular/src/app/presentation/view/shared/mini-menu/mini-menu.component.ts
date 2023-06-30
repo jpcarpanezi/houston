@@ -58,5 +58,6 @@ export class MiniMenuComponent implements OnInit {
 		event.preventDefault();
 		this.authService.removeSession();
 		this.router.navigateByUrl("/login");
+		location.reload();
 	}
 }

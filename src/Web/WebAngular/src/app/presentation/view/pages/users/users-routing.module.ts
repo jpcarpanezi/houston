@@ -4,7 +4,7 @@ import { UsersComponent } from './users.component';
 import { authGuard } from 'src/app/infra/auth/auth.guard';
 
 const routes: Routes = [
-	{ path: "users", component: UsersComponent, canActivate: [authGuard], data: { title: "Users"} }
+	{ path: "users", component: UsersComponent, canActivate: [authGuard], data: { title: "Users", roles: ["Admin"] } }
 ];
 
 @NgModule({
