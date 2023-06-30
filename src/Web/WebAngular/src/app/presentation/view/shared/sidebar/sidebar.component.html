@@ -8,7 +8,7 @@
 
 <!-- Toggle sidebar -->
 <div class="fixed flex items-center space-x-4 top-5 right-10 z-50" [class.hidden]="!isSidebarEnabled">
-	<button class="p-1 text-indigo-400 dark:text-purple-400 transition-colors duration-200 rounded-md bg-indigo-50 dark:bg-purple-100 hover:text-indigo-600 dark:hover:text-purple-600 hover:bg-indigo-100 dark:hover:bg-purple-100 focus:outline-none focus:ring" (click)="toggleSidebar()">
+	<button class="p-1 text-indigo-400 dark:text-purple-700 transition-colors duration-200 rounded-md bg-indigo-50 dark:bg-purple-200 hover:text-indigo-600 dark:hover:text-purple-600 hover:bg-indigo-100 dark:hover:bg-purple-100 focus:outline-none focus:ring" (click)="toggleSidebar()">
 		<span class="sr-only">Toggle main menu</span>
 		<fa-icon [icon]="isSidebarOpen ? ['fas', 'xmark'] : ['fas', 'bars']"></fa-icon>
 	</button>
