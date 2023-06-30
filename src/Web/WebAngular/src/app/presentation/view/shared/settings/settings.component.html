@@ -13,11 +13,11 @@
 	<div class="flex-1 overflow-hidden hover:overflow-y-auto">
 		<div class="flex justify-between items-center border-b dark:border-gray-900 p-4 md:px-8">
 			<span>
-				Dark mode<br><span class="text-sm text-slate-500">Coming soon</span>
+				Dark mode<br><span class="text-sm text-slate-500">Enable or disable dark theme</span>
 			</span>
 
 			<div>
-				<input type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" disabled>
+				<input type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" [checked]="theme == 'dark' ? true : false" (click)="toggleTheme()">
 			</div>
 		</div>
 
