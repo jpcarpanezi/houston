@@ -18,7 +18,10 @@ export class AuthService {
 	private _refreshToken: string | null = null;
 	private _userInfo: UserSessionViewModel | null = null;
 
-	constructor(private cookieService: CookieService, private authUseCase: AuthUseCaseInterface) {
+	constructor(
+		private cookieService: CookieService,
+		private authUseCase: AuthUseCaseInterface
+	) {
 		const accessToken = this.cookieService.get(SESSION_TOKEN);
 		const refreshToken = this.cookieService.get(REFRESH_TOKEN);
 		const userInfo = this.cookieService.get(USER_INFO);

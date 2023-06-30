@@ -9,7 +9,7 @@
 		<span class="ml-2 text-sm">Connectors</span>
 	</a>
 
-	<a routerLink="/users" routerLinkActive="bg-indigo-100 dark:bg-slate-800"class="flex items-center p-2 transition-colors rounded-md hover:bg-indigo-100 dark:hover:bg-slate-800">
+	<a routerLink="/users" routerLinkActive="bg-indigo-100 dark:bg-slate-800"class="flex items-center p-2 transition-colors rounded-md hover:bg-indigo-100 dark:hover:bg-slate-800" *ngIf="user?.role == 'Admin'">
 		<span aria-hidden="true"><fa-icon [icon]="['fas', 'users']"></fa-icon></span>
 		<span class="ml-2 text-sm">Users</span>
 	</a>
