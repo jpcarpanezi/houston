@@ -27,7 +27,7 @@ public partial class PipelineLog {
 	[Column("triggered_by")]
 	public Guid? TriggeredBy { get; set; }
 
-	[Column("start_time", TypeName = "timespan(3) with time zone")]
+	[Column("start_time", TypeName = "timestamp(3) with time zone")]
 	public DateTime StartTime { get; set; }
 
 	[Column("duration", TypeName = "time without time zone")]
