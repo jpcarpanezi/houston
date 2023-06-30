@@ -11,7 +11,7 @@
 }
 
 .ngx-datatable.tailwind-borderless {
-	@apply border border-gray-200 shadow-none;
+	@apply border border-gray-200 dark:border-gray-900 shadow-none;
 }
 
 .datatable-row-detail {
