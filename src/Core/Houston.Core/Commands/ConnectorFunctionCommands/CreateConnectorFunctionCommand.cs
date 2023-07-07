@@ -1,7 +1,5 @@
-﻿using Houston.Core.Entities.MongoDB;
-using Houston.Core.Enums;
+﻿using Houston.Core.Entities.Postgres;
 using MediatR;
-using MongoDB.Bson;
 
 namespace Houston.Core.Commands.ConnectorFunctionCommands {
 	public class CreateConnectorFunctionCommand : IRequest<ResultCommand<ConnectorFunction>> {
@@ -9,14 +7,20 @@ namespace Houston.Core.Commands.ConnectorFunctionCommands {
 
 		public string? Description { get; set; }
 
-		public ObjectId? ConnectorId { get; set; }
+		public Guid ConnectorId { get; set; }
 
-		public List<ObjectId>? Dependencies { get; set; }
+		public List<CreateConnectorFunctionInputCommand>? Inputs { get; set; }
 
-		public string? Version { get; set; }
+		public string[] Script { get; set; } = null!;
 
-		public List<GeneralConnectorFunctionInputCommand>? Inputs { get; set; }
+		public CreateConnectorFunctionCommand() { }
 
-		public List<string> Script { get; set; } = null!;
+		public CreateConnectorFunctionCommand(string name, string? description, Guid connectorId, List<CreateConnectorFunctionInputCommand>? inputs, string[] script) {
+			Name = name ?? throw new ArgumentNullException(nameof(name));
+			Description = description;
+			ConnectorId = connectorId;
+			Inputs = inputs;
+			Script = script ?? throw new ArgumentNullException(nameof(script));
+		}
 	}	
 }

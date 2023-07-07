@@ -1,26 +1,29 @@
 ﻿using EventBus.EventBus.Abstractions;
-using Houston.Core.Entities.MongoDB;
+using Houston.Core.Entities.Postgres;
 using Houston.Core.Entities.Redis;
 using Houston.Core.Enums;
+using Houston.Core.Exceptions;
 using Houston.Core.Interfaces.Repository;
 using Houston.Core.Interfaces.Services;
 using Houston.Core.Messages;
+using Houston.Core.Models;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
 using Serilog.Context;
 using System.Diagnostics;
 using System.Text.Json;
 
 namespace Houston.Workers.MessageHandlers {
 	public class RunPipelineMessageHandler : IIntegrationEventHandler<RunPipelineMessage> {
-		private readonly IContainerBuilderService _containerBuilder;
+		private readonly IContainerBuilderParametersService _containerBuilderParameters;
+		private readonly IContainerBuilderChainService _containerBuilderChain;
 		private readonly IDistributedCache _cache;
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly ILogger<RunPipelineMessageHandler> _logger;
 
-		public RunPipelineMessageHandler(IContainerBuilderService containerBuilder, IDistributedCache cache, IUnitOfWork unitOfWork, ILogger<RunPipelineMessageHandler> logger) {
-			_containerBuilder = containerBuilder ?? throw new ArgumentNullException(nameof(containerBuilder));
+		public RunPipelineMessageHandler(IContainerBuilderParametersService containerBuilder, IContainerBuilderChainService containerChain, IDistributedCache cache, IUnitOfWork unitOfWork, ILogger<RunPipelineMessageHandler> logger) {
+			_containerBuilderParameters = containerBuilder ?? throw new ArgumentNullException(nameof(containerBuilder));
+			_containerBuilderChain = containerChain ?? throw new ArgumentNullException(nameof(containerChain));
 			_cache = cache ?? throw new ArgumentNullException(nameof(cache));
 			_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -28,53 +31,71 @@ namespace Houston.Workers.MessageHandlers {
 
 		public async Task Handle(RunPipelineMessage message) {
 			using (LogContext.PushProperty("IntegrationEventContext", $"{message.Id}-{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}")) {
-				_logger.LogInformation($"Handling integration event: {message.Id} at {System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}");
+				_logger.LogInformation("Handling integration event: {messageId} at {assemblyName}", message.Id, System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
 
-				var redisConfigurations = await _cache.GetStringAsync("configurations") ?? throw new ArgumentNullException("Cannot retrieve configurations file from Redis.");
+				var redisConfigurations = await _cache.GetStringAsync("configurations") ?? throw new Exception("Cannot retrieve configurations file from Redis.");
 				var configurations = JsonSerializer.Deserialize<SystemConfiguration>(redisConfigurations);
 
-				var pipeline = await _unitOfWork.PipelineRepository.FindByIdAsync(ObjectId.Parse(message.PipelineId));
-				if (pipeline is null) {
-					throw new ArgumentNullException(nameof(pipeline));
+				var pipeline = await _unitOfWork.PipelineRepository.GetActiveWithInverseProperties(message.PipelineId) ?? throw new Exception($"Could not find a pipeline with the provided ID: {message.PipelineId}.");
+
+				if (pipeline.Status != PipelineStatusEnum.Awaiting) {
+					_logger.LogInformation("Pipeline with ID {pipelineId} and status {pipelineStatus} was not executed because it was not in awaiting mode.", pipeline.Id, pipeline.Status);
+					return;
 				}
 
-				if (pipeline.PipelineStatus != PipelineStatusEnum.Awaiting) {
-
-				}
-
-				await UpdatePipelineStatus(pipeline.Id, PipelineStatusEnum.Running);
+				await UpdatePipelineStatus(pipeline, PipelineStatusEnum.Running);
 
 				var stopwatch = Stopwatch.StartNew();
 				DateTime startTime = DateTime.UtcNow;
 
 				string containerName = $"houston-runner-{Guid.NewGuid()}";
-				var response = await _containerBuilder.PerformAuth(configurations!.RegistryUsername, configurations.RegistryAddress, configurations.RegistryPassword, configurations.RegistryAddress)
-							  .AddImage(configurations.ContainerImage, configurations.ImageTag)
-							  .AddContainer(containerName, new List<string> { "/var/run/docker.sock:/var/run/docker.sock" })
-							  .FromPipeline(pipeline)
+				var builderParameters = _containerBuilderParameters.AddImage(configurations!.ContainerImage, configurations.ImageTag)
+							  .AddContainerName(containerName)
+							  .AddBind("/var/run/docker.sock:/var/run/docker.sock")
+							  .AddInstructions(pipeline.PipelineInstructions.ToList())
+							  .AddDeployKey(pipeline.PipelineTrigger.PrivateKey)
+							  .AddSourceGit(pipeline.PipelineTrigger.SourceGit)
+							  .AddAuthentication(configurations!.RegistryUsername, configurations.RegistryAddress, configurations.RegistryPassword, configurations.RegistryAddress)
 							  .Build();
+
+				ContainerChainResponse response = new();
+				try {
+					response = await _containerBuilderChain.Handler(new ContainerChainResponse(), builderParameters);
+				} catch (ContainerBuilderException ex) {
+					response.ExitCode = -1;
+					response.Stdout = ex.Stdout is null ? string.Empty : ex.Stdout;
+					response.InstructionWithError = null;
+				} catch (Exception ex) {
+					response.ExitCode = -1;
+					response.Stdout = $"An unhandled exception has occurred during the pipeline execution.\nException: {ex}";
+					response.InstructionWithError = null;
+				}
 
 				stopwatch.Stop();
 
-				await UpdatePipelineStatus(pipeline.Id, PipelineStatusEnum.Awaiting);
+				await UpdatePipelineStatus(pipeline, PipelineStatusEnum.Awaiting);
 
-				var log = new PipelineLogs {
-					Id = ObjectId.GenerateNewId(),
+				var log = new PipelineLog {
+					Id = Guid.NewGuid(),
 					PipelineId = pipeline.Id,
 					ExitCode = response.ExitCode,
 					Stdout = response.Stdout,
 					InstructionWithError = response.InstructionWithError,
-					TriggeredBy = message.TriggeredBy is null ? null : ObjectId.Parse(message.TriggeredBy),
+					TriggeredBy = message.TriggeredBy is null ? null : message.TriggeredBy,
 					StartTime = startTime,
 					Duration = stopwatch.Elapsed
 				};
 
-				await _unitOfWork.PipelineLogsRepository.InsertOneAsync(log);
+				_unitOfWork.PipelineLogsRepository.Add(log);
+				await _unitOfWork.Commit();
 			}
 		}
 
-		private async Task UpdatePipelineStatus(ObjectId pipelineId, PipelineStatusEnum status) {
-			await _unitOfWork.PipelineRepository.UpdateOneAsync(x => x.Id, pipelineId, x => x.PipelineStatus, status);
+		private async Task UpdatePipelineStatus(Pipeline pipeline, PipelineStatusEnum status) {
+			pipeline.Status = status;
+
+			_unitOfWork.PipelineRepository.Update(pipeline);
+			await _unitOfWork.Commit();
 		}
 	}
 }

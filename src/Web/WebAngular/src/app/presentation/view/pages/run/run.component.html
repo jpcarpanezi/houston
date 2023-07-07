@@ -1,0 +1,38 @@
+<div class="grid grid-cols-1 md:grid-cols-2 items-center mb-8">
+	<div>
+		<button type="button" class="text-slate-500 dark:text-white w-full md:w-auto py-1 px-3 mb-2 rounded bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-800" (click)="back()">
+			<fa-icon [icon]="['fas', 'arrow-left']"></fa-icon> Back
+		</button>
+
+		<h1 class="text-2xl font-semibold">
+			<fa-icon [icon]="pipelineRun?.exitCode == 0 ? ['fas', 'circle-check'] : ['fas', 'circle-xmark']" [class.text-emerald-600]="pipelineRun?.exitCode == 0" [class.text-red-600]="pipelineRun?.exitCode != 0" class="fa-sm"></fa-icon> Run {{ pipelineLogId }}
+		</h1>
+
+		<p class="text-slate-500 dark:text-slate-600 ml-8">See the logs from this run.</p>
+	</div>
+
+</div>
+
+<div class="mt-5 flex flex-col card" [loader]="isLoading">
+	<details class="group" open>
+		<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+			<span>Log file</span>
+
+			<span class="transition group-open:rotate-180"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></span>
+		</summary>
+
+		<div class="text-neutral-600 dark:text-white group-open:animate-fadeIn">
+			<div class="mt-3">
+				<p><fa-icon [icon]="['fas', 'bolt']" matTooltip="Triggered by"></fa-icon> {{ pipelineRun?.triggeredBy == null ? 'Automatic' : pipelineRun?.triggeredBy }}</p>
+
+				<p><fa-icon [icon]="['far', 'calendar']" matTooltip="Start time"></fa-icon> {{ pipelineRun?.startTime | utcToLocalTime : 'short' }}</p>
+
+				<p><fa-icon [icon]="['fas', 'stopwatch']" matTooltip="Duration"></fa-icon> {{ pipelineRun?.duration | duration }}</p>
+			</div>
+
+			<div class="mt-4 h-full">
+				<ngx-codemirror [options]="{ lineNumbers: true, theme: 'material-darker', mode: 'text/x-log' }" #codeEditor></ngx-codemirror>
+			</div>
+		</div>
+	</details>
+</div>

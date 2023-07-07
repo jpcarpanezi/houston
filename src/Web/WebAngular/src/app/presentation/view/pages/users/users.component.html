@@ -1,0 +1,47 @@
+<app-new-user #createUserModal (onCreate)="setPage({ offset: 0 })"></app-new-user>
+
+<app-change-password #changePasswordModal></app-change-password>
+
+<div class="grid grid-cols-1 md:grid-cols-2 items-center mb-8">
+	<div>
+		<h1 class="text-2xl font-semibold">Users</h1>
+		<p class="text-slate-500 dark:text-slate-600">Create or edit users in the system.</p>
+	</div>
+
+	<div class="mt-5 md:mt-0 text-right">
+		<button type="button" class="w-full md:w-auto btn-primary" (click)="createUserModal.open()">
+			<span class="spinner-text">New <fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
+		</button>
+	</div>
+</div>
+
+<ngx-datatable
+	class="tailwind expandable"
+	[rows]="rows"
+	[columns]="columns"
+	[columnMode]="columnMode"
+	[headerHeight]="50"
+	[footerHeight]="50"
+	rowHeight="auto"
+	[externalPaging]="true"
+	[count]="page.count"
+	[offset]="page.pageIndex"
+	[limit]="page.pageSize"
+	[scrollbarH]="true"
+	(page)="setPage($event)"
+	[loader]="isLoading">
+
+	<ngx-datatable-column *ngFor="let col of columns" [prop]="col.prop" [name]="col.name" [width]="256"></ngx-datatable-column>
+
+	<ngx-datatable-column name="Actions" prop="actions" [sortable]="false" [width]="256">
+		<ng-template let-row="row" let-rowIndex="rowIndex" let-expanded="expanded" let-value="value" ngx-datatable-cell-template>
+			<button type="button" class="!px-3 btn-primary" [class.spinner]="toggleUserBtn.disabled" (click)="toggleStatus(row.id, toggleUserBtn)" [matTooltip]="row.active ? 'Toggle enable' : 'Toggle disable'" #toggleUserBtn>
+				<span class="spinner-text"><fa-icon [icon]="row.active == false ? ['fas', 'toggle-off'] : ['fas', 'toggle-on']"></fa-icon></span>
+			</button>
+
+			<button type="button" [class.spinner]="false" class="!px-3 ml-3 btn-primary" (click)="changePasswordModal.open(row.id)" matTooltip="Change password">
+				<span class="spinner-text"><fa-icon [icon]="['fas', 'unlock']"></fa-icon></span>
+			</button>
+		</ng-template>
+	</ngx-datatable-column>
+</ngx-datatable>

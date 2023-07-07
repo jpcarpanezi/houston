@@ -1,55 +1,67 @@
 ﻿using Houston.Core.Commands;
 using Houston.Core.Commands.ConnectorFunctionCommands;
-using Houston.Core.Entities.MongoDB;
+using Houston.Core.Entities.Postgres;
 using Houston.Core.Interfaces.Repository;
+using Houston.Core.Interfaces.Services;
 using MediatR;
-using MongoDB.Bson;
 using System.Net;
-using System.Text;
 
 namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 	public class CreateConnectorFunctionCommandHandler : IRequestHandler<CreateConnectorFunctionCommand, ResultCommand<ConnectorFunction>> {
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IUserClaimsService _claims;
 
-		public CreateConnectorFunctionCommandHandler(IUnitOfWork unitOfWork) {
+		public CreateConnectorFunctionCommandHandler(IUnitOfWork unitOfWork, IUserClaimsService claims) {
 			_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
 		}
 
 		public async Task<ResultCommand<ConnectorFunction>> Handle(CreateConnectorFunctionCommand request, CancellationToken cancellationToken) {
-			ObjectId userId = ObjectId.Parse("6406274256017a23e89a7dd6");
-			ConnectorFunction connectorFunction = new() {
-				Id = ObjectId.GenerateNewId(),
+			var connectorFunctionInputs = new List<ConnectorFunctionInput>();
+			var connectorFunctionId = Guid.NewGuid();
+
+			if (request.Inputs is not null) {
+				foreach (var input in request.Inputs) {
+					var connectorFunctionInput = new ConnectorFunctionInput {
+						Id = Guid.NewGuid(),
+						ConnectorFunctionId = connectorFunctionId,
+						Name = input.Name,
+						Placeholder = input.Placeholder,
+						Type = input.InputType,
+						Required = input.Required,
+						Replace = input.Replace,
+						Values = input.Values,
+						DefaultValue = input.DefaultValue,
+						AdvancedOption = input.AdvancedOption,
+						CreatedBy = _claims.Id,
+						CreationDate = DateTime.UtcNow,
+						UpdatedBy = _claims.Id,
+						LastUpdate = DateTime.UtcNow
+					};
+
+					connectorFunctionInputs.Add(connectorFunctionInput);
+				}
+			}
+
+			var connectorFunction = new ConnectorFunction {
+				Id = connectorFunctionId,
 				Name = request.Name,
 				Description = request.Description,
-				ConnectorId = request.ConnectorId ?? ObjectId.Empty,
-				Dependencies = request.Dependencies,
-				Version = request.Version ?? "1.0.0",
-				IsEntrypoint = false,
-				Inputs = request.Inputs?.Select(x => new ConnectorFunctionInput {
-					Id = ObjectId.GenerateNewId(),
-					Name = x.Name,
-					InputType = x.InputType,
-					Required = x.Required,
-					Placeholder = x.Placeholder,
-					Replace = x.Replace,
-					Values = x.Values,
-					DefaultValue = x.DefaultValue,
-					AdvancedOption = x.AdvancedOption,
-					CreatedBy = userId,
-					CreationDate = DateTime.UtcNow,
-					UpdatedBy = userId,
-					LastUpdate =DateTime.UtcNow
-				}).ToList(),
+				Active = true,
+				ConnectorId = request.ConnectorId,
 				Script = request.Script,
-				CreatedBy = userId,
+				CreatedBy = _claims.Id,
 				CreationDate = DateTime.UtcNow,
-				UpdatedBy = userId,
+				UpdatedBy = _claims.Id,
 				LastUpdate = DateTime.UtcNow
 			};
 
-			await _unitOfWork.ConnectorFunctionRepository.InsertOneAsync(connectorFunction);
+			_unitOfWork.ConnectorFunctionRepository.Add(connectorFunction);
+			_unitOfWork.ConnectorFunctionInputRepository.AddRange(connectorFunctionInputs);
 
-			return new ResultCommand<ConnectorFunction>(HttpStatusCode.Created, null, connectorFunction);
+			await _unitOfWork.Commit();
+
+			return new ResultCommand<ConnectorFunction>(HttpStatusCode.Created, null, null, connectorFunction);
 		}
 	}
 }

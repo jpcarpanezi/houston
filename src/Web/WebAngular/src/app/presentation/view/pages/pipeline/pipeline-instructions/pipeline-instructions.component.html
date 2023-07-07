@@ -1,0 +1,122 @@
+<div class="card mt-5" [loader]="isLoading">
+	<details class="group" open>
+		<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+			<span>Instructions</span>
+
+			<span class="transition group-open:rotate-180"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></span>
+		</summary>
+
+		<p class="text-neutral-600 dark:text-white">
+			Add instructions to run when the pipeline is triggered.
+		</p>
+
+		<div class="mt-5 w-full md:w-1/2 mx-auto text-neutral-600 dark:text-white">
+			<div *ngFor="let instruction of pipelineInstructions; let i = index;">
+				<div class="px-6 py-4 bg-gray-50 dark:bg-slate-700 border dark:border-0 rounded-md">
+					<details class="group">
+						<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+							<span>{{ getConnectorFunctionById(instruction.connectorFunctionId).name }}</span>
+
+							<span class="flex gap-x-2">
+								<button type="button" class="w-auto !py-0.5 !px-1 text-sm btn-primary" (click)="movePipelineInstruction(i, 'down')" *ngIf="i + 1 != pipelineInstructions.length" matTooltip="Move down">
+									<span class="spinner-text"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></span>
+								</button>
+
+								<button type="button" class="w-auto !py-0.5 !px-1 text-sm btn-primary" (click)="movePipelineInstruction(i, 'up')" *ngIf="i != 0" matTooltip="Move up">
+									<span class="spinner-text"><fa-icon [icon]="['fas', 'chevron-up']"></fa-icon></span>
+								</button>
+
+								<button type="button" class="w-auto !py-0.5 !px-1 text-sm btn-danger" (click)="removeInstruction(i)" matTooltip="Remove">
+									<span class="spinner-text"><fa-icon [icon]="['fas', 'trash']"></fa-icon></span>
+								</button>
+							</span>
+						</summary>
+
+						<div class="block mt-4">
+							<div *ngIf="getConnectorFunctionById(instruction.connectorFunctionId).inputs?.length == 0">
+								This connector function has no inputs to customize.
+							</div>
+
+							<div *ngFor="let input of getConnectorFunctionById(instruction.connectorFunctionId).inputs">
+								<label [htmlFor]="input.id">{{ input.name }} <small class="text-red-500" *ngIf="input.required">(required)</small></label>
+
+								<div *ngIf="input.inputType.toString() == 'String'">
+									<input type="text" [id]="input.id" [id]="input.id" [placeholder]="input.placeholder" [value]="input.defaultValue" (input)="changeInputValue(i, input.id, connectorInput.value)" class="w-full mb-2 text-input" #connectorInput>
+								</div>
+
+								<div *ngIf="input.inputType.toString() == 'List'">
+									<select class="w-full mb-2 text-input" (change)="changeInputValue(i, input.id, connectorInput.value)" #connectorInput>
+										<option value="">{{ input.placeholder }}</option>
+										<option *ngFor="let value of input.values" [selected]="instruction.inputs![input.id] == value || value == input.defaultValue">{{ value }}</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</details>
+				</div>
+
+				<div class="relative flex items-center justify-center my-2">
+					<div class="h-full absolute left-1/2 bg-gray-400 transform -translate-x-1/2" style="width: 2px;"></div>
+					<div class="mx-auto w-3/5 h-16 flex items-center justify-center"></div>
+				</div>
+			</div>
+		</div>
+
+		<div>
+			<div class="text-center">
+				<button class="p-2 text-emerald-400 transition-colors duration-200 w-10 h-10 rounded-full bg-emerald-50 hover:text-emerald-600 hover:bg-emerald-100 focus:outline-none focus:bg-emerald-100 focus:ring-emerald-800" *ngIf="!isConnectorPanelVisible" (click)="toggleConnectorPanel()" matTooltip="Add instruction">
+					<span class="sr-only">Open connector panel</span>
+					<fa-icon [icon]="['fas', 'plus']"></fa-icon>
+				</button>
+
+				<button class="p-2 text-rose-400 transition-colors duration-200 w-10 h-10 rounded-full bg-rose-50 hover:text-rose-600 hover:bg-rose-100 focus:outline-none focus:bg-rose-100 focus:ring-rose-800" *ngIf="isConnectorPanelVisible" (click)="toggleConnectorPanel()" matTooltip="Close">
+					<span class="sr-only">Close connector panel</span>
+					<fa-icon [icon]="['fas', 'xmark']"></fa-icon>
+				</button>
+			</div>
+
+			<div class="grid justify-items-center mt-2" *ngIf="isConnectorPanelVisible">
+				<ngx-datatable
+					class="tailwind tailwind-borderless expandable w-full md:!w-1/2"
+					[rows]="rows"
+					[columns]="columns"
+					[columnMode]="columnMode"
+					[headerHeight]="50"
+					[footerHeight]="50"
+					rowHeight="auto"
+					[externalPaging]="true"
+					[count]="page.count"
+					[offset]="page.pageIndex"
+					[limit]="page.pageSize"
+					[scrollbarH]="true"
+					[loader]="isLoading"
+					#connectorsTable>
+
+					<ngx-datatable-row-detail>
+						<ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" let-expanded="expanded" ngx-datatable-row-detail-template>
+							<div class="pl-6 py-2 divide-y dark:text-white dark:bg-gray-900">
+								<div *ngIf="row.connectorFunctions == undefined || row.connectorFunctions.length == 0">No connector function registered.</div>
+
+								<div *ngIf="row.connectorFunctions != undefined && row.connectorFunctions.length > 0">
+									<div class="grid grid-cols-6 gap-x-6 py-2" *ngFor="let connectorFunction of row.connectorFunctions">
+										<strong><a href="#" class="text-blue-600 dark:text-cyan-300 hover:text-blue-900 dark:hover:text-cyan-500 underline" (click)="selectInstruction(connectorFunction, $event)">{{ connectorFunction.name }}</a></strong>
+									</div>
+								</div>
+							</div>
+						</ng-template>
+					</ngx-datatable-row-detail>
+
+					<ngx-datatable-column *ngFor="let col of columns" [prop]="col.prop" [name]="col.name" [width]="256"></ngx-datatable-column>
+
+					<ngx-datatable-column name="Actions" prop="actions" [sortable]="false" [width]="256">
+						<ng-template let-row="row" let-rowIndex="rowIndex" let-expanded="expanded" let-value="value" ngx-datatable-cell-template>
+							<button type="button" [class.spinner]="false" class="!px-3 btn-primary" [class.spinner]="expandRowBtn.disabled" (click)="toggleExpandRow(row, expanded, rowIndex, expandRowBtn)" [matTooltip]="expanded ? 'Close' : 'List functions'" #expandRowBtn>
+								<span class="spinner-text"><fa-icon [icon]="expanded ? ['fas', 'xmark'] : ['fas', 'table-list']"></fa-icon></span>
+							</button>
+						</ng-template>
+					</ngx-datatable-column>
+				</ngx-datatable>
+			</div>
+		</div>
+	</details>
+</div>

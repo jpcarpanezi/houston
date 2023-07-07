@@ -23,12 +23,14 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
-        "ConnectionStrings__MongoDB": "mongodb://root:luo4Xo7Eepeeng1OoGe6ouxi8qua3kievu6EiTo5@mongo:27017/",
+        "ConnectionStrings__Postgres": "Server=postgres;port=5432;DataBase=houston;Uid=postgres;Pwd=eicetaih6EetheiTie4ii",
         "ConnectionStrings__RabbitMQ": "amqp://root:Abcd1234@rabbitmq:5672/",
         "ConnectionStrings__Redis": "redis:6379,password=re3oeg8Shaiyao0aisojieTh7miethu0pheepohx"
       },
       "publishAllPorts": true,
       "useSSL": true,
+      "httpPort": 32769,
+      "sslPort": 32768,
       "DockerfileRunArguments": "--network=debug"
     }
   },

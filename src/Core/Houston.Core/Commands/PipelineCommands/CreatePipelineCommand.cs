@@ -1,6 +1,5 @@
-﻿using Houston.Core.Entities.MongoDB;
+﻿using Houston.Core.Entities.Postgres;
 using MediatR;
-using MongoDB.Bson;
 
 namespace Houston.Core.Commands.PipelineCommands {
 	public class CreatePipelineCommand : IRequest<ResultCommand<Pipeline>> {
@@ -8,14 +7,11 @@ namespace Houston.Core.Commands.PipelineCommands {
 
 		public string? Description { get; set; }
 
-		public ObjectId RepositoryHostConfig { get; set; }
+		public CreatePipelineCommand() { }
 
-		public string SourceCode { get; set; } = null!;
-
-		public string? DeployKey { get; set; } = null!;
-
-		public string? Secret { get; set; } = null!;
-
-		public List<PipelineTrigger> Triggers { get; set; } = null!;
+		public CreatePipelineCommand(string name, string? description) {
+			Name = name ?? throw new ArgumentNullException(nameof(name));
+			Description = description;
+		}
 	}
 }

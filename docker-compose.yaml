@@ -1,0 +1,84 @@
+version: "3.8"
+
+services:
+  houston-postgres:
+    image: postgres:15.0-alpine
+    volumes:
+      - /data/houston/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD: "<postgres-password>"
+    networks:
+      - houston
+    restart: always
+    container_name: HoustonPostgres
+
+  houston-redis:
+    image: redis:6.2.3-alpine
+    volumes:
+      - /data/houston/redis:/data
+    networks:
+      - houston
+    command: redis-server --requirepass <redis-password> --save 60 1
+    restart: always
+    container_name: HoustonRedis
+
+  houston-rabbit:
+    image: rabbitmq:3.8-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER: "root"
+      - RABBITMQ_DEFAULT_PASS: "<rabbit-password>"
+      - RABBITMQ_NODENAME: "node@rabbitmq"
+    networks:
+      - houston
+    restart: always
+    container_name: HoustonRabbit
+
+  houston-front:
+    image: jpcarpanezi/houston-front:dev
+    networks:
+      - houston
+    depends_on:
+      - houston-api
+    restart: always
+    container_name: HoustonFront
+
+  houston-api:
+    image: jpcarpanezi/houston-api:dev
+    volumes:
+      - /data/houston/PrivateKey.pem:/app/AuthConfigurations/PrivateKey.pem:ro
+    environment:
+      - ConnectionStrings__Postgres: "Server=HoustonPostgres;port=5432;DataBase=houston;Uid=postgres;Pwd=<postgres-password>"
+      - ConnectionStrings__RabbitMQ: "amqp://root:<rabbit-password>@HoustonRabbit:5672"
+      - ConnectionStrings__Redis: "HoustonRedis:6379,password=<redis-password>"
+      - CorsSettings__Origins__1: "http://localhost:4200"
+    networks:
+      - houston
+    depends_on:
+      - houston-postgres
+      - houston-redis
+      - houston-rabbit
+      - houston-workers
+    restart: always
+    container_name: HoustonAPI
+
+  houston-workers:
+    image: jpcarpanezi/houston-workers:dev
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - ConnectionStrings__Postgres: "Server=HoustonPostgres;port=5432;DataBase=houston;Uid=postgres;Pwd=<postgres-password>"
+      - ConnectionStrings__RabbitMQ: "amqp://root:<rabbit-password>@HoustonRabbit:5672"
+      - ConnectionStrings__Redis: "HoustonRedis:6379,password=<redis-password>"
+    networks:
+      - houston
+    depends_on:
+      - houston-postgres
+      - houston-redis
+      - houston-rabbit
+    restart: always
+    container_name: HoustonWorkers
+
+networks:
+  houston:
+    external: false

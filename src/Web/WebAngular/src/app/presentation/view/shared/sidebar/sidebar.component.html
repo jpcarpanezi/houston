@@ -1,0 +1,24 @@
+<div class="fixed inset-0 z-10 bg-indigo-800 lg:hidden opacity-50" (click)="toggleSidebar()" [class.hidden]="!(isSidebarOpen && isSidebarEnabled)"></div>
+
+<aside class="fixed h-screen inset-y-0 z-10 flex flex-shrink-0 overflow-hidden bg-white border-r dark:border-gray-800 lg:sticky focus:outline-none" [class.hidden]="!(isSidebarOpen && isSidebarEnabled)">
+	<app-mini-menu [notificationsPanelRef]="notificationsPanelRef" [searchPanelRef]="searchPanelRef" [settingsPanelRef]="settingsPanelRef"></app-mini-menu>
+
+	<app-menu class="bg-white dark:bg-slate-700"></app-menu>
+</aside>
+
+<!-- Toggle sidebar -->
+<div class="fixed flex items-center space-x-4 top-5 right-10 z-50" [class.hidden]="!isSidebarEnabled">
+	<button class="p-1 text-indigo-400 dark:text-purple-700 transition-colors duration-200 rounded-md bg-indigo-50 dark:bg-purple-200 hover:text-indigo-600 dark:hover:text-purple-600 hover:bg-indigo-100 dark:hover:bg-purple-100 focus:outline-none focus:ring" (click)="toggleSidebar()">
+		<span class="sr-only">Toggle main menu</span>
+		<fa-icon [icon]="isSidebarOpen ? ['fas', 'xmark'] : ['fas', 'bars']"></fa-icon>
+	</button>
+</div>
+
+<!-- Notification -->
+<app-notifications #notificationsPanelRef></app-notifications>
+
+<!-- Search -->
+<app-search-bar #searchPanelRef></app-search-bar>
+
+<!-- Settings -->
+<app-settings #settingsPanelRef></app-settings>

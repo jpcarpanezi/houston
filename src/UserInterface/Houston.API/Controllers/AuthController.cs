@@ -3,10 +3,10 @@ using Houston.Application.ViewModel;
 using Houston.Core.Commands.AuthCommands;
 using Houston.Core.Entities.Redis;
 using Houston.Core.Interfaces.Repository;
+using Houston.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
-using MongoDB.Bson;
 using Projeta.API.Infrastructure;
 using System.Net;
 using System.Text.Json;
@@ -31,23 +31,38 @@ namespace Houston.API.Controllers {
 		/// Performs user authentication
 		/// </summary>
 		/// <param name="command">JSON containing authentication fields</param>
-		/// <returns>A JWT with refresh token to send in header for authorization from API endpoints</returns>
-		/// <response code="200">Return a JWT</response>
-		/// <response code="403">If user is inactive or with invalid credentials</response>
+		/// <response code="200">Successfully logged in</response>
+		/// <response code="307">First login. Need to create a new password to continue</response>
+		/// <response code="401">The account has been deactivated</response>
+		/// <response code="403">Invalid username or password</response>
 		[HttpPost]
 		[AllowAnonymous]
 		[ProducesResponseType(typeof(BearerTokenViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(FirstAccessViewModel), (int)HttpStatusCode.Unauthorized)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
+		[ProducesResponseType(typeof(FirstAccessViewModel), (int)HttpStatusCode.TemporaryRedirect)]
 		public async Task<IActionResult> SignIn([FromBody] GeneralSignInCommand command) {
 			var user = await _unitOfWork.UserRepository.FindByEmail(command.Email);
 
-			// TODO: Mudar para validar senha criptografada
-			if (user is null || user.Password != command.Password) {
-				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("invalidCredentials"));
+			if (user is null || !PasswordService.VerifyHashedPassword(command.Password, user.Password)) {
+				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("Invalid username or password.", "invalidCredentials"));
 			}
 
-			if (user.IsActive == false) {
-				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("userInactive"));
+			if (!user.Active) {
+				return Unauthorized(new MessageViewModel("The account has been deactivated.", "userInactive"));
+			}
+
+			if (user.FirstAccess) {
+				var passwordToken = await _cache.GetStringAsync(user.Id.ToString());
+
+				if (passwordToken is null) {
+					passwordToken = Guid.NewGuid().ToString("N");
+					DistributedCacheEntryOptions cacheOptions = new();
+					cacheOptions.SetAbsoluteExpiration(TimeSpan.FromMinutes(15));
+					await _cache.SetStringAsync(user.Id.ToString(), passwordToken, cacheOptions);
+				}
+
+				return StatusCode((int)HttpStatusCode.TemporaryRedirect, new FirstAccessViewModel(passwordToken, $"/api/User/firstAccess/{passwordToken}", "First login. Need to create a new password to continue.", "firstAccess"));
 			}
 
 			return Ok(await TokenService.GenerateToken(user, _signingConfigurations, _tokenConfigurations, _cache));
@@ -57,35 +72,30 @@ namespace Houston.API.Controllers {
 		/// Refreshes user JWT token
 		/// </summary>
 		/// <param name="token">Refresh token given with JWT on authentication</param>
-		/// <returns>A new JWT and refresh token</returns>
-		/// <response code="200">Return a new JWT with refresh token</response>
-		/// <response code="403">If token or user are invalid</response>
+		/// <response code="200">JWT successfully refreshed</response>
+		/// <response code="403">Invalid or expired token</response>
 		[HttpGet("{token}")]
 		[AllowAnonymous]
 		[ProducesResponseType(typeof(BearerTokenViewModel), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
 		public async Task<IActionResult> RefreshToken(string token) {
 			if (string.IsNullOrWhiteSpace(token)) {
-				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("invalidToken"));
+				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("Invalid token.", "invalidToken"));
 			}
 
 			string? redisToken = await _cache.GetStringAsync(token);
 			if (redisToken is null) {
-				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("tokenExpired"));
+				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("Token expired.", "invalidToken"));
 			}
 
 			RefreshTokenData? tokenData = JsonSerializer.Deserialize<RefreshTokenData>(redisToken);
-			if (tokenData is null) {
-				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("tokenExpired"));
-			}
-
-			var user = await _unitOfWork.UserRepository.FindByIdAsync(ObjectId.Parse(tokenData.UserId));
+			var user = await _unitOfWork.UserRepository.GetByIdAsync(Guid.Parse(tokenData!.UserId));
 			if (user is null) {
-				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("userNotFound"));
+				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("User not found.", "userNotFound"));
 			}
 
-			if (!user.IsActive) {
-				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("userInactive"));
+			if (!user.Active) {
+				return StatusCode((int)HttpStatusCode.Forbidden, new MessageViewModel("User inactive.", "userNotFound"));
 			}
 
 			await _cache.RemoveAsync(token);

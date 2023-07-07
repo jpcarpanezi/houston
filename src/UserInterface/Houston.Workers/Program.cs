@@ -1,9 +1,4 @@
 ﻿using Autofac.Extensions.DependencyInjection;
-using Houston.Core.Interfaces.Repository;
-using Houston.Core.Interfaces.Services;
-using Houston.Infrastructure.Context;
-using Houston.Infrastructure.Repository;
-using Houston.Infrastructure.Services;
 using Houston.Workers.Setups;
 using Microsoft.Extensions.Configuration;
 
@@ -15,15 +10,11 @@ IHost host = Host.CreateDefaultBuilder(args)
 			options.InstanceName = "houston-";
 		});
 		services.AddAutofac();
+		services.AddDependencyInjection();
+		services.AddPostgres(hostContext.Configuration);
 		services.AddEventBus(hostContext.Configuration);
-		services.AddScoped<IContainerBuilderService, DockerContainerBuilderService>();
-		services.AddScoped<IMongoContext, MongoContext>();
-		services.AddTransient<IUnitOfWork, UnitOfWork>();
-		//services.AddScoped<RunPipelineEventHandler>();
 	})
 	.Build();
 
-// DEBUG: Run pipeline for testing without event
-//await host.Services.GetRequiredService<RunPipelineEventHandler>().Handle();
 host.Services.ConfigureEventBus();
 await host.RunAsync();

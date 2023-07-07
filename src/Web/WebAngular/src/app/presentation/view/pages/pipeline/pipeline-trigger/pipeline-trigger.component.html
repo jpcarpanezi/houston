@@ -1,0 +1,192 @@
+<app-pipeline-trigger-keys #deployKeysModal (onHide)="pipelineTrigger!.keyRevealed = true"></app-pipeline-trigger-keys>
+
+<div class="w-full mt-5 select-none text-yellow-700 rounded-md border-l-4 border-yellow-400 bg-yellow-100 px-4 py-2 hover:border-yellow-500" *ngIf="(!pipelineTrigger?.keyRevealed || !pipelineTrigger) && !isLoading">
+	<p><a href="#" class="underline" (click)="$event.preventDefault(); deployKeysModal.open()">Click here</a> to reveal your pipeline deploy keys!</p>
+
+	<p><strong>Warning:</strong> After shown, you will not be able to see them again unless you generate a new one.</p>
+</div>
+
+<form [formGroup]="pipelineTriggerForm">
+	<div class="card mt-5" [loader]="isLoading">
+		<details class="group" [open]="!pipelineTrigger?.id">
+			<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+				<span>Trigger</span>
+
+				<span class="transition group-open:rotate-180"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></span>
+			</summary>
+
+			<div class="text-neutral-600 dark:text-white group-open:animate-fadeIn">
+				<p>
+					Enter the trigger to this pipeline.
+				</p>
+
+				<div class="block mt-4">
+					<div class="flex items-center gap-4">
+						<div class="flex-auto">
+							<label for="webhook">Webhook payload URL</label>
+							<input type="text" name="webhook" [value]="originPath + '/api/pipeline/webhook/github/' + pipelineId " maxlength="6000" class="w-full mb-2 text-input" readonly #webhook>
+						</div>
+
+						<button type="submit" class="md:w-auto h-auto mt-3 btn-primary" (click)="copyToClipboard(webhook, webhookBtn)" #webhookBtn>
+							<span class="hidden md:inline mr-1">Copy to clipboard</span>
+							<fa-icon [icon]="['fas', 'paste']"></fa-icon>
+						</button>
+					</div>
+				</div>
+
+				<div class="block mt-4">
+					<div class="flex items-center gap-4">
+						<div class="flex-auto">
+							<label for="sourceGit">Git Source</label>
+							<input type="text" name="sourceGit" id="sourceGit" formControlName="sourceGit" placeholder="Enter the URL to the git repository" maxlength="6000" class="w-full mb-2 text-input">
+						</div>
+
+						<button type="submit" class="md:w-auto h-auto mt-3 btn-primary" *ngIf="pipelineTrigger?.keyRevealed" (click)="updateDeployKeys()">
+							<span class="spinner-text">
+								<span class="hidden md:inline mr-1">Update deploy keys</span>
+								<fa-icon [icon]="['fas', 'rotate']"></fa-icon>
+							</span>
+						</button>
+					</div>
+
+					<app-form-errors controlName="sourceGit" error="required">Source git required.</app-form-errors>
+					<app-form-errors controlName="sourceGit" error="maxlength">Maximum characters are 50.</app-form-errors>
+					<app-form-errors controlName="sourceGit" error="pattern">Git repository must be SSH.</app-form-errors>
+				</div>
+
+				<div class="block mt-4">
+					<div class="w-full mb-2 select-none rounded-md border-l-4 border-yellow-400 bg-yellow-100 px-4 py-2 font-medium hover:border-yellow-500" *ngIf="!secretInput.disabled && pipelineTrigger?.id">
+						Remember to change secret in your git repository.
+					</div>
+
+					<div class="flex items-center gap-4">
+						<div class="flex-auto">
+							<label for="secret">Secret</label>
+							<input type="password" name="secret" id="secret" formControlName="secret" placeholder="Enter the trigger secret" maxlength="64" autocomplete="new-password" class="w-full mb-2 text-input" #secretInput>
+						</div>
+
+						<button type="submit" class="md:w-auto h-auto mt-3 py-2 px-4 btn-primary" [class.cursor-not-allowed]="!pipelineTrigger?.id" *ngIf="pipelineTrigger?.id" (click)="togglePasswordChange()">
+							<span class="spinner-text">
+								<span class="hidden md:inline mr-1">Change</span>
+								<fa-icon [icon]="['fas', 'rotate']"></fa-icon>
+							</span>
+						</button>
+					</div>
+
+					<app-form-errors controlName="secret" error="required">Secret required.</app-form-errors>
+					<app-form-errors controlName="secret" error="minlength">Minimum characters are 8.</app-form-errors>
+					<app-form-errors controlName="secret" error="maxlength">Maximum characters are 64.</app-form-errors>
+					<app-form-errors controlName="secret" error="pattern">Secret must be alphanumeric.</app-form-errors>
+				</div>
+			</div>
+		</details>
+	</div>
+
+	<!-- TRIGGER EVENTS -->
+	<div class="card mt-5" [loader]="isLoading">
+		<details class="group" #triggerEventsDetail>
+			<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+				<span>
+					<button type="button" class="text-white w-auto py-0.5 px-1 mr-1 rounded bg-indigo-500 hover:bg-indigo-600" (click)="addEvent(); triggerEventsDetail.open = true" matTooltip="Add event">
+						<span class="spinner-text"><fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
+					</button>
+
+					Trigger Events
+				</span>
+
+				<span class="transition group-open:rotate-180"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></span>
+			</summary>
+
+
+			<p class="text-neutral-600 dark:text-white">
+				Enter the trigger events.
+			</p>
+
+			<p *ngIf="!getEvents().length" class="mt-5 text-neutral-600 dark:text-white">
+				No trigger events added yet. Click on the plus button to add.
+			</p>
+
+			<div class="px-6 py-4 mt-5 bg-gray-50 dark:bg-slate-700 text-neutral-600 dark:text-white border dark:border-0 rounded-md" formArrayName="events" *ngFor="let event of getEvents().controls; let i = index">
+				<details class="group" [formGroupName]="i" open>
+					<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+						<span>
+							<button type="button" class="w-auto !py-0.5 !px-1 mr-1 text-sm btn-danger" (click)="removeEvent(i)" matTooltip="Remove event">
+								<span class="spinner-text"><fa-icon [icon]="['fas', 'minus']"></fa-icon></span>
+							</button>
+
+							Event {{ i + 1 }}
+						</span>
+
+						<span class="transition group-open:rotate-180"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></span>
+					</summary>
+
+					<div class="block mt-4">
+						<div class="flex flex-row items-end gap-4 mb-2">
+							<div class="w-full">
+								<label for="triggerEventId">Trigger event</label>
+								<select name="triggerEventId" id="triggerEventId" formControlName="triggerEventId" class="w-full text-input">
+									<option	value>Select an option</option>
+									<option value="c0437ca0-a971-4d40-99f6-2a3c35e6fb41">push</option>
+									<option value="e9b3eb7e-526b-4f89-968c-7cc0f60228cd">pull_request</option>
+								</select>
+							</div>
+
+							<button type="submit" class="flex-none p-2 btn-primary" (click)="addEventFilter(event)">
+								<span class="spinner-text">
+									<span class="hidden md:inline mr-1">Filter</span>
+									<fa-icon [icon]="['fas', 'plus']"></fa-icon>
+								</span>
+							</button>
+						</div>
+
+						<app-form-errors [control]="event" controlName="triggerEventId" error="required">Trigger event required.</app-form-errors>
+					</div>
+
+					<div class="px-6 py-4 mt-5 bg-white dark:bg-slate-800 border dark:border-0 rounded-md" formArrayName="eventFilters" *ngFor="let filter of getEventControl(event, 'eventFilters').controls; let j = index">
+						<details class="group" [formGroupName]="j" open>
+							<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
+								<span>
+									<button type="button" class="text-white w-auto py-0.5 px-1 mr-1 rounded bg-rose-500 hover:bg-rose-600 text-sm" (click)="removeEventFilter(event, j)" matTooltip="Remove filter">
+										<span class="spinner-text"><fa-icon [icon]="['fas', 'minus']"></fa-icon></span>
+									</button>
+
+									Event filter {{ j + 1 }}
+								</span>
+
+								<span class="transition group-open:rotate-180"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></span>
+							</summary>
+
+							<div class="block mt-4">
+								<label for="triggerFilterId">Trigger filter</label>
+								<select name="triggerFilterId" id="triggerFilterId" formControlName="triggerFilterId" class="w-full mb-2 text-input">
+									<option	value>Select an option</option>
+									<option value="24a42711-ed13-405b-8527-b5e53c680b4d">branches</option>
+									<option value="f7c800a4-1f05-478f-9a0b-46fed919eae2">paths</option>
+									<option value="aecde3fd-e2cf-4817-9701-178305697f46">tags</option>
+									<option value="e859f16a-588b-46e2-b9f4-f7b60051e387">types</option>
+								</select>
+								<app-form-errors [control]="filter" controlName="triggerFilterId" error="required">Trigger filter required.</app-form-errors>
+							</div>
+
+							<div class="block mt-4" formArrayName="filterValues" *ngFor="let value of getEventControl(filter, 'filterValues').controls; let k = index">
+								<label [htmlFor]="k">Filter value {{ k + 1 }}</label>
+
+								<div class="relative">
+									<input type="text" name="filterValues" id="filterValues" [formControlName]="k" placeholder="Enter the filter value {{ k + 1 }}" maxlength="25" class="block w-full mb-2 text-input">
+
+									<button type="button" class="absolute right-0 top-1/2 -translate-y-1/2 w-auto !py-0.5 !px-1 mr-2 text-sm btn-primary" (click)="addEventFilterValue(filter)" *ngIf="k == 0" matTooltip="Add value">
+										<span class="spinner-text"><fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
+									</button>
+
+									<button type="button" class="absolute right-0 top-1/2 -translate-y-1/2 w-auto !py-0.5 !px-1 mr-2 text-sm btn-danger" (click)="removeEventFilterValue(filter, k)" *ngIf="k > 0" matTooltip="Remove value">
+										<span class="spinner-text"><fa-icon [icon]="['fas', 'minus']"></fa-icon></span>
+									</button>
+								</div>
+							</div>
+						</details>
+					</div>
+				</details>
+			</div>
+		</details>
+	</div>
+</form>

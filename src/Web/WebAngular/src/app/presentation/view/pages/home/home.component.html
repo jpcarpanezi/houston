@@ -1,0 +1,86 @@
+<app-new-pipeline #pipelineModal (submitResponse)="setPage({ offset: 0 })"></app-new-pipeline>
+
+<app-update-pipeline #updatePipeline (onUpdate)="setPage({ offset: page.pageIndex })"></app-update-pipeline>
+
+<div class="grid grid-cols-1 md:grid-cols-2 items-center mb-8">
+	<div>
+		<h1 class="text-2xl font-semibold">Hello, {{ userInfo?.name!.split(" ")[0] }}!
+		</h1>
+		<p class="text-slate-500 dark:text-slate-600">See all your created pipelines.</p>
+	</div>
+
+	<div class="mt-5 md:mt-0 text-right">
+		<button type="button" class="w-full md:w-auto btn-primary" (click)="pipelineModal.open()">
+			<span class="spinner-text">New <fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
+		</button>
+	</div>
+</div>
+
+<ngx-datatable
+	class="tailwind"
+	[rows]="rows"
+	[columns]="columns"
+	[columnMode]="columnMode"
+	[headerHeight]="50"
+	[footerHeight]="50"
+	rowHeight="auto"
+	[externalPaging]="true"
+	[count]="page.count"
+	[offset]="page.pageIndex"
+	[limit]="page.pageSize"
+	[scrollbarH]="true"
+	(page)="setPage($event)"
+	[loader]="isLoading">
+
+	<ngx-datatable-column name="Name" prop="name" [sortable]="true">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			<a [routerLink]="['/pipeline', row.id]">{{ value }}</a>
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column *ngFor="let col of columns" [prop]="col.prop" [name]="col.name"></ngx-datatable-column>
+
+	<ngx-datatable-column name="Created by" prop="createdBy" [sortable]="true">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			{{ value }}
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column name="Creation date" prop="creationDate" [sortable]="true">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			{{ value | utcToLocalTime: 'short' }}
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column name="Updated by" prop="updatedBy" [sortable]="true">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			{{ value }}
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column name="Last update" prop="lastUpdate" [sortable]="true">
+		<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+			{{ value | utcToLocalTime: 'short' }}
+		</ng-template>
+	</ngx-datatable-column>
+
+	<ngx-datatable-column name="Actions" prop="actions" [sortable]="false" [width]="256">
+		<ng-template let-row="row" let-rowIndex="rowIndex" let-expanded="expanded" let-value="value" ngx-datatable-cell-template>
+			<button type="button" class="!px-3 btn-primary" [routerLink]="['/pipeline', row.id]" matTooltip="Edit">
+				<span class="spinner-text"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></span>
+			</button>
+
+			<button type="button" class="!px-3 ml-3 btn-primary" [routerLink]="['/runs', row.id]" matTooltip="Logs">
+				<span class="spinner-text"><fa-icon [icon]="['fas', 'file-lines']"></fa-icon></span>
+			</button>
+
+			<button type="button" class="!px-3 ml-3 btn-primary" [class.spinner]="togglePipelineBtn.disabled" (click)="togglePipeline(togglePipelineBtn, row.id)" [matTooltip]="row.status == 'Stopped' ? 'Toggle enable' : 'Toggle disable'" #togglePipelineBtn>
+				<span class="spinner-text"><fa-icon [icon]="row.status == 'Stopped' ? ['fas', 'toggle-off'] : ['fas', 'toggle-on']"></fa-icon></span>
+			</button>
+
+			<button type="button" class="!px-3 ml-3 btn-danger" [class.spinner]="deletePipelineBtn.disabled" (click)="deletePipeline(deletePipelineBtn, row.id)" matTooltip="Delete" #deletePipelineBtn>
+				<span class="spinner-text"><fa-icon [icon]="['fas', 'trash']"></fa-icon></span>
+			</button>
+		</ng-template>
+	</ngx-datatable-column>
+</ngx-datatable>

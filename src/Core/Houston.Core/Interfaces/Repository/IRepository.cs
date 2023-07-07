@@ -1,18 +1,15 @@
-﻿using Houston.Core.Entities.MongoDB;
-using MongoDB.Bson;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
-namespace Houston.Core.Interfaces.Repository
-{
-    public interface IRepository<TEntity> where TEntity : EntityBase {
-		Task InsertOneAsync(TEntity obj);
-
-		Task<TEntity?> FindByIdAsync(ObjectId id);
-
-		Task ReplaceOneAsync(TEntity document);
-
-		Task UpdateOneAsync<TEntityFilter, TEntityUpdate>(Expression<Func<TEntity, TEntityFilter>> filterExp, TEntityFilter filterValue, Expression<Func<TEntity, TEntityUpdate>> updateExp, TEntityUpdate updateValue);
-
-		Task DeleteOneAsync(Guid id);
+namespace Houston.Core.Interfaces.Repository {
+	public interface IRepository<TEntity> where TEntity : class {
+		Task<TEntity?> GetByIdAsync(Guid id);
+		Task<IEnumerable<TEntity>> GetAllAsync();
+		IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> expressions);
+		void Add(TEntity entity);
+		void AddRange(IEnumerable<TEntity> entities);
+		void Update(TEntity entity);
+		void UpdateRange(IEnumerable<TEntity> entities);
+		void Remove(TEntity entity);
+		void RemoveRange(IEnumerable<TEntity> entities);
 	}
 }

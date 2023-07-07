@@ -2,12 +2,12 @@
 
 namespace Houston.Core.Messages {
 	public record RunPipelineMessage : IntegrationEvent {
-		public string PipelineId { get; set; } = default!;
+		public Guid PipelineId { get; set; }
 
-		public string? TriggeredBy { get; set; }
+		public Guid? TriggeredBy { get; set; }
 
-		public RunPipelineMessage(string pipelineId, string? triggeredBy) {
-			PipelineId = pipelineId ?? throw new ArgumentNullException(nameof(pipelineId));
+		public RunPipelineMessage(Guid pipelineId, Guid? triggeredBy) {
+			PipelineId = pipelineId;
 			TriggeredBy = triggeredBy;
 		}
 	}

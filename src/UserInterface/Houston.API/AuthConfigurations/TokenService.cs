@@ -1,6 +1,6 @@
 ﻿using Houston.API.AuthConfigurations;
 using Houston.Application.ViewModel;
-using Houston.Core.Entities.MongoDB;
+using Houston.Core.Entities.Postgres;
 using Houston.Core.Entities.Redis;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +22,7 @@ namespace Projeta.API.Infrastructure {
 					new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
 					new Claim(ClaimTypes.Email, user.Email),
 					new Claim(ClaimTypes.Name, user.Name),
+					new Claim(ClaimTypes.Role, user.Role.ToString())
 				}),
 				Issuer = tokenConfigurations.Issuer,
 				Audience = tokenConfigurations.Audience,

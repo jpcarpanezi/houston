@@ -10,10 +10,10 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Houston.Workers/Houston.Workers.csproj", "Houston.Workers/"]
-RUN dotnet restore "Houston.Workers/Houston.Workers.csproj"
+COPY ["src/UserInterface/Houston.Workers/Houston.Workers.csproj", "src/UserInterface/Houston.Workers/"]
+RUN dotnet restore "src/UserInterface/Houston.Workers/Houston.Workers.csproj"
 COPY . .
-WORKDIR "/src/Houston.Workers"
+WORKDIR "/src/src/UserInterface/Houston.Workers"
 RUN dotnet build "Houston.Workers.csproj" -c Release -o /app/build
 
 FROM build AS publish

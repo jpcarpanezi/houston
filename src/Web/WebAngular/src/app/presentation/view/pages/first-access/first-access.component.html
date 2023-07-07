@@ -1,0 +1,28 @@
+<div class="flex items-center justify-center h-screen">
+	<div class="bg-white dark:bg-slate-800 w-auto md:w-96 mx-5 md:mx-0 prose-zinc shadow p-8 rounded-md border-b-4 border-indigo-400 dark:border-purple-400">
+		<h1 class="font-bold text-3xl">First Access</h1>
+		<p>It's your first access, please change your password.</p>
+
+		<form [formGroup]="firstAccessForm" (submit)="firstAccess()">
+			<div class="block mt-4">
+				<label for="password">New password</label>
+				<input type="password" name="password" id="password" formControlName="password" placeholder="Enter your new password" maxlength="64" class="block w-full mb-2 rounded-md text-input" (focusout)="showPasswordMatch = false" (focus)="showPasswordMatch = true">
+				<app-form-errors controlName="password" error="required">Password required</app-form-errors>
+				<app-form-errors controlName="password" error="matching">Password don't match</app-form-errors>
+				<app-form-errors controlName="password" error="pattern">Weak password</app-form-errors>
+			</div>
+
+			<div class="block mt-4">
+				<label for="confirmPassword">Confirm password</label>
+				<input type="password" name="confirmPassword" id="confirmPassword" formControlName="confirmPassword" placeholder="Confirm your new password" class="block w-full mb-2 text-input">
+				<app-form-errors controlName="confirmPassword" error="required">Confirm password required</app-form-errors>
+			</div>
+
+			<div class="block mt-4">
+				<button type="submit" class="w-full btn-primary" [class.spinner]="firstAccessForm.disabled" [disabled]="firstAccessForm.disabled">
+					<span class="spinner-text">Change password <fa-icon [icon]="['fas', 'right-to-bracket']"></fa-icon></span>
+				</button>
+			</div>
+		</form>
+	</div>
+</div>

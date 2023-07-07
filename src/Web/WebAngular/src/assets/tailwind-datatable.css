@@ -1,0 +1,83 @@
+.ngx-datatable.tailwind .datatable-body::-webkit-scrollbar {
+	@apply w-1 cursor-pointer h-2;
+}
+
+.ngx-datatable.tailwind .datatable-body::-webkit-scrollbar-thumb {
+	@apply cursor-pointer bg-gray-300 hover:bg-gray-400 dark:bg-gray-900 dark:hover:bg-gray-950 rounded-lg;
+}
+
+.ngx-datatable.tailwind {
+	@apply overflow-hidden rounded-md shadow w-full border-collapse bg-white dark:bg-slate-800 text-left text-sm text-gray-500 dark:text-white border-b-4 border-indigo-400 dark:border-purple-400;
+}
+
+.ngx-datatable.tailwind-borderless {
+	@apply border border-gray-200 dark:border-gray-900 shadow-none;
+}
+
+.datatable-row-detail {
+	@apply !h-full bg-gray-50 hover:bg-gray-100;
+}
+
+.ngx-datatable.tailwind .datatable-header {
+	@apply bg-gray-50 dark:bg-slate-800 dark:text-white;
+}
+
+.ngx-datatable.tailwind .datatable-header .datatable-header-cell {
+	@apply px-6 py-4 font-medium text-gray-900 dark:text-white;
+}
+
+.ngx-datatable.tailwind .datatable-body .datatable-row-group {
+	@apply border-t border-gray-100 dark:border-gray-900;
+}
+
+.ngx-datatable.tailwind .datatable-body .datatable-row-wrapper {
+	@apply hover:bg-gray-50 dark:hover:bg-slate-900;
+}
+
+.ngx-datatable.tailwind .datatable-body .datatable-body-cell {
+	@apply px-6 py-4;
+}
+
+.ngx-datatable.tailwind .datatable-body .datatable-body-cell a {
+	@apply text-blue-600 dark:text-cyan-300 hover:text-blue-900 dark:hover:text-cyan-500 underline;
+}
+
+.ngx-datatable.tailwind .datatable-body .empty-row {
+	@apply relative py-3 px-5 mb-0 hover:bg-gray-50 dark:hover:bg-slate-900;
+}
+
+.ngx-datatable.tailwind .datatable-footer {
+	@apply bg-white dark:bg-slate-800 border-t border-gray-100 dark:border-gray-900;
+}
+
+.ngx-datatable.tailwind .datatable-footer .page-count {
+	@apply leading-10 h-12 py-0 px-5;
+}
+
+.ngx-datatable.tailwind .datatable-footer .datatable-pager {
+	@apply my-0 mx-3 align-top;
+}
+
+.ngx-datatable.tailwind .datatable-footer .datatable-pager ul li {
+	@apply my-3 mx-0;
+}
+
+.ngx-datatable.tailwind .datatable-footer .datatable-pager ul li:not(.disabled).active a,
+.ngx-datatable.tailwind .datatable-footer .datatable-pager ul li:not(.disabled):hover a {
+	@apply font-bold text-white bg-indigo-500 dark:bg-purple-500 hover:bg-indigo-600 dark:hover:bg-purple-600;
+}
+
+.ngx-datatable.tailwind .datatable-footer .datatable-pager a {
+	@apply leading-5 h-6 px-2 rounded my-0 mx-1 text-center align-middle text-gray-900 dark:text-white;
+}
+
+.ngx-datatable.tailwind .datatable-footer .datatable-pager .datatable-icon-left,
+.ngx-datatable.tailwind .datatable-footer .datatable-pager .datatable-icon-skip,
+.ngx-datatable.tailwind .datatable-footer .datatable-pager .datatable-icon-right,
+.ngx-datatable.tailwind .datatable-footer .datatable-pager .datatable-icon-prev {
+	@apply text-lg py-0 px-1;
+}
+
+.ngx-datatable.tailwind .datatable-summary-row .datatable-body-row .datatable-body-cell {
+	@apply font-bold;
+}
