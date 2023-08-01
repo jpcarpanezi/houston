@@ -1,19 +1,3 @@
-using Autofac.Extensions.DependencyInjection;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using Houston.API.Filters;
-using Houston.API.Setups;
-using Houston.Core.Interfaces.Repository;
-using Houston.Core.Interfaces.Services;
-using Houston.Infrastructure.Repository;
-using Houston.Infrastructure.Services;
-using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
-using System.Text.Json.Serialization;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());

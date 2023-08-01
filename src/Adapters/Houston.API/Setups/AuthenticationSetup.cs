@@ -1,9 +1,4 @@
-﻿using Houston.API.AuthConfigurations;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-
-namespace Houston.API.Setups {
+﻿namespace Houston.API.Setups {
 	public static class AuthenticationSetup {
 		public static void AddBearerAuthentication(this IServiceCollection services, IConfiguration configuration) {
 			SigningConfigurations signingConfigurations = new();
