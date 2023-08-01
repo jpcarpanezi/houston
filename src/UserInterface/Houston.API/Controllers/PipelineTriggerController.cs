@@ -1,22 +1,20 @@
-﻿using AutoMapper;
-using Houston.Application.ViewModel;
+﻿using Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers.ChangeSecret;
+using Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers.Create;
+using Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers.Delete;
+using Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers.Get;
+using Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers.RevealKeys;
+using Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers.Update;
+using Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers.UpdateKey;
 using Houston.Application.ViewModel.PipelineTriggerViewModels;
-using Houston.Core.Commands.PipelineTriggerCommands;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Houston.API.Controllers {
 	[Route("api/[controller]")]
 	[ApiController]
 	public class PipelineTriggerController : ControllerBase {
 		private readonly IMediator _mediator;
-		private readonly IMapper _mapper;
 
-		public PipelineTriggerController(IMediator mediator, IMapper mapper) {
+		public PipelineTriggerController(IMediator mediator) {
 			_mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 		}
 
 		/// <summary>
@@ -29,16 +27,7 @@ namespace Houston.API.Controllers {
 		[Authorize]
 		[ProducesResponseType(typeof(PipelineTriggerViewModel), (int)HttpStatusCode.Created)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
-		public async Task<IActionResult> Create([FromBody] CreatePipelineTriggerCommand command) {
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.Created)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
-
-			return CreatedAtAction(nameof(Create), view);
-		}
+		public async Task<IActionResult> Create([FromBody] CreatePipelineTriggerCommand command) => await _mediator.Send(command);
 
 		/// <summary>
 		/// Updates a pipeline trigger
@@ -50,16 +39,7 @@ namespace Houston.API.Controllers {
 		[Authorize]
 		[ProducesResponseType(typeof(PipelineTriggerViewModel), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
-		public async Task<IActionResult> Update([FromBody] UpdatePipelineTriggerCommand command) {
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
-
-			return Ok(view);
-		}
+		public async Task<IActionResult> Update([FromBody] UpdatePipelineTriggerCommand command) => await _mediator.Send(command);
 
 		/// <summary>
 		/// Generates new pipeline trigger deploy keys
@@ -71,15 +51,7 @@ namespace Houston.API.Controllers {
 		[Authorize]
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
-		public async Task<IActionResult> UpdateDeployKeys(Guid pipelineId) {
-			var command = new UpdateDeployKeyCommand(pipelineId);
-			var response = await _mediator.Send(command);
-			
-			if (response.StatusCode != HttpStatusCode.NoContent)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			return NoContent();
-		}
+		public async Task<IActionResult> UpdateDeployKeys(Guid pipelineId) => await _mediator.Send(new UpdateDeployKeyCommand(pipelineId));
 
 		/// <summary>
 		/// Changes the pipeline trigger secret
@@ -91,14 +63,7 @@ namespace Houston.API.Controllers {
 		[Authorize]
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
-		public async Task<IActionResult> ChangeSecret([FromBody] ChangeSecretPipelineTriggerCommand command) {
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.NoContent)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			return NoContent();
-		}
+		public async Task<IActionResult> ChangeSecret([FromBody] ChangeSecretPipelineTriggerCommand command) => await _mediator.Send(command);
 
 		/// <summary>
 		/// Deletes a pipeline trigger
@@ -110,15 +75,7 @@ namespace Houston.API.Controllers {
 		[Authorize]
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
-		public async Task<IActionResult> Delete(Guid pipelineTriggerId) {
-			var command = new DeletePipelineTriggerCommand(pipelineTriggerId);
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.NoContent)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			return NoContent();
-		}
+		public async Task<IActionResult> Delete(Guid pipelineTriggerId) => await _mediator.Send(new DeletePipelineTriggerCommand(pipelineTriggerId));
 
 		/// <summary>
 		/// Gets a pipeline trigger by pipeline id
@@ -130,17 +87,7 @@ namespace Houston.API.Controllers {
 		[Authorize]
 		[ProducesResponseType(typeof(PipelineTriggerViewModel), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
-		public async Task<IActionResult> Get(Guid pipelineId) {
-			var command = new GetPipelineTriggerCommand(pipelineId);
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			var view = _mapper.Map<PipelineTriggerViewModel>(response.Response);
-
-			return Ok(view);
-		}
+		public async Task<IActionResult> Get(Guid pipelineId) => await _mediator.Send(new GetPipelineTriggerCommand(pipelineId));
 
 		/// <summary>
 		/// Reveals the pipeline trigger deploy keys
@@ -154,16 +101,6 @@ namespace Houston.API.Controllers {
 		[ProducesResponseType(typeof(PipelineTriggerKeysViewModel), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
-		public async Task<IActionResult> RevealKeys(Guid pipelineId) {
-			var command = new RevealPipelineTriggerKeysCommand(pipelineId);
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			var view = _mapper.Map<PipelineTriggerKeysViewModel>(response.Response);
-
-			return Ok(view);
-		}
+		public async Task<IActionResult> RevealKeys(Guid pipelineId) => await _mediator.Send(new RevealPipelineTriggerKeysCommand(pipelineId));
 	}
 }

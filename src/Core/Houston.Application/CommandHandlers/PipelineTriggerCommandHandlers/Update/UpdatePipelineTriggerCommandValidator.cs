@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using Houston.Core.Commands.PipelineTriggerCommands;
-
-namespace Houston.API.Validators.PipelineTriggerValidators {
+﻿namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers.Update {
 	public class UpdatePipelineTriggerCommandValidator : AbstractValidator<UpdatePipelineTriggerCommand> {
 		public UpdatePipelineTriggerCommandValidator() {
 			RuleFor(x => x.SourceGit)

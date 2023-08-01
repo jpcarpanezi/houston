@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using Houston.Core.Commands.PipelineTriggerCommands;
-
-namespace Houston.API.Validators.PipelineTriggerValidators {
+﻿namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers.ChangeSecret {
 	public class ChangeSecretPipelineTriggerCommandValidator : AbstractValidator<ChangeSecretPipelineTriggerCommand> {
 		public ChangeSecretPipelineTriggerCommandValidator() {
 			RuleFor(x => x.NewSecret)

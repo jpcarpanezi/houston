@@ -1,15 +1,5 @@
-﻿using Houston.Core.Commands;
-using Houston.Core.Commands.PipelineTriggerCommands;
-using Houston.Core.Entities.Postgres;
-using Houston.Core.Interfaces.Repository;
-using Houston.Core.Interfaces.Services;
-using Houston.Core.Models;
-using Houston.Core.Services;
-using MediatR;
-using System.Net;
-
-namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
-	public class UpdatePipelineTriggerCommandHandler : IRequestHandler<UpdatePipelineTriggerCommand, ResultCommand<PipelineTrigger>> {
+﻿namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers.Update {
+	public class UpdatePipelineTriggerCommandHandler : IRequestHandler<UpdatePipelineTriggerCommand, IResultCommand> {
 		private readonly IUnitOfWork __unitOfWork;
 		private readonly IUserClaimsService _claims;
 
@@ -18,10 +8,10 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
 		}
 
-		public async Task<ResultCommand<PipelineTrigger>> Handle(UpdatePipelineTriggerCommand request, CancellationToken cancellationToken) {
+		public async Task<IResultCommand> Handle(UpdatePipelineTriggerCommand request, CancellationToken cancellationToken) {
 			var pipelineTrigger = await __unitOfWork.PipelineTriggerRepository.GetByIdWithInverseProperties(request.PipelineTriggerId);
 			if (pipelineTrigger is null) {
-				return new ResultCommand<PipelineTrigger>(HttpStatusCode.NotFound, "The requested pipeline trigger could not be found.", "pipelineTriggerNotFound", null);
+				return ResultCommand.NotFound("The requested pipeline trigger could not be found.", "pipelineTriggerNotFound");
 			}
 
 			var pipelineTriggerEvents = new List<PipelineTriggerEvent>();
@@ -52,7 +42,7 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 			__unitOfWork.PipelineTriggerRepository.Update(pipelineTrigger);
 			await __unitOfWork.Commit();
 
-			return new ResultCommand<PipelineTrigger>(HttpStatusCode.OK, null, null, pipelineTrigger);
+			return ResultCommand.Ok<PipelineTrigger, PipelineTriggerViewModel>(pipelineTrigger);
 		}
 	}
 }

@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using static Houston.Core.Commands.PipelineTriggerCommands.CreatePipelineTriggerCommand;
-
-namespace Houston.API.Validators.PipelineTriggerValidators {
+﻿namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers.Create {
 	public class CreatePipelineTriggerEventFiltersValidator : AbstractValidator<CreatePipelineTriggerEventFilters> {
 		public CreatePipelineTriggerEventFiltersValidator() {
 			RuleForEach(x => x.FilterValues)

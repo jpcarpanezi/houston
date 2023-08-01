@@ -1,15 +1,5 @@
-﻿using Houston.Core.Commands;
-using Houston.Core.Commands.PipelineTriggerCommands;
-using Houston.Core.Entities.Postgres;
-using Houston.Core.Interfaces.Repository;
-using Houston.Core.Interfaces.Services;
-using Houston.Core.Services;
-using Houston.Infrastructure.Services;
-using MediatR;
-using System.Net;
-
-namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
-	public class CreatePipelineTriggerCommandHandler : IRequestHandler<CreatePipelineTriggerCommand, ResultCommand<PipelineTrigger>> {
+﻿namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers.Create {
+	public class CreatePipelineTriggerCommandHandler : IRequestHandler<CreatePipelineTriggerCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _claims;
 
@@ -18,10 +8,10 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
 		}
 
-		public async Task<ResultCommand<PipelineTrigger>> Handle(CreatePipelineTriggerCommand request, CancellationToken cancellationToken) {
+		public async Task<IResultCommand> Handle(CreatePipelineTriggerCommand request, CancellationToken cancellationToken) {
 			var anyPipelineTrigger = await _unitOfWork.PipelineTriggerRepository.AnyPipelineTrigger(request.PipelineId);
 			if (anyPipelineTrigger) {
-				return new ResultCommand<PipelineTrigger>(HttpStatusCode.Forbidden, "The request pipeline already has a trigger.", "alreadyRegistered", null);
+				return ResultCommand.Forbidden("The request pipeline already has a trigger.", "alreadyRegistered");
 			}
 
 			Guid pipelineTriggerId = Guid.NewGuid();
@@ -35,7 +25,7 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 					Id = pipelineTriggerEventId,
 					PipelineTriggerId = pipelineTriggerId,
 					TriggerEventId = @event.TriggerEventId,
-					PipelineTriggerFilters = @event.EventFilters.Select(x => new PipelineTriggerFilter { 
+					PipelineTriggerFilters = @event.EventFilters.Select(x => new PipelineTriggerFilter {
 						Id = Guid.NewGuid(),
 						PipelineTriggerEventId = pipelineTriggerEventId,
 						TriggerFilterId = x.TriggerFilterId,
@@ -66,7 +56,7 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 
 			var response = await _unitOfWork.PipelineTriggerRepository.GetByIdWithInverseProperties(pipelineTriggerId);
 
-			return new ResultCommand<PipelineTrigger>(HttpStatusCode.Created, null, null, response);
+			return ResultCommand.Created<PipelineTrigger, PipelineTriggerViewModel>(response!);
 		}
 	}
 }

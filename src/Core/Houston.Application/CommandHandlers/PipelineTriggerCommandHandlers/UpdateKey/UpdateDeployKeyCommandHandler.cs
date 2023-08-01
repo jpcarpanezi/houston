@@ -1,14 +1,5 @@
-﻿using Houston.Core.Commands;
-using Houston.Core.Commands.PipelineTriggerCommands;
-using Houston.Core.Entities.Postgres;
-using Houston.Core.Interfaces.Repository;
-using Houston.Core.Interfaces.Services;
-using Houston.Infrastructure.Services;
-using MediatR;
-using System.Net;
-
-namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
-	public class UpdateDeployKeyCommandHandler : IRequestHandler<UpdateDeployKeyCommand, ResultCommand<PipelineTrigger>> {
+﻿namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers.UpdateKey {
+	public class UpdateDeployKeyCommandHandler : IRequestHandler<UpdateDeployKeyCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _claims;
 
@@ -17,10 +8,10 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
 		}
 
-		public async Task<ResultCommand<PipelineTrigger>> Handle(UpdateDeployKeyCommand request, CancellationToken cancellationToken) {
+		public async Task<IResultCommand> Handle(UpdateDeployKeyCommand request, CancellationToken cancellationToken) {
 			var pipelineTrigger = await _unitOfWork.PipelineTriggerRepository.GetByPipelineId(request.PipelineId);
 			if (pipelineTrigger is null) {
-				return new ResultCommand<PipelineTrigger>(HttpStatusCode.NotFound, "The requested pipeline trigger could not be found.", "pipelineTriggerNotFound");
+				return ResultCommand.NotFound("The requested pipeline trigger could not be found.", "pipelineTriggerNotFound");
 			}
 
 			var deployKeys = DeployKeysService.Create($"houston-{pipelineTrigger.Id}");
@@ -33,7 +24,7 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 			_unitOfWork.PipelineTriggerRepository.Update(pipelineTrigger);
 			await _unitOfWork.Commit();
 
-			return new ResultCommand<PipelineTrigger>(HttpStatusCode.NoContent);
+			return ResultCommand.NoContent();
 		}
 	}
 }
