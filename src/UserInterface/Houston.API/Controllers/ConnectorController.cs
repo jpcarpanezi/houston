@@ -1,22 +1,18 @@
-﻿using AutoMapper;
-using Houston.Application.ViewModel;
+﻿using Houston.Application.CommandHandlers.ConnectorCommandHandlers.Create;
+using Houston.Application.CommandHandlers.ConnectorCommandHandlers.Delete;
+using Houston.Application.CommandHandlers.ConnectorCommandHandlers.Get;
+using Houston.Application.CommandHandlers.ConnectorCommandHandlers.GetAll;
+using Houston.Application.CommandHandlers.ConnectorCommandHandlers.Update;
 using Houston.Application.ViewModel.ConnectorViewModels;
-using Houston.Core.Commands.ConnectorCommands;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Houston.API.Controllers {
 	[Route("api/[controller]")]
 	[ApiController]
 	public class ConnectorController : ControllerBase {
 		private readonly IMediator _mediator;
-		private readonly IMapper _mapper;
 
-		public ConnectorController(IMediator mediator, IMapper mapper) {
+		public ConnectorController(IMediator mediator) {
 			_mediator = mediator;
-			_mapper = mapper;
 		}
 
 		/// <summary>
@@ -27,16 +23,7 @@ namespace Houston.API.Controllers {
 		[HttpPost]
 		[Authorize]
 		[ProducesResponseType(typeof(ConnectorViewModel), (int)HttpStatusCode.Created)]
-		public async Task<IActionResult> Create([FromBody] CreateConnectorCommand command) {
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.Created)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			var view = _mapper.Map<ConnectorViewModel>(response.Response);
-
-			return CreatedAtAction(nameof(Create), view);
-		}
+		public async Task<IActionResult> Create([FromBody] CreateConnectorCommand command) => await _mediator.Send(command);
 
 		/// <summary>
 		/// Logically deletes a connector
@@ -48,15 +35,7 @@ namespace Houston.API.Controllers {
 		[Authorize]
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
-		public async Task<IActionResult> Delete(Guid connectorId) {
-			var command = new DeleteConnectorCommand(connectorId);
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.NoContent)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			return NoContent();
-		}
+		public async Task<IActionResult> Delete(Guid connectorId) => await _mediator.Send(new DeleteConnectorCommand(connectorId));
 
 		/// <summary>
 		/// Updates connector informations
@@ -68,16 +47,7 @@ namespace Houston.API.Controllers {
 		[Authorize]
 		[ProducesResponseType(typeof(ConnectorViewModel), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
-		public async Task<IActionResult> Update([FromBody] UpdateConnectorCommand command) {
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			var view = _mapper.Map<ConnectorViewModel>(response.Response);
-
-			return Ok(view);
-		}
+		public async Task<IActionResult> Update([FromBody] UpdateConnectorCommand command) => await _mediator.Send(command);
 
 		/// <summary>
 		/// Gets the connector by id
@@ -89,17 +59,7 @@ namespace Houston.API.Controllers {
 		[Authorize]
 		[ProducesResponseType(typeof(ConnectorViewModel), (int)HttpStatusCode.OK)]
 		[ProducesResponseType((int)HttpStatusCode.NotFound)]
-		public async Task<IActionResult> Get(Guid connectorId) {
-			var command = new GetConnectorCommand(connectorId);
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode == HttpStatusCode.NotFound)
-				return NotFound(new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			var view = _mapper.Map<ConnectorViewModel>(response.Response);
-
-			return Ok(view);
-		}
+		public async Task<IActionResult> Get(Guid connectorId) => await _mediator.Send(new GetConnectorCommand(connectorId));
 
 		/// <summary>
 		/// List all active connectors
@@ -109,12 +69,6 @@ namespace Houston.API.Controllers {
 		[HttpGet]
 		[Authorize]
 		[ProducesResponseType(typeof(PaginatedItemsViewModel<ConnectorViewModel>), (int)HttpStatusCode.OK)]
-		public async Task<IActionResult> GetAll([FromQuery] GetAllConnectorCommand command) {
-			var response = await _mediator.Send(command);
-
-			var view = _mapper.Map<List<ConnectorViewModel>>(response.Response);
-
-			return Ok(new PaginatedItemsViewModel<ConnectorViewModel>(response.PageIndex, response.PageSize, response.Count, view));
-		}
+		public async Task<IActionResult> GetAll([FromQuery] GetAllConnectorCommand command) => await _mediator.Send(command);
 	}
 }
