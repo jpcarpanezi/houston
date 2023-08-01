@@ -1,10 +1,14 @@
 ﻿using Houston.Application.WebhookEvents;
+using Houston.Core.Entities.Postgres;
+using Houston.Core.Interfaces.Services;
+using Houston.Core.Models.GitHub.Base;
 using Houston.Core.Models.GitHub.Push;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 
-namespace Houston.Application.Webhooks {
-	public class Github : IWebhookService {
+namespace Houston.Application.Webhooks
+{
+    public class Github : IWebhookService {
 		private readonly IHttpContextAccessor _context;
 
 		public Github(IHttpContextAccessor context) {

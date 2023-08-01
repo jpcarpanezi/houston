@@ -47,7 +47,6 @@ builder.Services.AddSwaggerGen(options => {
 	options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 builder.Services.AddFluentValidationRulesToSwagger();
-builder.Services.AddAutoMapper(typeof(MapProfileSetup));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(AppDomain.CurrentDomain.Load("Houston.Application")));
 builder.Services.AddStackExchangeRedisCache(options => {
 	options.Configuration = builder.Configuration.GetConnectionString("Redis");

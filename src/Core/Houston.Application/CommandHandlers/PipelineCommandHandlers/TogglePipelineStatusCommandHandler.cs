@@ -6,7 +6,7 @@ using MediatR;
 using System.Net;
 
 namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
-	public class TogglePipelineStatusCommandHandler : IRequestHandler<TogglePipelineStatusCommand, ResultCommand> {
+	public class TogglePipelineStatusCommandHandler : IRequestHandler<TogglePipelineStatusCommand, Core.Commands.ResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _claims;
 
@@ -15,15 +15,15 @@ namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
 			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
 		}
 
-		public async Task<ResultCommand> Handle(TogglePipelineStatusCommand request, CancellationToken cancellationToken) {
+		public async Task<Core.Commands.ResultCommand> Handle(TogglePipelineStatusCommand request, CancellationToken cancellationToken) {
 			var pipeline = await _unitOfWork.PipelineRepository.GetActive(request.Id);
 			if (pipeline is null) {
-				return new ResultCommand(HttpStatusCode.NotFound, "The requested pipeline could not be found.", "pipelineNotFound");
+				return new Core.Commands.ResultCommand(HttpStatusCode.NotFound, "The requested pipeline could not be found.", "pipelineNotFound");
 			}
 
 			if (pipeline.Status == Core.Enums.PipelineStatusEnum.Running) {
 				var avg = await _unitOfWork.PipelineLogsRepository.DurationAverage(request.Id);
-				return new ResultCommand(HttpStatusCode.Locked, DateTime.UtcNow.AddTicks((long)avg).ToString("yyyy-MM-ddTHH:mm:ssZ"));
+				return new Core.Commands.ResultCommand(HttpStatusCode.Locked, DateTime.UtcNow.AddTicks((long)avg).ToString("yyyy-MM-ddTHH:mm:ssZ"));
 			}
 
 			pipeline.Status = pipeline.Status == Core.Enums.PipelineStatusEnum.Stopped
@@ -35,7 +35,7 @@ namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
 			_unitOfWork.PipelineRepository.Update(pipeline);
 			await _unitOfWork.Commit();
 
-			return new ResultCommand(HttpStatusCode.NoContent);
+			return new Core.Commands.ResultCommand(HttpStatusCode.NoContent);
 		}
 	}
 }

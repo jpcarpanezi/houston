@@ -6,7 +6,7 @@ using MediatR;
 using System.Net;
 
 namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
-	public class DeleteConnectorFunctionCommandHandler : IRequestHandler<DeleteConnectorFunctionCommand, ResultCommand> {
+	public class DeleteConnectorFunctionCommandHandler : IRequestHandler<DeleteConnectorFunctionCommand, Core.Commands.ResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _claims;
 
@@ -15,10 +15,10 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
 		}
 
-		public async Task<ResultCommand> Handle(DeleteConnectorFunctionCommand request, CancellationToken cancellationToken) {
+		public async Task<Core.Commands.ResultCommand> Handle(DeleteConnectorFunctionCommand request, CancellationToken cancellationToken) {
 			var connectorFunction = await _unitOfWork.ConnectorFunctionRepository.GetActive(request.Id);
 			if (connectorFunction is null) {
-				return new ResultCommand(HttpStatusCode.NotFound, "The requested connector function could not be found.", "connectorFunctionNotFound");
+				return new Core.Commands.ResultCommand(HttpStatusCode.NotFound, "The requested connector function could not be found.", "connectorFunctionNotFound");
 			}
 
 			connectorFunction.Active = false;
@@ -28,7 +28,7 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 			_unitOfWork.ConnectorFunctionRepository.Update(connectorFunction);
 			await _unitOfWork.Commit();
 
-			return new ResultCommand(HttpStatusCode.NoContent);
+			return new Core.Commands.ResultCommand(HttpStatusCode.NoContent);
 		}
 	}
 }

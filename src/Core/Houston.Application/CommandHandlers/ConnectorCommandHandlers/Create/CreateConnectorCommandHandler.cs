@@ -1,13 +1,5 @@
-﻿using Houston.Core.Commands;
-using Houston.Core.Commands.ConnectorCommands;
-using Houston.Core.Entities.Postgres;
-using Houston.Core.Interfaces.Repository;
-using Houston.Core.Interfaces.Services;
-using MediatR;
-using System.Net;
-
-namespace Houston.Application.CommandHandlers.ConnectorCommandHandlers {
-	public class CreateConnectorCommandHandler : IRequestHandler<CreateConnectorCommand, ResultCommand<Connector>> {
+﻿namespace Houston.Application.CommandHandlers.ConnectorCommandHandlers.Create {
+	public class CreateConnectorCommandHandler : IRequestHandler<CreateConnectorCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _claims;
 
@@ -16,7 +8,7 @@ namespace Houston.Application.CommandHandlers.ConnectorCommandHandlers {
 			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
 		}
 
-		public async Task<ResultCommand<Connector>> Handle(CreateConnectorCommand request, CancellationToken cancellationToken) {
+		public async Task<IResultCommand> Handle(CreateConnectorCommand request, CancellationToken cancellationToken) {
 			var connectorId = Guid.NewGuid();
 			Connector connector = new() {
 				Id = connectorId,
@@ -34,7 +26,7 @@ namespace Houston.Application.CommandHandlers.ConnectorCommandHandlers {
 
 			var response = await _unitOfWork.ConnectorRepository.GetByIdWithInverseProperties(connectorId);
 
-			return new ResultCommand<Connector>(HttpStatusCode.Created, null, null, response);
+			return ResultCommand.Created<Connector, ConnectorViewModel>(response!);
 		}
 	}
 }

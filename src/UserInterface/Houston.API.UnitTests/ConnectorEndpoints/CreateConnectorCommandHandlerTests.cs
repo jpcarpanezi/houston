@@ -1,11 +1,12 @@
-﻿using Houston.Application.CommandHandlers.ConnectorCommandHandlers;
+﻿using Houston.Application.CommandHandlers.ConnectorCommandHandlers.Create;
 using Houston.Core.Commands.ConnectorCommands;
 using Houston.Core.Entities.Postgres;
 using Houston.Core.Interfaces.Services;
 using System.Net;
 
-namespace Houston.API.UnitTests.ConnectorEndpoints {
-	public class CreateConnectorCommandHandlerTests {
+namespace Houston.API.UnitTests.ConnectorEndpoints
+{
+    public class CreateConnectorCommandHandlerTests {
 		private CreateConnectorCommandHandler _handler;
 		private Mock<IUnitOfWork> _mockUnitOfWork;
 		private Mock<IUserClaimsService> _mockUserClaimsService;

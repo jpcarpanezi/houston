@@ -12,9 +12,9 @@ using Houston.Application.ViewModel.PipelineViewModels;
 using Houston.Application.ViewModel.UserViewModels;
 using Houston.Core.Entities.Postgres;
 
-namespace Houston.API.Setups {
-	public class MapProfileSetup : Profile {
-		public MapProfileSetup() {
+namespace Houston.Application.ViewModel {
+	public class MapProfile : Profile {
+		public MapProfile() {
 			CreateMap<User, UserViewModel>();
 			CreateMap<Connector, ConnectorViewModel>()
 				.ForMember(dest => dest.CreatedBy, m => m.MapFrom(src => src.CreatedByNavigation.Name))

@@ -1,9 +1,10 @@
-﻿using Houston.Application.CommandHandlers.ConnectorCommandHandlers;
+﻿using Houston.Application.CommandHandlers.ConnectorCommandHandlers.GetAll;
 using Houston.Core.Commands.ConnectorCommands;
 using Houston.Core.Entities.Postgres;
 
-namespace Houston.API.UnitTests.ConnectorEndpoints {
-	public class GetAllConnectorCommandHandlerTests {
+namespace Houston.API.UnitTests.ConnectorEndpoints
+{
+    public class GetAllConnectorCommandHandlerTests {
 		private GetAllConnectorCommandHandler _handler;
 		private Mock<IUnitOfWork> _mockUnitOfWork;
 

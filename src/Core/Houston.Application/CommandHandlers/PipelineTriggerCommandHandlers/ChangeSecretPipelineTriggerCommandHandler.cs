@@ -7,7 +7,7 @@ using MediatR;
 using System.Net;
 
 namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
-	public class ChangeSecretPipelineTriggerCommandHandler : IRequestHandler<ChangeSecretPipelineTriggerCommand, ResultCommand> {
+	public class ChangeSecretPipelineTriggerCommandHandler : IRequestHandler<ChangeSecretPipelineTriggerCommand, Core.Commands.ResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _claims;
 
@@ -16,10 +16,10 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
 		}
 
-		public async Task<ResultCommand> Handle(ChangeSecretPipelineTriggerCommand request, CancellationToken cancellationToken) {
+		public async Task<Core.Commands.ResultCommand> Handle(ChangeSecretPipelineTriggerCommand request, CancellationToken cancellationToken) {
 			var pipelineTrigger = await _unitOfWork.PipelineTriggerRepository.GetByIdAsync(request.PipelineTriggerId);
 			if (pipelineTrigger is null) {
-				return new ResultCommand(HttpStatusCode.NotFound, "The requested pipeline trigger could not be found.", "pipelineTriggerNotFound");
+				return new Core.Commands.ResultCommand(HttpStatusCode.NotFound, "The requested pipeline trigger could not be found.", "pipelineTriggerNotFound");
 			}
 
 			pipelineTrigger.Secret = PasswordService.HashPassword(request.NewSecret);
@@ -29,7 +29,7 @@ namespace Houston.Application.CommandHandlers.PipelineTriggerCommandHandlers {
 			_unitOfWork.PipelineTriggerRepository.Update(pipelineTrigger);
 			await _unitOfWork.Commit();
 
-			return new ResultCommand(HttpStatusCode.NoContent);
+			return new Core.Commands.ResultCommand(HttpStatusCode.NoContent);
 		}
 	}
 }
