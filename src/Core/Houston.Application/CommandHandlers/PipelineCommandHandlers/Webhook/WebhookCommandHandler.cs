@@ -1,17 +1,5 @@
-﻿using EventBus.EventBus.Abstractions;
-using Houston.Core.Commands;
-using Houston.Core.Commands.PipelineCommands;
-using Houston.Core.Entities.Postgres;
-using Houston.Core.Interfaces.Repository;
-using Houston.Core.Interfaces.Services;
-using Houston.Core.Messages;
-using MediatR;
-using Microsoft.AspNetCore.Http;
-using System.Globalization;
-using System.Net;
-
-namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
-	public class WebhookCommandHandler : IRequestHandler<WebhookCommand, Core.Commands.ResultCommand> {
+﻿namespace Houston.Application.CommandHandlers.PipelineCommandHandlers.Webhook {
+	public class WebhookCommandHandler : IRequestHandler<WebhookCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IEventBus _eventBus;
 		private readonly IHttpContextAccessor _context;
@@ -22,23 +10,23 @@ namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
 			_context = context ?? throw new ArgumentNullException(nameof(context));
 		}
 
-		public async Task<Core.Commands.ResultCommand> Handle(WebhookCommand request, CancellationToken cancellationToken) {
+		public async Task<IResultCommand> Handle(WebhookCommand request, CancellationToken cancellationToken) {
 			var textInfo = new CultureInfo("en-US", false).TextInfo;
 			var origin = textInfo.ToTitleCase(request.Origin.ToLower()).Replace(" ", "");
 
 			Type? type = Type.GetType($"Houston.Application.Webhooks.{origin}");
 			if (type is null) {
-				return new Core.Commands.ResultCommand(HttpStatusCode.NotFound, "The requested webhook origin does not exists.", "invalidWebhookOrigin");
+				return ResultCommand.NotFound("The requested webhook origin does not exists.", "invalidWebhookOrigin");
 			}
 
 			var webhookService = Activator.CreateInstance(type, _context) as IWebhookService;
 			if (webhookService is null) {
-				return new Core.Commands.ResultCommand(HttpStatusCode.NotFound, "The requested webhook origin does not exists.", "invalidWebhookOrigin");
+				return ResultCommand.NotFound("The requested webhook origin does not exists.", "invalidWebhookOrigin");
 			}
 
 			var sourceGit = webhookService.DeserializeOrigin(request.JsonPayload);
 			if (sourceGit is null) {
-				return new Core.Commands.ResultCommand(HttpStatusCode.NotFound, "The requested webhook origin does not exists.", "invalidWebhookOrigin");
+				return ResultCommand.NotFound("The requested webhook origin does not exists.", "invalidWebhookOrigin");
 			}
 
 			var triggerEvents = await _unitOfWork.PipelineTriggerRepository.GetByPipelineId(request.PipelineId);
@@ -50,7 +38,7 @@ namespace Houston.Application.CommandHandlers.PipelineCommandHandlers {
 				_eventBus.Publish(new RunPipelineMessage(request.PipelineId, null));
 			}
 
-			return new Core.Commands.ResultCommand(HttpStatusCode.NoContent);
+			return ResultCommand.NoContent();
 		}
 	}
 }

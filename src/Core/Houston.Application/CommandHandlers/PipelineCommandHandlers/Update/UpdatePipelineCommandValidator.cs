@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using Houston.Core.Commands.PipelineCommands;
-
-namespace Houston.API.Validators.PipelineValidators {
+﻿namespace Houston.Application.CommandHandlers.PipelineCommandHandlers.Update {
 	public class UpdatePipelineCommandValidator : AbstractValidator<UpdatePipelineCommand> {
 		public UpdatePipelineCommandValidator() {
 			RuleFor(x => x.Name)

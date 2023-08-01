@@ -1,25 +1,21 @@
-﻿using AutoMapper;
-using Houston.Application.ViewModel;
+﻿using Houston.Application.CommandHandlers.PipelineCommandHandlers.Create;
+using Houston.Application.CommandHandlers.PipelineCommandHandlers.Delete;
+using Houston.Application.CommandHandlers.PipelineCommandHandlers.Get;
+using Houston.Application.CommandHandlers.PipelineCommandHandlers.GetAll;
+using Houston.Application.CommandHandlers.PipelineCommandHandlers.Run;
+using Houston.Application.CommandHandlers.PipelineCommandHandlers.Toggle;
+using Houston.Application.CommandHandlers.PipelineCommandHandlers.Update;
+using Houston.Application.CommandHandlers.PipelineCommandHandlers.Webhook;
 using Houston.Application.ViewModel.PipelineViewModels;
-using Houston.Core.Commands.PipelineCommands;
-using Houston.Core.Models.GitHub.Base;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
-using System.Net;
 
-namespace Houston.API.Controllers
-{
-    [Route("api/[controller]")]
+namespace Houston.API.Controllers {
+	[Route("api/[controller]")]
 	[ApiController]
 	public class PipelineController : ControllerBase {
 		private readonly IMediator _mediator;
-		private readonly IMapper _mapper;
 
-		public PipelineController(IMediator mediator, IMapper mapper) {
+		public PipelineController(IMediator mediator) {
 			_mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 		}
 
 		/// <summary>
@@ -30,13 +26,7 @@ namespace Houston.API.Controllers
 		[HttpPost]
 		[Authorize]
 		[ProducesResponseType(typeof(PipelineViewModel), (int)HttpStatusCode.Created)]
-		public async Task<IActionResult> Create([FromBody] CreatePipelineCommand command) {
-			var response = await _mediator.Send(command);
-
-			var view = _mapper.Map<PipelineViewModel>(response.Response);
-
-			return CreatedAtAction(nameof(Create), view);
-		}
+		public async Task<IActionResult> Create([FromBody] CreatePipelineCommand command) => await _mediator.Send(command);
 
 		/// <summary>
 		/// Updates a pipeline
@@ -48,16 +38,7 @@ namespace Houston.API.Controllers
 		[Authorize]
 		[ProducesResponseType(typeof(PipelineViewModel), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
-		public async Task<IActionResult> Update([FromBody] UpdatePipelineCommand command) {
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			var view = _mapper.Map<PipelineViewModel>(response.Response);
-
-			return Ok(view);
-		}
+		public async Task<IActionResult> Update([FromBody] UpdatePipelineCommand command) => await _mediator.Send(command);
 
 		/// <summary>
 		/// Deletes a pipeline
@@ -71,20 +52,7 @@ namespace Houston.API.Controllers
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		[ProducesResponseType(typeof(LockedMessageViewModel), (int)HttpStatusCode.Locked)]
-		public async Task<IActionResult> Delete(Guid pipelineId) {
-			var command = new DeletePipelineCommand(pipelineId);
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.Locked)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			if (response.StatusCode == HttpStatusCode.Locked) {
-				DateTime convertedEstimateTime = DateTime.ParseExact(response.ErrorMessage!, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
-				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("Server is processing a request from this pipeline. Please try again later.", "pipelineRunning", convertedEstimateTime));
-			}
-
-			return NoContent();
-		}
+		public async Task<IActionResult> Delete(Guid pipelineId) => await _mediator.Send(new DeletePipelineCommand(pipelineId));
 
 		/// <summary>
 		/// Toggle pipeline status to stopped or awaiting
@@ -98,20 +66,7 @@ namespace Houston.API.Controllers
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		[ProducesResponseType(typeof(LockedMessageViewModel), (int)HttpStatusCode.Locked)]
-		public async Task<IActionResult> ToggleStatus(Guid pipelineId) {
-			var command = new TogglePipelineStatusCommand(pipelineId);
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.Locked)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			if (response.StatusCode == HttpStatusCode.Locked) { 
-				DateTime convertedEstimateTime = DateTime.ParseExact(response.ErrorMessage!, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
-				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("Server is processing a request from this pipeline. Please try again later.", "pipelineRunning", convertedEstimateTime));
-			}
-
-			return NoContent();
-		}
+		public async Task<IActionResult> ToggleStatus(Guid pipelineId) => await _mediator.Send(new TogglePipelineStatusCommand(pipelineId));
 
 		/// <summary>
 		/// Gets the pipeline by id
@@ -123,17 +78,7 @@ namespace Houston.API.Controllers
 		[Authorize]
 		[ProducesResponseType(typeof(PipelineViewModel), (int)HttpStatusCode.OK)]
 		[ProducesResponseType((int)HttpStatusCode.NotFound)]
-		public async Task<IActionResult> Get(Guid pipelineId) {
-			var command = new GetPipelineCommand(pipelineId);
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			var view = _mapper.Map<PipelineViewModel>(response.Response);
-
-			return Ok(view);
-		}
+		public async Task<IActionResult> Get(Guid pipelineId) => await _mediator.Send(new GetPipelineCommand(pipelineId));
 
 		/// <summary>
 		/// List all active pipelines
@@ -143,13 +88,7 @@ namespace Houston.API.Controllers
 		[HttpGet]
 		[Authorize]
 		[ProducesResponseType(typeof(PaginatedItemsViewModel<PipelineViewModel>), (int)HttpStatusCode.OK)]
-		public async Task<IActionResult> GetAll([FromQuery] GetAllPipelineCommand command) {
-			var response = await _mediator.Send(command);
-
-			var view = _mapper.Map<List<PipelineViewModel>>(response.Response);
-
-			return Ok(new PaginatedItemsViewModel<PipelineViewModel>(response.PageIndex, response.PageSize, response.Count, view));
-		}
+		public async Task<IActionResult> GetAll([FromQuery] GetAllPipelineCommand command) => await _mediator.Send(command);
 
 		/// <summary>
 		/// Manually runs a pipeline
@@ -163,19 +102,7 @@ namespace Houston.API.Controllers
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		[ProducesResponseType(typeof(LockedMessageViewModel), (int)HttpStatusCode.Locked)]
-		public async Task<IActionResult> Run([FromBody] RunPipelineCommand command) {
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.Locked)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			if (response.StatusCode == HttpStatusCode.Locked) {
-				DateTime convertedEstimateTime = DateTime.ParseExact(response.ErrorMessage!, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
-				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("Server is processing a request from this pipeline. Please try again later.", "pipelineRunning", convertedEstimateTime));
-			}
-
-			return NoContent();
-		}
+		public async Task<IActionResult> Run([FromBody] RunPipelineCommand command) => await _mediator.Send(command);
 
 		/// <summary>
 		/// Webhook handler to trigger pipeline run
@@ -194,17 +121,7 @@ namespace Houston.API.Controllers
 			string jsonPayload = await reader.ReadToEndAsync();
 
 			var command = new WebhookCommand(origin, pipelineId, jsonPayload);
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.Locked)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			if (response.StatusCode == HttpStatusCode.Locked) {
-				DateTime convertedEstimateTime = DateTime.ParseExact(response.ErrorMessage!, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
-				return StatusCode((int)response.StatusCode, new LockedMessageViewModel("Server is processing a request from this pipeline. Please try again later.", "pipelineRunning", convertedEstimateTime));
-			}
-
-			return NoContent();
+			return await _mediator.Send(command);
 		}
 	}
 }

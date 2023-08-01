@@ -23,5 +23,9 @@
 		public static ErrorResultCommand Conflict(string errorMessage, string? errorCode) => new(errorMessage, errorCode, HttpStatusCode.Conflict);
 
 		public static ErrorResultCommand Forbidden(string errorMessage, string? errorCode) => new(errorMessage, errorCode, HttpStatusCode.Forbidden);
+
+		public static ErrorResultCommand Locked(object customBody) => new(customBody, HttpStatusCode.Locked);
+
+		public static ErrorResultCommand InternalServerError(string errorMessage, string? errorCode) => new(errorMessage, errorCode, HttpStatusCode.InternalServerError);
 	}
 }
