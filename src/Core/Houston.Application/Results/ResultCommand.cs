@@ -19,5 +19,9 @@
 		public static SuccessResultCommand NoContent() => new(HttpStatusCode.NoContent);
 
 		public static ErrorResultCommand NotFound(string errorMessage, string? errorCode) => new(errorMessage, errorCode, HttpStatusCode.NotFound);
+
+		public static ErrorResultCommand Conflict(string errorMessage, string? errorCode) => new(errorMessage, errorCode, HttpStatusCode.Conflict);
+
+		public static ErrorResultCommand Forbidden(string errorMessage, string? errorCode) => new(errorMessage, errorCode, HttpStatusCode.Forbidden);
 	}
 }

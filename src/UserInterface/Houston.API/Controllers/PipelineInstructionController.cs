@@ -1,22 +1,15 @@
-﻿using AutoMapper;
-using Houston.Application.ViewModel;
+﻿using Houston.Application.CommandHandlers.PipelineInstructionCommandHandlers.GetAll;
+using Houston.Application.CommandHandlers.PipelineInstructionCommandHandlers.Save;
 using Houston.Application.ViewModel.PipelineInstructionViewModels;
-using Houston.Core.Commands.PipelineInstructionCommands;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Houston.API.Controllers {
 	[Route("api/[controller]")]
 	[ApiController]
 	public class PipelineInstructionController : ControllerBase {
 		private readonly IMediator _mediator;
-		private readonly IMapper _mapper;
 
-		public PipelineInstructionController(IMediator mediator, IMapper mapper) {
+		public PipelineInstructionController(IMediator mediator) {
 			_mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 		}
 
 		/// <summary>
@@ -29,16 +22,7 @@ namespace Houston.API.Controllers {
 		[Authorize]
 		[ProducesResponseType(typeof(List<PipelineInstructionViewModel>), (int)HttpStatusCode.Created)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
-		public async Task<IActionResult> Save([FromBody] SavePipelineInstructionCommand command) {
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.Created)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			var view = _mapper.Map<List<PipelineInstructionViewModel>>(response.Response);
-
-			return CreatedAtAction(nameof(Save), view);
-		}
+		public async Task<IActionResult> Save([FromBody] SavePipelineInstructionCommand command) => await _mediator.Send(command);
 
 		/// <summary>
 		/// Gets instruction by pipeline id
@@ -48,16 +32,6 @@ namespace Houston.API.Controllers {
 		[HttpGet("{pipelineId:guid}")]
 		[Authorize]
 		[ProducesResponseType(typeof(List<PipelineInstructionViewModel>), (int)HttpStatusCode.OK)]
-		public async Task<IActionResult> GetAll(Guid pipelineId) {
-			var command = new GetAllPipelineInstructionCommand(pipelineId);
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			var view = _mapper.Map<List<PipelineInstructionViewModel>>(response.Response);
-
-			return Ok(view);
-		}
+		public async Task<IActionResult> GetAll(Guid pipelineId) => await _mediator.Send(new GetAllPipelineInstructionCommand(pipelineId));
 	}
 }
