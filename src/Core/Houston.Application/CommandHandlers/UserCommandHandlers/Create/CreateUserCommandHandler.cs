@@ -1,14 +1,5 @@
-﻿using Houston.Core.Commands;
-using Houston.Core.Commands.UserCommands;
-using Houston.Core.Entities.Postgres;
-using Houston.Core.Interfaces.Repository;
-using Houston.Core.Interfaces.Services;
-using Houston.Core.Services;
-using MediatR;
-using System.Net;
-
-namespace Houston.Application.CommandHandlers.UserCommandHandlers {
-	public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ResultCommand<User>> {
+﻿namespace Houston.Application.CommandHandlers.UserCommandHandlers.Create {
+	public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _claims;
 
@@ -17,10 +8,10 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
 		}
 
-		public async Task<ResultCommand<User>> Handle(CreateUserCommand request, CancellationToken cancellationToken) {
+		public async Task<IResultCommand> Handle(CreateUserCommand request, CancellationToken cancellationToken) {
 			var checkUserExists = await _unitOfWork.UserRepository.FindByEmail(request.Email);
 			if (checkUserExists is not null) {
-				return new ResultCommand<User>(HttpStatusCode.Conflict, "A user with this email address already exists in the system.", "userAlreadyExists", null);
+				return ResultCommand.Conflict("A user with this email address already exists in the system.", "userAlreadyExists");
 			}
 
 			var user = new User {
@@ -40,7 +31,7 @@ namespace Houston.Application.CommandHandlers.UserCommandHandlers {
 			_unitOfWork.UserRepository.Add(user);
 			await _unitOfWork.Commit();
 
-			return new ResultCommand<User>(HttpStatusCode.Created, null, null, user);
+			return ResultCommand.Created<User, UserViewModel>(user);
 		}
 	}
 }

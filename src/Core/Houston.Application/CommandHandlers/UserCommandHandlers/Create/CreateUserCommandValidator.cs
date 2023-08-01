@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using Houston.Core.Commands.UserCommands;
-
-namespace Houston.API.Validators.UserValidators {
+﻿namespace Houston.Application.CommandHandlers.UserCommandHandlers.Create {
 	public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand> {
 		public CreateUserCommandValidator() {
 			RuleFor(x => x.Name)

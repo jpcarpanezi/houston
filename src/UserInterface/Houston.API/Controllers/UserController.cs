@@ -1,12 +1,11 @@
-﻿using AutoMapper;
-using Houston.Application.ViewModel;
+﻿using Houston.Application.CommandHandlers.UserCommandHandlers.Create;
+using Houston.Application.CommandHandlers.UserCommandHandlers.CreateSetup;
+using Houston.Application.CommandHandlers.UserCommandHandlers.Get;
+using Houston.Application.CommandHandlers.UserCommandHandlers.GetAll;
+using Houston.Application.CommandHandlers.UserCommandHandlers.ToggleStatus;
+using Houston.Application.CommandHandlers.UserCommandHandlers.UpdateFirstAccess;
+using Houston.Application.CommandHandlers.UserCommandHandlers.UpdatePassword;
 using Houston.Application.ViewModel.UserViewModels;
-using Houston.Core.Commands.UserCommands;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
-using System.Net;
 
 namespace Houston.API.Controllers {
 	[Route("api/[controller]")]
@@ -14,12 +13,10 @@ namespace Houston.API.Controllers {
 	public class UserController : ControllerBase {
 		private readonly IDistributedCache _cache;
 		private readonly IMediator _mediator;
-		private readonly IMapper _mapper;
 
-		public UserController(IDistributedCache cache, IMediator mediator, IMapper mapper) {
+		public UserController(IDistributedCache cache, IMediator mediator) {
 			_cache = cache ?? throw new ArgumentNullException(nameof(cache));
 			_mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 		}
 
 		/// <summary>
@@ -49,16 +46,7 @@ namespace Houston.API.Controllers {
 		[HttpPost("firstSetup")]
 		[ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.Created)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
-		public async Task<IActionResult> FirstSetup([FromBody] CreateFirstSetupCommand command) {
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.Created)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			var view = _mapper.Map<UserViewModel>(response.Response);
-
-			return CreatedAtAction(nameof(FirstSetup), view);
-		}
+		public async Task<IActionResult> FirstSetup([FromBody] CreateFirstSetupCommand command) => await _mediator.Send(command);
 
 		/// <summary>
 		/// Changes the user temporary password and grants system access
@@ -71,14 +59,7 @@ namespace Houston.API.Controllers {
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
-		public async Task<IActionResult> UpdateFirstAccessPassword([FromBody] UpdateFirstAccessPasswordCommand command) {
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.NoContent)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			return NoContent();
-		}
+		public async Task<IActionResult> UpdateFirstAccessPassword([FromBody] UpdateFirstAccessPasswordCommand command) => await _mediator.Send(command);
 
 		/// <summary>
 		/// Creates a new user in the system
@@ -91,16 +72,7 @@ namespace Houston.API.Controllers {
 		[Authorize(Roles = "Admin")]
 		[ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.Created)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Conflict)]
-		public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command) {
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.Created)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			var view = _mapper.Map<UserViewModel>(response.Response);
-
-			return CreatedAtAction(nameof(CreateUser), view);
-		}
+		public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command) => await _mediator.Send(command);
 
 		/// <summary>
 		/// Changes the user password
@@ -114,14 +86,7 @@ namespace Houston.API.Controllers {
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.BadRequest)]
-		public async Task<IActionResult> ChangePassword([FromBody] UpdatePasswordCommand command) {
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.NoContent)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			return NoContent();
-		}
+		public async Task<IActionResult> ChangePassword([FromBody] UpdatePasswordCommand command) => await _mediator.Send(command);
 
 		/// <summary>
 		/// Toggle user status
@@ -135,15 +100,7 @@ namespace Houston.API.Controllers {
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.Forbidden)]
-		public async Task<IActionResult> ToggleUserStatus(Guid userId) {
-			var command = new ToggleUserStatusCommand(userId);
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.NoContent)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			return NoContent();
-		}
+		public async Task<IActionResult> ToggleUserStatus(Guid userId) => await _mediator.Send(new ToggleUserStatusCommand(userId));
 
 		/// <summary>
 		/// List of all users
@@ -154,14 +111,7 @@ namespace Houston.API.Controllers {
 		[HttpGet]
 		[Authorize(Roles = "Admin")]
 		[ProducesResponseType(typeof(PaginatedItemsViewModel<UserViewModel>), (int)HttpStatusCode.OK)]
-		public async Task<IActionResult> GetAll([FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10) {
-			var command = new GetAllUserCommand(pageSize, pageIndex);
-			var response = await _mediator.Send(command);
-
-			var view = _mapper.Map<List<UserViewModel>>(response.Response);
-
-			return Ok(new PaginatedItemsViewModel<UserViewModel>(response.PageIndex, response.PageSize, response.Count, view));
-		}
+		public async Task<IActionResult> GetAll([FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10) => await _mediator.Send(new GetAllUserCommand(pageSize, pageIndex));
 
 		/// <summary>
 		/// Gets the user by id
@@ -170,16 +120,6 @@ namespace Houston.API.Controllers {
 		/// <response code="200">User response</response>
 		/// <response code="404">The requested user could not be found</response>
 		[HttpGet("item/{id:guid}")]
-		public async Task<IActionResult> Get(Guid id) {
-			var command = new GetUserCommand(id);
-			var response = await _mediator.Send(command);
-
-			if (response.StatusCode != HttpStatusCode.OK)
-				return StatusCode((int)response.StatusCode, new MessageViewModel(response.ErrorMessage!, response.ErrorCode));
-
-			var view = _mapper.Map<UserViewModel>(response.Response);
-
-			return Ok(view);
-		}
+		public async Task<IActionResult> Get(Guid id) => await _mediator.Send(new GetUserCommand(id));
 	}
 }

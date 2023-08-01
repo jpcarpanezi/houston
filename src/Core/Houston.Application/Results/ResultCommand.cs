@@ -27,5 +27,7 @@
 		public static ErrorResultCommand Locked(object customBody) => new(customBody, HttpStatusCode.Locked);
 
 		public static ErrorResultCommand InternalServerError(string errorMessage, string? errorCode) => new(errorMessage, errorCode, HttpStatusCode.InternalServerError);
+
+		public static ErrorResultCommand BadRequest(string errorMessage, string? errorCode) => new(errorMessage, errorCode, HttpStatusCode.BadRequest);
 	}
 }

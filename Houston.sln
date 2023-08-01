@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Houston.Workers", "src\User
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{5022AB0D-B35E-4162-9EE1-19203C29A1F3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserInterface", "UserInterface", "{11DC9335-61C1-4ABF-B3A3-3EB8B94265FD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{11DC9335-61C1-4ABF-B3A3-3EB8B94265FD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Houston.Core", "src\Core\Houston.Core\Houston.Core.csproj", "{377BE2F2-F3FF-4B7A-8076-F8B44E3461AA}"
 EndProject
@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventBusRabbitMQ", "src\Cor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{887C72B7-0988-493A-92A7-F6F3F5A52308}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Houston.API.UnitTests", "src\UserInterface\Houston.API.UnitTests\Houston.API.UnitTests.csproj", "{7394061B-9DBC-401E-9CAA-076CCF60D955}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Houston.API.UnitTests", "src\UserInterface\Houston.API.UnitTests\Houston.API.UnitTests.csproj", "{7394061B-9DBC-401E-9CAA-076CCF60D955}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,10 +1,11 @@
-﻿using Houston.Application.CommandHandlers.UserCommandHandlers;
+﻿using Houston.Application.CommandHandlers.UserCommandHandlers.CreateSetup;
 using Houston.Core.Commands.UserCommands;
 using Houston.Core.Entities.Postgres;
 using System.Net;
 
-namespace Houston.API.UnitTests.UserEndpoints {
-	[TestFixture]
+namespace Houston.API.UnitTests.UserEndpoints
+{
+    [TestFixture]
 	public class CreateFirstSetupCommandHandlerTests {
 		private CreateFirstSetupCommandHandler _handler;
 		private IDistributedCache _cache;

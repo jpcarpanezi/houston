@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using Houston.Core.Commands.UserCommands;
-
-namespace Houston.API.Validators.UserValidators {
+﻿namespace Houston.Application.CommandHandlers.UserCommandHandlers.UpdatePassword {
 	public class UpdatePasswordCommandValidator : AbstractValidator<UpdatePasswordCommand> {
 		public UpdatePasswordCommandValidator() {
 			RuleFor(x => x.NewPassword)

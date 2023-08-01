@@ -1,12 +1,13 @@
-﻿using Houston.Application.CommandHandlers.UserCommandHandlers;
+﻿using Houston.Application.CommandHandlers.UserCommandHandlers.Create;
 using Houston.Core.Commands.UserCommands;
 using Houston.Core.Entities.Postgres;
 using Houston.Core.Interfaces.Services;
 using Houston.Core.Services;
 using System.Net;
 
-namespace Houston.API.UnitTests.UserEndpoints {
-	[TestFixture]
+namespace Houston.API.UnitTests.UserEndpoints
+{
+    [TestFixture]
 	public class CreateUserCommandHandlerTests {
 		private CreateUserCommandHandler _handler;
 		private Mock<IUnitOfWork> _mockUnitOfWork;

@@ -1,11 +1,12 @@
-﻿using Houston.Application.CommandHandlers.UserCommandHandlers;
+﻿using Houston.Application.CommandHandlers.UserCommandHandlers.UpdateFirstAccess;
 using Houston.Core.Commands.UserCommands;
 using Houston.Core.Entities.Postgres;
 using Houston.Core.Services;
 using System.Net;
 
-namespace Houston.API.UnitTests.UserEndpoints {
-	[TestFixture]
+namespace Houston.API.UnitTests.UserEndpoints
+{
+    [TestFixture]
 	public class UpdateFirstAccessPasswordCommandHandlerTests {
 		private UpdateFirstAccessPasswordCommandHandler _handler;
 		private IDistributedCache _cache;

@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using Houston.Core.Commands.UserCommands;
-
-namespace Houston.API.Validators.UserValidators {
+﻿namespace Houston.Application.CommandHandlers.UserCommandHandlers.CreateSetup {
 	public class CreateFirstSetupCommandValidator : AbstractValidator<CreateFirstSetupCommand> {
 		public CreateFirstSetupCommandValidator() {
 			RuleFor(x => x.RegistryAddress)
