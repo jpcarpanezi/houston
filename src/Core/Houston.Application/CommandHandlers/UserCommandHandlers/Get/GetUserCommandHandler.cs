@@ -12,7 +12,7 @@
 				return ResultCommand.NotFound("The requested user could not be found.", "userNotFound");
 			}
 
-			return ResultCommand.Ok(user);
+			return ResultCommand.Ok<User, UserViewModel>(user);
 		}
 	}
 }

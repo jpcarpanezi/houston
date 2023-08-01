@@ -2,11 +2,16 @@
 global using System.Collections;
 global using System.Globalization;
 global using System.Text.Json;
+global using System.Reflection;
+global using System.Security.Cryptography;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;
 
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Caching.Distributed;
+global using Microsoft.IdentityModel.Tokens;
 
 global using MediatR;
 global using AutoMapper;
@@ -25,6 +30,7 @@ global using Houston.Application.ViewModel.PipelineLogViewModels;
 global using Houston.Application.ViewModel.PipelineViewModels;
 global using Houston.Application.ViewModel.PipelineTriggerViewModels;
 global using Houston.Application.ViewModel.UserViewModels;
+global using Houston.Application.Security;
 
 global using Houston.Core.Interfaces.Repository;
 global using Houston.Core.Interfaces.Results;

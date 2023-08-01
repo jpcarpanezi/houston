@@ -29,5 +29,9 @@
 		public static ErrorResultCommand InternalServerError(string errorMessage, string? errorCode) => new(errorMessage, errorCode, HttpStatusCode.InternalServerError);
 
 		public static ErrorResultCommand BadRequest(string errorMessage, string? errorCode) => new(errorMessage, errorCode, HttpStatusCode.BadRequest);
+
+		public static ErrorResultCommand Unauthorized(string errorMessage, string? errorCode) => new(errorMessage, errorCode, HttpStatusCode.Unauthorized);
+
+		public static ErrorResultCommand TemporaryRedirect(object customBody) => new(customBody, HttpStatusCode.TemporaryRedirect);
 	}
 }
