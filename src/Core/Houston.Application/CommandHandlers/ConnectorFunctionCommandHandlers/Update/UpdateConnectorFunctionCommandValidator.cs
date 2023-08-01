@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using Houston.Core.Commands.ConnectorFunctionCommands;
-
-namespace Houston.API.Validators.ConnectorFunctionValidators {
+﻿namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers.Update {
 	public class UpdateConnectorFunctionCommandValidator : AbstractValidator<UpdateConnectorFunctionCommand> {
 		public UpdateConnectorFunctionCommandValidator() {
 			RuleFor(x => x.Name)

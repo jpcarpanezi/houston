@@ -1,13 +1,5 @@
-﻿using Houston.Core.Commands;
-using Houston.Core.Commands.ConnectorFunctionCommands;
-using Houston.Core.Entities.Postgres;
-using Houston.Core.Interfaces.Repository;
-using Houston.Core.Interfaces.Services;
-using MediatR;
-using System.Net;
-
-namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
-	public class UpdateConnectorFunctionCommandHandler : IRequestHandler<UpdateConnectorFunctionCommand, ResultCommand<ConnectorFunction>> {
+﻿namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers.Update {
+	public class UpdateConnectorFunctionCommandHandler : IRequestHandler<UpdateConnectorFunctionCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _claims;
 
@@ -16,10 +8,10 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
 		}
 
-		public async Task<ResultCommand<ConnectorFunction>> Handle(UpdateConnectorFunctionCommand request, CancellationToken cancellationToken) {
+		public async Task<IResultCommand> Handle(UpdateConnectorFunctionCommand request, CancellationToken cancellationToken) {
 			var connectorFunction = await _unitOfWork.ConnectorFunctionRepository.GetByIdWithInputs(request.Id);
 			if (connectorFunction is null) {
-				return new ResultCommand<ConnectorFunction>(HttpStatusCode.NotFound, "The requested connector function could not be found.", "connectorFunctionNotFound", null);
+				return ResultCommand.NotFound("The requested connector function could not be found.", "connectorFunctionNotFound");
 			}
 
 			connectorFunction.Name = request.Name;
@@ -32,7 +24,7 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 				var filterInputUpdate = request.Inputs?.FirstOrDefault(x => x.Id == input.Id);
 				if (filterInputUpdate is null) {
 					_unitOfWork.ConnectorFunctionInputRepository.Remove(input);
-					continue; 
+					continue;
 				}
 
 				input.Name = filterInputUpdate.Name;
@@ -74,7 +66,7 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 			_unitOfWork.ConnectorFunctionRepository.Update(connectorFunction);
 			await _unitOfWork.Commit();
 
-			return new ResultCommand<ConnectorFunction>(HttpStatusCode.OK, null, null, connectorFunction);
+			return ResultCommand.Ok<ConnectorFunction, ConnectorFunctionViewModel>(connectorFunction);
 		}
 	}
 }

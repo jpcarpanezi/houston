@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using Houston.Core.Commands.ConnectorFunctionCommands;
-
-namespace Houston.API.Validators.ConnectorFunctionValidators {
+﻿namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers.GetAll {
 	public class GetAllConnectorFunctionCommandValidator : AbstractValidator<GetAllConnectorFunctionCommand> {
 		public GetAllConnectorFunctionCommandValidator() {
 			RuleFor(x => x.PageIndex)

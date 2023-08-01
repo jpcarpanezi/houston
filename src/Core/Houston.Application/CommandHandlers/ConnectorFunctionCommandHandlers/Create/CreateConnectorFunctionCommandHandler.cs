@@ -1,13 +1,5 @@
-﻿using Houston.Core.Commands;
-using Houston.Core.Commands.ConnectorFunctionCommands;
-using Houston.Core.Entities.Postgres;
-using Houston.Core.Interfaces.Repository;
-using Houston.Core.Interfaces.Services;
-using MediatR;
-using System.Net;
-
-namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
-	public class CreateConnectorFunctionCommandHandler : IRequestHandler<CreateConnectorFunctionCommand, ResultCommand<ConnectorFunction>> {
+﻿namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers.Create {
+	public class CreateConnectorFunctionCommandHandler : IRequestHandler<CreateConnectorFunctionCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _claims;
 
@@ -16,7 +8,7 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
 		}
 
-		public async Task<ResultCommand<ConnectorFunction>> Handle(CreateConnectorFunctionCommand request, CancellationToken cancellationToken) {
+		public async Task<IResultCommand> Handle(CreateConnectorFunctionCommand request, CancellationToken cancellationToken) {
 			var connectorFunctionInputs = new List<ConnectorFunctionInput>();
 			var connectorFunctionId = Guid.NewGuid();
 
@@ -61,7 +53,7 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers {
 
 			await _unitOfWork.Commit();
 
-			return new ResultCommand<ConnectorFunction>(HttpStatusCode.Created, null, null, connectorFunction);
+			return ResultCommand.Created<ConnectorFunction, ConnectorFunctionViewModel>(connectorFunction);
 		}
 	}
 }
