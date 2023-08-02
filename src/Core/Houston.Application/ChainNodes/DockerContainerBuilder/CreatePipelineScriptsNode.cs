@@ -1,13 +1,4 @@
-﻿using Docker.DotNet;
-using Docker.DotNet.Models;
-using Houston.Core.Entities.Postgres;
-using Houston.Core.Exceptions;
-using Houston.Core.Interfaces.Services;
-using Houston.Core.Models;
-using Microsoft.Extensions.Logging;
-using System.Text.RegularExpressions;
-
-namespace Houston.Application.ChainNodes.DockerContainerBuilder {
+﻿namespace Houston.Application.ChainNodes.DockerContainerBuilder {
 	public class CreatePipelineScriptsNode : IContainerBuilderChainService {
 		public IContainerBuilderChainService Next { get; set; }
 

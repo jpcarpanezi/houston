@@ -1,18 +1,4 @@
-﻿using AutoMapper;
-using Houston.Application.ViewModel.ConnectorFunctionInputViewModels;
-using Houston.Application.ViewModel.ConnectorFunctionViewModels;
-using Houston.Application.ViewModel.ConnectorViewModels;
-using Houston.Application.ViewModel.PipelineInstructionInputViewModels;
-using Houston.Application.ViewModel.PipelineInstructionViewModels;
-using Houston.Application.ViewModel.PipelineLogViewModels;
-using Houston.Application.ViewModel.PipelineTriggerEventViewModels;
-using Houston.Application.ViewModel.PipelineTriggerFilterViewModels;
-using Houston.Application.ViewModel.PipelineTriggerViewModels;
-using Houston.Application.ViewModel.PipelineViewModels;
-using Houston.Application.ViewModel.UserViewModels;
-using Houston.Core.Entities.Postgres;
-
-namespace Houston.Application.ViewModel {
+﻿namespace Houston.Application.ViewModel {
 	public class MapProfile : Profile {
 		public MapProfile() {
 			CreateMap<User, UserViewModel>();

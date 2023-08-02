@@ -1,10 +1,4 @@
-﻿using Autofac;
-using EventBus.EventBus;
-using EventBus.EventBus.Abstractions;
-using EventBus.EventBusRabbitMQ;
-using RabbitMQ.Client;
-
-namespace Houston.API.Setups {
+﻿namespace Houston.API.Setups {
 	public static class RabbitSetup {
 		public static IServiceCollection AddEventBus(this IServiceCollection services, IConfiguration configuration) {
 			services.AddSingleton<IRabbitMQPersistentConnection>(sp => {

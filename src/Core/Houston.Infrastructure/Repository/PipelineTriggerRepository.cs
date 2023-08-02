@@ -1,9 +1,4 @@
-﻿using Houston.Core.Entities.Postgres;
-using Houston.Core.Interfaces.Repository;
-using Houston.Infrastructure.Context;
-using Microsoft.EntityFrameworkCore;
-
-namespace Houston.Infrastructure.Repository {
+﻿namespace Houston.Infrastructure.Repository {
 	public class PipelineTriggerRepository : Repository<PipelineTrigger>, IPipelineTriggerRepository {
 		public PipelineTriggerRepository(PostgresContext context) : base(context) { }
 

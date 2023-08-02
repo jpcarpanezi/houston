@@ -1,6 +1,4 @@
-﻿using Houston.Application.ViewModel.PipelineInstructionInputViewModels;
-
-namespace Houston.Application.ViewModel.PipelineInstructionViewModels {
+﻿namespace Houston.Application.ViewModel.PipelineInstructionViewModels {
 	public class PipelineInstructionViewModel {
 		public Guid Id { get; set; }
 

@@ -1,6 +1,4 @@
-﻿using Houston.Core.Models;
-
-namespace Houston.Core.Interfaces.Services {
+﻿namespace Houston.Core.Interfaces.Services {
 	public interface IContainerBuilderChainService {
 		IContainerBuilderChainService Next { get; set; }
 

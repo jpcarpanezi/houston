@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Houston.Core.Models.GitHub.Push {
+﻿namespace Houston.Core.Models.GitHub.Push {
 	public class Commit {
 		[JsonPropertyName("id")]
 		public string Id { get; }

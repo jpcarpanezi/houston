@@ -1,9 +1,4 @@
-﻿using Houston.Core.Enums;
-using Houston.Core.Interfaces.Services;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
-
-namespace Houston.Infrastructure.Services {
+﻿namespace Houston.Infrastructure.Services {
 	public class UserClaimsService : IUserClaimsService {
 		private readonly IHttpContextAccessor _context;
 

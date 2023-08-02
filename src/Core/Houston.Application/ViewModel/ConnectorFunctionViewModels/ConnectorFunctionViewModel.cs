@@ -1,6 +1,4 @@
-﻿using Houston.Application.ViewModel.ConnectorFunctionInputViewModels;
-
-namespace Houston.Application.ViewModel.ConnectorFunctionViewModels {
+﻿namespace Houston.Application.ViewModel.ConnectorFunctionViewModels {
 	public class ConnectorFunctionViewModel {
 		public Guid Id { get; set; }
 

@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Houston.Core.Models.GitHub.Base {
+﻿namespace Houston.Core.Models.GitHub.Base {
 	public class Owner {
 		[JsonPropertyName("login")]
 		public string Login { get; }

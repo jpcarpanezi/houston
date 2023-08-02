@@ -1,6 +1,4 @@
-﻿using Houston.Core.Entities.Postgres;
-
-namespace Houston.Core.Interfaces.Services {
+﻿namespace Houston.Core.Interfaces.Services {
 	public interface IWebhookService {
 		bool RunPipeline(string jsonPayload, List<PipelineTriggerEvent> pipelineTriggerEvents);
 

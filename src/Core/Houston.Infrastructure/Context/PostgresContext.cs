@@ -1,6 +1,4 @@
-﻿using Houston.Core.Entities.Postgres;
-using Microsoft.EntityFrameworkCore;
-namespace Houston.Infrastructure.Context;
+﻿namespace Houston.Infrastructure.Context;
 
 public partial class PostgresContext : DbContext {
 	public PostgresContext(DbContextOptions<PostgresContext> options) : base(options) { }

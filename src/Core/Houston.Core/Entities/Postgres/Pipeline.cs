@@ -1,8 +1,4 @@
-﻿using Houston.Core.Enums;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Houston.Core.Entities.Postgres;
+﻿namespace Houston.Core.Entities.Postgres;
 
 [Table("Pipeline", Schema = "houston")]
 public partial class Pipeline {

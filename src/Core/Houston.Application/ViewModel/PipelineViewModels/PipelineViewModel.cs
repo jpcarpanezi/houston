@@ -1,6 +1,4 @@
-﻿using Houston.Core.Enums;
-
-namespace Houston.Application.ViewModel.PipelineViewModels {
+﻿namespace Houston.Application.ViewModel.PipelineViewModels {
 	public class PipelineViewModel {
 		public Guid Id { get; set; }
 

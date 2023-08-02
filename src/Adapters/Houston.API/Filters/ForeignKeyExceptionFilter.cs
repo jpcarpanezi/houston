@@ -1,11 +1,4 @@
-﻿using Houston.Application.ViewModel;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.EntityFrameworkCore;
-using Npgsql;
-using System.Net;
-
-namespace Houston.API.Filters {
+﻿namespace Houston.API.Filters {
 	public class ForeignKeyExceptionFilter : IExceptionFilter {
 		public void OnException(ExceptionContext context) {
 			if (context.Exception is DbUpdateException ex && ex.InnerException is NpgsqlException npgsqlException && npgsqlException.SqlState == "23503") {

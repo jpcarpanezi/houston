@@ -1,7 +1,5 @@
 ﻿using Houston.Application.WebhookEvents;
 using Houston.Core.Models.GitHub.Push;
-using Microsoft.AspNetCore.Http;
-using System.Text.Json;
 
 namespace Houston.Application.Webhooks {
 	public class Github : IWebhookService {

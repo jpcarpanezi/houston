@@ -1,6 +1,4 @@
-﻿using Houston.Application.ViewModel.PipelineTriggerFilterViewModels;
-
-namespace Houston.Application.ViewModel.PipelineTriggerEventViewModels {
+﻿namespace Houston.Application.ViewModel.PipelineTriggerEventViewModels {
 	public class PipelineTriggerEventViewModel {
 		public Guid Id { get; set; }
 

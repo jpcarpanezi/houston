@@ -1,6 +1,4 @@
-﻿using Houston.Core.Models;
-
-namespace Houston.Infrastructure.Services {
+﻿namespace Houston.Infrastructure.Services {
 	public static class DeployKeysService {
 		public static DeployKeys Create(string comment, int keySize = 2048) {
 			var keygen = new SshKeyGenerator.SshKeyGenerator(keySize);

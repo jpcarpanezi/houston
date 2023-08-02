@@ -1,7 +1,4 @@
-﻿using BCrypt.Net;
-using System.Text.RegularExpressions;
-
-namespace Houston.Core.Services {
+﻿namespace Houston.Core.Services {
 	public static class PasswordService {
 		private static readonly Regex containsUpperCase = new("[A-Z]");
 		private static readonly Regex containsNumber = new(@"\d");
