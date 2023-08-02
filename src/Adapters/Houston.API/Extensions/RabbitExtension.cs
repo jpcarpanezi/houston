@@ -1,5 +1,5 @@
 ﻿namespace Houston.API.Setups {
-	public static class RabbitSetup {
+	public static class RabbitExtension {
 		public static IServiceCollection AddEventBus(this IServiceCollection services, IConfiguration configuration) {
 			services.AddSingleton<IRabbitMQPersistentConnection>(sp => {
 				ILogger<DefaultRabbitMQPersistentConnection> logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();

@@ -1,5 +1,5 @@
 ﻿namespace Houston.API.Setups {
-	public static class AuthenticationSetup {
+	public static class AuthenticationExtension {
 		public static void AddBearerAuthentication(this IServiceCollection services, IConfiguration configuration) {
 			SigningConfigurations signingConfigurations = new();
 			services.AddSingleton(signingConfigurations);

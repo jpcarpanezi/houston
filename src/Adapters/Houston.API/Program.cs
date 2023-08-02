@@ -1,26 +1,20 @@
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-builder.Services.AddCors(options => {
-	options.AddDefaultPolicy(build => {
-		build
-			.WithOrigins(builder.Configuration.GetSection("CorsSettings:Origins").Get<string[]>())
-			.AllowAnyMethod()
-			.AllowAnyHeader()
-			.AllowCredentials();
-	});
-});
-builder.Services.AddControllers(opts => {
-	opts.Filters.Add(new ProducesAttribute("application/json"));
-	opts.Filters.Add(new ForeignKeyExceptionFilter());
-}).AddJsonOptions(opts => {
-	opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-	opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-});
-builder.Services.AddFluentValidationAutoValidation().AddValidatorsFromAssemblyContaining<Program>();
-builder.Services.AddFluentValidationClientsideAdapters();
+
+builder.Host.UseSerilog();
+
+builder.Services.ConfigureOptions(builder.Configuration);
+
+builder.Services.ConfigureCors();
+
+builder.Services.AddControllers(ExtensionOptions.ConfigureControllers)
+				.AddJsonOptions(ExtensionOptions.ConfigureJson);
+
 builder.Services.AddBearerAuthentication(builder.Configuration);
+
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(options => {
 	options.SwaggerDoc("v1", new OpenApiInfo {
 		Version = "v1",
@@ -30,30 +24,46 @@ builder.Services.AddSwaggerGen(options => {
 	var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 	options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
+
+builder.Services.AddValidatorsFromAssembly(typeof(Houston.Application.ValidatorsModelErrorMessages).Assembly);
+
+builder.Services.AddFluentValidationClientsideAdapters();
+
 builder.Services.AddFluentValidationRulesToSwagger();
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(AppDomain.CurrentDomain.Load("Houston.Application")));
-builder.Services.AddStackExchangeRedisCache(options => {
-	options.Configuration = builder.Configuration.GetConnectionString("Redis");
-	options.InstanceName = "houston-";
-});
+
+builder.Services.AddMediatR(ExtensionOptions.ConfigureMediatR)
+				.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviorFilter<,>));
+
+builder.Services.AddRedis(builder.Configuration);
+
 builder.Services.AddEventBus(builder.Configuration);
+
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddPostgres(builder.Configuration, builder.Environment);
-builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-builder.Services.AddTransient<IUserClaimsService, UserClaimsService>();
+
+builder.Services.AddRepositories();
+
 
 var app = builder.Build();
 
 app.UseMigrations();
+
 if (app.Environment.IsDevelopment()) {
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
+
 app.UseCors();
+
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
+
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Services.ConfigureEventBus();
 
 app.Run();

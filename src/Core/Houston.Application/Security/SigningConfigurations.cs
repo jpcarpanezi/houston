@@ -6,7 +6,7 @@
 
 		public SigningConfigurations() {
 			using RSACryptoServiceProvider provider = new();
-			provider.ImportFromPem(File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/AuthConfigurations/PrivateKey.pem"));
+			provider.ImportFromPem(File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"/Security/PrivateKey.pem"));
 
 			Key = new RsaSecurityKey(provider.ExportParameters(true));
 
