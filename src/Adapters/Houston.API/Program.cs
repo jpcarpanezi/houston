@@ -2,6 +2,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
+Log.Logger = new LoggerConfiguration()
+					.ReadFrom.Configuration(builder.Configuration)
+					.CreateBootstrapLogger();
+
 builder.Host.UseSerilog();
 
 builder.Services.AddBearerAuthentication(builder.Configuration);
