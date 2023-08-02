@@ -1,9 +1,4 @@
-﻿using Houston.Infrastructure.Context;
-using Houston.Core.Interfaces.Repository;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-
-namespace Houston.Infrastructure.Repository {
+﻿namespace Houston.Infrastructure.Repository {
 	public class Repository<TEntity> : IRepository<TEntity> where TEntity : class {
 		protected readonly PostgresContext Context;
 		protected readonly DbSet<TEntity> DbSet;

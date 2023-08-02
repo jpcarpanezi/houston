@@ -1,7 +1,4 @@
-﻿using Houston.Core.Entities.Postgres;
-using Houston.Core.Models;
-
-namespace Houston.Core.Interfaces.Services {
+﻿namespace Houston.Core.Interfaces.Services {
 	public interface IContainerBuilderParametersService {
 		IContainerBuilderParametersService AddAuthentication(string registryUsername, string registryEmail, string registryPassword, string? registryAddress = null);
 

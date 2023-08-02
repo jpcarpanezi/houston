@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Houston.Core.Entities.Postgres;
+﻿namespace Houston.Core.Entities.Postgres;
 
 [Table("Connector", Schema = "houston")]
 public partial class Connector {

@@ -1,6 +1,4 @@
-﻿using Houston.Core.Entities.Postgres;
-
-namespace Houston.Core.Models {
+﻿namespace Houston.Core.Models {
 	public class ContainerBuilderParameters {
 		public string RegistryUsername { get; set; } = null!;
 

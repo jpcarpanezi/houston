@@ -1,6 +1,4 @@
-﻿using Houston.Core.Enums;
-
-namespace Houston.Core.Interfaces.Services {
+﻿namespace Houston.Core.Interfaces.Services {
 	public interface IUserClaimsService {
 		Guid Id { get; }
 		string Name { get; }

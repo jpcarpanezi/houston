@@ -1,6 +1,4 @@
-﻿using Houston.Core.Enums;
-
-namespace Houston.Application.ViewModel.UserViewModels {
+﻿namespace Houston.Application.ViewModel.UserViewModels {
 	public class UserViewModel {
 		public Guid Id { get; set; }
 

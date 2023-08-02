@@ -1,6 +1,4 @@
-﻿using Houston.Core.Entities.Postgres;
-
-namespace Houston.Application.WebhookEvents {
+﻿namespace Houston.Application.WebhookEvents {
 	public static class PushEvent {
 		public static bool IsValid(List<PipelineTriggerEvent> pipelineTriggerEvent, string @ref, string refName, List<string> path) {
 			if (!pipelineTriggerEvent.Any()) {

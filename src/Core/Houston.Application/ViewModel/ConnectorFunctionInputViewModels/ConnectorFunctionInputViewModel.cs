@@ -1,6 +1,4 @@
-﻿using Houston.Core.Enums;
-
-namespace Houston.Application.ViewModel.ConnectorFunctionInputViewModels {
+﻿namespace Houston.Application.ViewModel.ConnectorFunctionInputViewModels {
 	public class ConnectorFunctionInputViewModel {
 		public Guid Id { get; set; }
 

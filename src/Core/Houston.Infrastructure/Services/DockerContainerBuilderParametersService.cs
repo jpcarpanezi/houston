@@ -1,8 +1,4 @@
-﻿using Houston.Core.Entities.Postgres;
-using Houston.Core.Interfaces.Services;
-using Houston.Core.Models;
-
-namespace Houston.Infrastructure.Services {
+﻿namespace Houston.Infrastructure.Services {
 	public class DockerContainerBuilderParametersService : IContainerBuilderParametersService {
 		private readonly ContainerBuilderParameters _container = new();
 

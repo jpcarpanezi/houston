@@ -1,7 +1,4 @@
-﻿using Houston.Core.Models.GitHub.Base;
-using System.Text.Json.Serialization;
-
-namespace Houston.Core.Models.GitHub.Push {
+﻿namespace Houston.Core.Models.GitHub.Push {
 	public class PushPayload : GithubPayloadBase {
 		[JsonPropertyName("ref")]
 		public string Ref { get; }

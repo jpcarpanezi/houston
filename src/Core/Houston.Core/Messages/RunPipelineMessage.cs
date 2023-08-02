@@ -1,6 +1,4 @@
-﻿using EventBus.EventBus.Events;
-
-namespace Houston.Core.Messages {
+﻿namespace Houston.Core.Messages {
 	public record RunPipelineMessage : IntegrationEvent {
 		public Guid PipelineId { get; set; }
 

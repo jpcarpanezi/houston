@@ -1,6 +1,4 @@
-﻿using Houston.Core.Entities.Postgres;
-
-namespace Houston.Core.Interfaces.Repository {
+﻿namespace Houston.Core.Interfaces.Repository {
 	public interface ITriggerFilterRepository : IRepository<TriggerFilter> {
 		Task<long> CountByIdList(List<Guid> ids);
 	}

@@ -1,7 +1,4 @@
-﻿using Houston.Infrastructure.Context;
-using Houston.Core.Interfaces.Repository;
-
-namespace Houston.Infrastructure.Repository {
+﻿namespace Houston.Infrastructure.Repository {
 	public class UnitOfWork : IUnitOfWork {
 		public IUserRepository UserRepository { get; private set; }
 
