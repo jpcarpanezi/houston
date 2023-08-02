@@ -2,8 +2,9 @@
 using Houston.Application.CommandHandlers.PipelineInstructionCommandHandlers.Save;
 using Houston.Application.ViewModel.PipelineInstructionViewModels;
 
-namespace Houston.API.Controllers {
-	[Route("api/[controller]")]
+namespace Houston.API.Controllers.V1 {
+	[Route("api/v{version:apiVersion}/[controller]")]
+	[ApiVersion("1.0")]
 	[ApiController]
 	public class PipelineInstructionController : ControllerBase {
 		private readonly IMediator _mediator;

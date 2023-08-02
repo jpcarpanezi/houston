@@ -1,8 +1,9 @@
 ﻿using Houston.Application.CommandHandlers.PipelineLogCommandHandlers.Get;
 using Houston.Application.CommandHandlers.PipelineLogCommandHandlers.GetAll;
 
-namespace Houston.API.Controllers {
-	[Route("api/[controller]")]
+namespace Houston.API.Controllers.V1 {
+	[Route("api/v{version:apiVersion}/[controller]")]
+	[ApiVersion("1.0")]
 	[ApiController]
 	public class PipelineLogController : ControllerBase {
 		private readonly IMediator _mediator;

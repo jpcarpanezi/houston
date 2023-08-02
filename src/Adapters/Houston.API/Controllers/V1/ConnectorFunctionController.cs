@@ -5,8 +5,9 @@ using Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers.GetAl
 using Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers.Update;
 using Houston.Application.ViewModel.ConnectorFunctionViewModels;
 
-namespace Houston.API.Controllers {
-	[Route("api/[controller]")]
+namespace Houston.API.Controllers.V1 {
+	[Route("api/v{version:apiVersion}/[controller]")]
+	[ApiVersion("1.0")]
 	[ApiController]
 	public class ConnectorFunctionController : ControllerBase {
 		private readonly IMediator _mediator;

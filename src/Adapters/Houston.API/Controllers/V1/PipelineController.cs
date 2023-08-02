@@ -8,8 +8,9 @@ using Houston.Application.CommandHandlers.PipelineCommandHandlers.Update;
 using Houston.Application.CommandHandlers.PipelineCommandHandlers.Webhook;
 using Houston.Application.ViewModel.PipelineViewModels;
 
-namespace Houston.API.Controllers {
-	[Route("api/[controller]")]
+namespace Houston.API.Controllers.V1 {
+	[Route("api/v{version:apiVersion}/[controller]")]
+	[ApiVersion("1.0")]
 	[ApiController]
 	public class PipelineController : ControllerBase {
 		private readonly IMediator _mediator;

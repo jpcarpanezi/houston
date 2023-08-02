@@ -11,10 +11,14 @@ global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.Extensions.Options;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.AspNetCore.Mvc.Filters;
+global using Microsoft.AspNetCore.Mvc.ApiExplorer;
+global using Microsoft.AspNetCore.Mvc.Versioning;
 
 global using Npgsql;
 global using Autofac.Extensions.DependencyInjection;
 global using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
+global using Swashbuckle.AspNetCore.SwaggerGen;
+global using Swashbuckle.AspNetCore.SwaggerUI;
 global using FluentValidation;
 global using FluentValidation.Results;
 global using FluentValidation.AspNetCore;

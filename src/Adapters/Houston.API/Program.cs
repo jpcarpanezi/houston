@@ -13,17 +13,15 @@ builder.Services.AddControllers(ExtensionOptions.ConfigureControllers)
 
 builder.Services.AddBearerAuthentication(builder.Configuration);
 
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-builder.Services.AddSwaggerGen(options => {
-	options.SwaggerDoc("v1", new OpenApiInfo {
-		Version = "v1",
-		Title = "Houston CI",
-		Description = "An easy CI pipeline creator using scratch concepts.",
-	});
-	var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-	options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-});
+builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+
+builder.Services.AddApiVersioning(ExtensionOptions.ConfigureApiVersioning);
+
+builder.Services.AddVersionedApiExplorer(ExtensionOptions.ConfigureApiVersioningExplorer);
+
+builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddValidatorsFromAssembly(typeof(Houston.Application.ValidatorsModelErrorMessages).Assembly);
 
@@ -51,7 +49,7 @@ app.UseMigrations();
 
 if (app.Environment.IsDevelopment()) {
 	app.UseSwagger();
-	app.UseSwaggerUI();
+	app.UseSwaggerUI(opts => ExtensionOptions.ConfigureSwaggerUI(opts, app));
 }
 
 app.UseCors();

@@ -7,8 +7,9 @@ using Houston.Application.CommandHandlers.UserCommandHandlers.UpdateFirstAccess;
 using Houston.Application.CommandHandlers.UserCommandHandlers.UpdatePassword;
 using Houston.Application.ViewModel.UserViewModels;
 
-namespace Houston.API.Controllers {
-	[Route("api/[controller]")]
+namespace Houston.API.Controllers.V1 {
+	[Route("api/v{version:apiVersion}/[controller]")]
+	[ApiVersion("1.0")]
 	[ApiController]
 	public class UserController : ControllerBase {
 		private readonly IDistributedCache _cache;
@@ -30,7 +31,7 @@ namespace Houston.API.Controllers {
 		public async Task<IActionResult> IsFirstSetup() {
 			var configurations = await _cache.GetStringAsync("configurations");
 
-			if (configurations is null) { 
+			if (configurations is null) {
 				return NotFound();
 			}
 
