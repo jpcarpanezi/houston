@@ -4,14 +4,14 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.UseSerilog();
 
+builder.Services.AddBearerAuthentication(builder.Configuration);
+
 builder.Services.ConfigureOptions(builder.Configuration);
 
 builder.Services.ConfigureCors();
 
 builder.Services.AddControllers(ExtensionOptions.ConfigureControllers)
 				.AddJsonOptions(ExtensionOptions.ConfigureJson);
-
-builder.Services.AddBearerAuthentication(builder.Configuration);
 
 builder.Services.AddSwaggerGen();
 
@@ -23,15 +23,6 @@ builder.Services.AddVersionedApiExplorer(ExtensionOptions.ConfigureApiVersioning
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddValidatorsFromAssembly(typeof(Houston.Application.ValidatorsModelErrorMessages).Assembly);
-
-builder.Services.AddFluentValidationClientsideAdapters();
-
-builder.Services.AddFluentValidationRulesToSwagger();
-
-builder.Services.AddMediatR(ExtensionOptions.ConfigureMediatR)
-				.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviorFilter<,>));
-
 builder.Services.AddRedis(builder.Configuration);
 
 builder.Services.AddEventBus(builder.Configuration);
@@ -42,10 +33,23 @@ builder.Services.AddPostgres(builder.Configuration, builder.Environment);
 
 builder.Services.AddRepositories();
 
+builder.Services.AddValidatorsFromAssembly(AppDomain.CurrentDomain.Load("Houston.Application"));
+
+builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.AddFluentValidationClientsideAdapters();
+
+builder.Services.AddFluentValidationRulesToSwagger();
+
+builder.Services.AddMediatR(ExtensionOptions.ConfigureMediatR)
+				.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviorFilter<,>));
+
 
 var app = builder.Build();
 
-app.UseMigrations();
+if (!app.Environment.IsDevelopment()) {
+	app.UseMigrations();
+}
 
 if (app.Environment.IsDevelopment()) {
 	app.UseSwagger();
