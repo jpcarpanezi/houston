@@ -1,4 +1,6 @@
-﻿namespace Houston.Application.CommandHandlers.PipelineCommandHandlers.Delete {
+﻿using System.Globalization;
+
+namespace Houston.Application.CommandHandlers.PipelineCommandHandlers.Delete {
 	public class DeletePipelineCommandHandler : IRequestHandler<DeletePipelineCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _claims;

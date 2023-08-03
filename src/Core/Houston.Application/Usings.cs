@@ -16,7 +16,6 @@ global using Microsoft.Extensions.Caching.Distributed;
 global using Microsoft.IdentityModel.Tokens;
 
 global using MediatR;
-global using Serilog;
 global using AutoMapper;
 global using FluentValidation;
 global using Docker.DotNet;
