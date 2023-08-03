@@ -19,8 +19,7 @@
 				return ResultCommand.NotFound("The requested webhook origin does not exists.", "invalidWebhookOrigin");
 			}
 
-			var webhookService = Activator.CreateInstance(type, _context) as IWebhookService;
-			if (webhookService is null) {
+			if (Activator.CreateInstance(type, _context) is not IWebhookService webhookService) {
 				return ResultCommand.NotFound("The requested webhook origin does not exists.", "invalidWebhookOrigin");
 			}
 
