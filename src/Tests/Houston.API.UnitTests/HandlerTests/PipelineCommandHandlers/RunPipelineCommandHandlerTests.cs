@@ -1,0 +1,106 @@
+﻿using Houston.Application.CommandHandlers.PipelineCommandHandlers.Run;
+
+namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
+	[TestFixture]
+	public class RunPipelineCommandHandlerTests {
+		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
+		private readonly Mock<IEventBus> _mockEventBus = new();
+		private readonly Mock<IUserClaimsService> _mockClaims = new();
+		private readonly Fixture _fixture = new();
+		private RunPipelineCommandHandler _handler;
+
+		[SetUp]
+		public void SetUp() {
+			_handler = new RunPipelineCommandHandler(_mockUnitOfWork.Object, _mockEventBus.Object, _mockClaims.Object);
+		}
+
+		[Test]
+		public async Task Handle_WithPipelineNotFound_ShouldReturnNotFoundObject() {
+			// Arrange
+			var command = _fixture.Create<RunPipelineCommand>();
+			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync((Pipeline?)null);
+
+			// Act
+			var result = await _handler.Handle(command, default);
+
+			// Assert
+			result.Should().BeOfType<ErrorResultCommand>();
+
+			var errorResult = result as ErrorResultCommand;
+			errorResult?.StatusCode.Should().Be(HttpStatusCode.NotFound);
+			errorResult?.ErrorMessage.Should().Be("The requested pipeline could not be found.");
+			errorResult?.ErrorCode.Should().Be("pipelineNotFound");
+			errorResult?.CustomBody.Should().BeNull();
+		}
+
+		[Test]
+		public async Task Handle_WithPipelineRunning_ShouldReturnLockedObject() {
+			// Arrange
+			var command = _fixture.Create<RunPipelineCommand>();
+			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().With(x => x.Status, Core.Enums.PipelineStatusEnum.Running).Create();
+			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync(pipeline);
+			_mockUnitOfWork.Setup(x => x.PipelineLogsRepository.DurationAverage(It.IsAny<Guid>(), default)).ReturnsAsync(It.IsAny<double>());
+
+			// Act
+			var result = await _handler.Handle(command, default);
+
+			// Assert
+			result.Should().BeOfType<ErrorResultCommand>();
+
+			var errorResult = result as ErrorResultCommand;
+			errorResult?.StatusCode.Should().Be(HttpStatusCode.Locked);
+			errorResult?.ErrorMessage.Should().BeEmpty();
+			errorResult?.ErrorCode.Should().BeNull();
+			errorResult?.CustomBody.Should().BeOfType<LockedMessageViewModel>();
+
+			var customBody = errorResult?.CustomBody as LockedMessageViewModel;
+			customBody?.Message.Should().Be("Server is processing a request from this pipeline. Please try again later.");
+			customBody?.ErrorCode.Should().Be("pipelineRunning");
+			customBody?.EstimatedCompletionTime.Should().BeCloseTo(DateTime.UtcNow.AddTicks((long)It.IsAny<double>()), TimeSpan.FromSeconds(1));
+		}
+
+		[Test]
+		public async Task Handle_WithEventBusException_ShouldReturnInternalServerErrorObject() {
+			// Arrange
+			var command = _fixture.Create<RunPipelineCommand>();
+			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().With(x => x.Status, Core.Enums.PipelineStatusEnum.Awaiting).Create();
+			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync(pipeline);
+			_mockClaims.Setup(x => x.Id).Returns(It.IsAny<Guid>());
+			_mockEventBus.Setup(x => x.Publish(It.IsAny<IntegrationEvent>())).Throws(new Exception());
+
+			// Act
+			var result = await _handler.Handle(command, default);
+
+			// Assert
+			result.Should().BeOfType<ErrorResultCommand>();
+
+			var errorResult = result as ErrorResultCommand;
+			errorResult?.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+			errorResult?.ErrorMessage.Should().Be("Error while trying to run the pipeline.");
+			errorResult?.ErrorCode.Should().Be("cannotRunPipeline");
+			errorResult?.CustomBody.Should().BeNull();
+		}
+
+		[Test]
+		public async Task Handle_WithValidRequest_ShouldReturnNoContentObject() {
+			// Arrange
+			var command = _fixture.Create<RunPipelineCommand>();
+			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().With(x => x.Status, Core.Enums.PipelineStatusEnum.Awaiting).Create();
+			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync(pipeline);
+			_mockClaims.Setup(x => x.Id).Returns(It.IsAny<Guid>());
+			_mockEventBus.Invocations.Clear(); // Remove invocation from previous test
+			_mockEventBus.Setup(x => x.Publish(It.IsAny<IntegrationEvent>()));
+
+			// Act
+			var result = await _handler.Handle(command, default);
+
+			// Assert
+			_mockEventBus.Verify(x => x.Publish(It.IsAny<IntegrationEvent>()), Times.Once);
+
+			result.Should().BeOfType<SuccessResultCommand>();
+
+			var successResult = result as SuccessResultCommand;
+			successResult?.StatusCode.Should().Be(HttpStatusCode.NoContent);
+		}
+	}
+}
