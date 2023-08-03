@@ -13,3 +13,4 @@ global using Houston.Application.Results;
 global using Houston.Application.ViewModel.ConnectorViewModels;
 global using Houston.Application.ViewModel.ConnectorFunctionViewModels;
 global using Houston.Application.ViewModel.PipelineInstructionViewModels;
+global using Houston.Application.ViewModel.PipelineLogViewModels;
