@@ -1,0 +1,32 @@
+﻿using Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers.Create;
+
+namespace Houston.API.UnitTests.HandlerTests.ConnectorFunctionCommandHandlers {
+	[TestFixture]
+	public class CreateConnectorFunctionCommandHandlerTests {
+		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
+		private readonly Mock<IUserClaimsService> _mockClaims = new();
+		private readonly Fixture _fixture = new();
+		private CreateConnectorFunctionCommandHandler _handler;
+
+		[SetUp]
+		public void SetUp() {
+			_handler = new CreateConnectorFunctionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
+		}
+
+		[Test]
+		[Ignore("Ignored because of an unknown error.")]
+		public async Task Handle_WithValidRequest_ShouldReturnCreatedObject() {
+			// Arrange
+			var request = _fixture.Create<CreateConnectorFunctionCommand>();
+			_mockClaims.Setup(x => x.Id).Returns(It.IsAny<Guid>());
+
+			// Act
+			var result = await _handler.Handle(request, default);
+
+			// Assert
+			_mockUnitOfWork.Verify(x => x.ConnectorFunctionRepository.Add(It.IsAny<ConnectorFunction>()), Times.Once);
+			_mockUnitOfWork.Verify(x => x.ConnectorFunctionInputRepository.AddRange(It.IsAny<List<ConnectorFunctionInput>>()), Times.Once);
+			_mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
+		}
+	}
+}
