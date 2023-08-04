@@ -1,6 +1,7 @@
 ﻿using Houston.Application.CommandHandlers.PipelineLogCommandHandlers.GetAll;
 
 namespace Houston.API.UnitTests.HandlerTests.PipelineLogCommandHandlers {
+	[TestFixture]
 	public class GetAllPipelineLogCommandHandlerTests {
 		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
 		private readonly Fixture _fixture = new();

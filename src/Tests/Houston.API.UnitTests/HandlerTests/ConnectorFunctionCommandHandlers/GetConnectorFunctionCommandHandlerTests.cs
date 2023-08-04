@@ -1,5 +1,4 @@
-﻿using Houston.Application.CommandHandlers.ConnectorCommandHandlers.Get;
-using Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers.Get;
+﻿using Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers.Get;
 
 namespace Houston.API.UnitTests.HandlerTests.ConnectorFunctionCommandHandlers {
 	[TestFixture]

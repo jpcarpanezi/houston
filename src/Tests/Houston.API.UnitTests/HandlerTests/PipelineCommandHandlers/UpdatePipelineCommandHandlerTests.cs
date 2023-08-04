@@ -1,6 +1,7 @@
 ﻿using Houston.Application.CommandHandlers.PipelineCommandHandlers.Update;
 
 namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
+	[TestFixture]
 	public class UpdatePipelineCommandHandlerTests {
 		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
 		private readonly Mock<IUserClaimsService> _mockClaims = new();

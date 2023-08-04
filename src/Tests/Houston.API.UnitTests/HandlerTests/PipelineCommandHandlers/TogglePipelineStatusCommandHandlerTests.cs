@@ -1,5 +1,4 @@
 ﻿using Houston.Application.CommandHandlers.PipelineCommandHandlers.Toggle;
-using Houston.Infrastructure.Repository;
 
 namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 	[TestFixture]

@@ -1,9 +1,7 @@
 ﻿using Houston.Application.CommandHandlers.PipelineCommandHandlers.Webhook;
-using Houston.Application.Webhooks;
-using Houston.Core.Interfaces.Services;
-using Moq;
 
 namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
+	[TestFixture]
 	public class WebhookCommandHandlerTests {
 		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
 		private readonly Mock<IEventBus> _mockEventBus = new();
