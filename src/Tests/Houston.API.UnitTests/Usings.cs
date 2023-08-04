@@ -27,3 +27,4 @@ global using Houston.Application.ViewModel.ConnectorFunctionViewModels;
 global using Houston.Application.ViewModel.PipelineInstructionViewModels;
 global using Houston.Application.ViewModel.PipelineLogViewModels;
 global using Houston.Application.ViewModel.PipelineViewModels;
+global using Houston.Application.ViewModel.PipelineTriggerViewModels;
