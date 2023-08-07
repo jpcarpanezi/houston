@@ -3,19 +3,17 @@
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IEventBus _eventBus;
 		private readonly IUserClaimsService _claims;
-		private readonly ILogger<RunPipelineCommandHandler> _logger;
 
-		public RunPipelineCommandHandler(IUnitOfWork unitOfWork, IEventBus eventBus, IUserClaimsService claims, ILogger<RunPipelineCommandHandler> logger) {
+		public RunPipelineCommandHandler(IUnitOfWork unitOfWork, IEventBus eventBus, IUserClaimsService claims) {
 			_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			_eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
 			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
-			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
 
 		public async Task<IResultCommand> Handle(RunPipelineCommand request, CancellationToken cancellationToken) {
 			var pipeline = await _unitOfWork.PipelineRepository.GetActive(request.Id);
 			if (pipeline is null) {
-				return ResultCommand.NotFound("The requested connector could not be found.", "connectorNotFound");
+				return ResultCommand.NotFound("The requested pipeline could not be found.", "pipelineNotFound");
 			}
 
 			if (pipeline.Status == PipelineStatusEnum.Running) {
@@ -29,7 +27,7 @@
 			try {
 				_eventBus.Publish(new RunPipelineMessage(request.Id, _claims.Id));
 			} catch (Exception e) {
-				_logger.LogError(e, $"Failed to publish {nameof(RunPipelineMessage)}");
+				Log.Error(e, $"Failed to publish {nameof(RunPipelineMessage)}");
 				return ResultCommand.InternalServerError("Error while trying to run the pipeline.", "cannotRunPipeline");
 			}
 

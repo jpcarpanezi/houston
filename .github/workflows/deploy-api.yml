@@ -6,13 +6,13 @@ on:
     branches: ["dev"]
     tags: ["v*"]
     paths:
-      - src/UserInterface/Houston.API/**
+      - src/Adapters/Houston.API/**
       - src/Core/**
       - .github/workflows/deploy-api.yml
   pull_request:
     branches: ["dev"]
     paths:
-      - src/UserInterface/Houston.API/**
+      - src/Adapters/Houston.API/**
       - src/Core/**
       - .github/workflows/deploy-api.yml
   
@@ -34,8 +34,8 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
 
-      #- name: Create testing private key
-      #  run: ssh-keygen -t rsa -b 4096 -m PEM -N "" -f /home/runner/work/houston/houston/src/UserInterface/Houston.API.UnitTests/bin/Debug/net6.0/PrivateKey.pem
+      - name: Create testing private key
+        run: ssh-keygen -t rsa -b 4096 -m PEM -N "" -f /home/runner/work/houston/houston/src/Tests/Houston.API.UnitTests/bin/Debug/net6.0/PrivateKey.pem
 
       - name: Test
         run: dotnet test --no-build --verbosity normal

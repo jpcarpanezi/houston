@@ -7,10 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["src/UserInterface/Houston.API/Houston.API.csproj", "src/UserInterface/Houston.API/"]
-RUN dotnet restore "src/UserInterface/Houston.API/Houston.API.csproj"
+COPY ["src/Adapters/Houston.API/Houston.API.csproj", "src/Adapters/Houston.API/"]
+RUN dotnet restore "src/Adapters/Houston.API/Houston.API.csproj"
 COPY . .
-WORKDIR "/src/src/UserInterface/Houston.API"
+WORKDIR "/src/src/Adapters/Houston.API"
 RUN dotnet build "Houston.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
