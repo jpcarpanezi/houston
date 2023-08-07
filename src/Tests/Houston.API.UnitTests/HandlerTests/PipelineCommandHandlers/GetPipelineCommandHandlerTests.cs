@@ -5,21 +5,16 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 	public class GetPipelineCommandHandlerTests {
 		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
 		private readonly Fixture _fixture = new();
-		private GetPipelineCommandHandler _handler;
-
-		[SetUp]
-		public void SetUp() {
-			_handler = new GetPipelineCommandHandler(_mockUnitOfWork.Object);
-		}
 
 		[Test]
 		public async Task Handle_WithPipelineNotFound_ShouldReturnNotFoundObject() {
 			// Arrange
+			var handler = new GetPipelineCommandHandler(_mockUnitOfWork.Object);
 			var command = _fixture.Create<GetPipelineCommand>();
 			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync((Pipeline?)null);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -34,12 +29,13 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 		[Test]
 		public async Task Handle_WithValidRequest_ShouldReturnOkObject() {
 			// Arrange
+			var handler = new GetPipelineCommandHandler(_mockUnitOfWork.Object);
 			var command = _fixture.Create<GetPipelineCommand>();
 			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().Create();
 			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync(pipeline);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<SuccessResultCommand<Pipeline, PipelineViewModel>>();

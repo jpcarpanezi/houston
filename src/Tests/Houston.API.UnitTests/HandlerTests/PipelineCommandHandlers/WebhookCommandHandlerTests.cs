@@ -8,20 +8,15 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 		private readonly Mock<IHttpContextAccessor> _mockContext = new();
 		private readonly Mock<IWebhookService> _mockWebhookService = new();
 		private readonly Fixture _fixture = new();
-		private WebhookCommandHandler _handler;
-
-		[SetUp]
-		public void SetUp() {
-			_handler = new WebhookCommandHandler(_mockUnitOfWork.Object, _mockEventBus.Object, _mockContext.Object);
-		}
 
 		[Test]
 		public async Task Handle_WithWebhookOriginNotFound_ShouldReturnNotFoundObject() {
 			// Arrange
+			var handler = new WebhookCommandHandler(_mockUnitOfWork.Object, _mockEventBus.Object, _mockContext.Object);
 			var command = _fixture.Build<WebhookCommand>().With(x => x.Origin, "GutHibs").Create();
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -36,11 +31,12 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 		[Test]
 		public async Task Handle_WithInvalidPayload_ShouldReturnNotFoundObject() {
 			// Arrange
+			var handler = new WebhookCommandHandler(_mockUnitOfWork.Object, _mockEventBus.Object, _mockContext.Object);
 			var command = _fixture.Build<WebhookCommand>().With(x => x.Origin, "GitHub").Create();
 			_mockWebhookService.Setup(x => x.DeserializeOrigin(It.IsAny<string>())).Returns((string?)null);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();

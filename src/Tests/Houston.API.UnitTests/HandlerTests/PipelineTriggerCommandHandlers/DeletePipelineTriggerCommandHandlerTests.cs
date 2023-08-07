@@ -5,21 +5,16 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineTriggerCommandHandlers {
 	public class DeletePipelineTriggerCommandHandlerTests {
 		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
 		private readonly Fixture _fixture = new();
-		private DeletePipelineTriggerCommandHandler _handler;
-
-		[SetUp]
-		public void SetUp() {
-			_handler = new DeletePipelineTriggerCommandHandler(_mockUnitOfWork.Object);
-		}
 
 		[Test]
 		public async Task Handle_WithPipelineTriggerNotFound_ShouldReturnNotFoundObject() {
 			// Arrange
+			var handler = new DeletePipelineTriggerCommandHandler(_mockUnitOfWork.Object);
 			var command = _fixture.Create<DeletePipelineTriggerCommand>();
 			_mockUnitOfWork.Setup(x => x.PipelineTriggerRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync((PipelineTrigger?)null);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -34,12 +29,13 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineTriggerCommandHandlers {
 		[Test]
 		public async Task Handle_WithValidRequest_ShouldReturnNoContentObject() {
 			// Arrange
+			var handler = new DeletePipelineTriggerCommandHandler(_mockUnitOfWork.Object);
 			var command = _fixture.Create<DeletePipelineTriggerCommand>();
 			var pipelineTrigger = _fixture.Build<PipelineTrigger>().OmitAutoProperties().Create();
 			_mockUnitOfWork.Setup(x => x.PipelineTriggerRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(pipelineTrigger);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			_mockUnitOfWork.Verify(x => x.PipelineTriggerRepository.Remove(It.IsAny<PipelineTrigger>()), Times.Once);

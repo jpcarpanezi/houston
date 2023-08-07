@@ -6,21 +6,16 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
 		private readonly Mock<IUserClaimsService> _mockClaims = new();
 		private readonly Fixture _fixture = new();
-		private TogglePipelineStatusCommandHandler _handler;
-
-		[SetUp]
-		public void SetUp() {
-			_handler = new TogglePipelineStatusCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
-		}
 
 		[Test]
 		public async Task Handle_WithPipelineNotFound_ShouldReturnNotFoundObject() {
 			// Arrange
+			var handler = new TogglePipelineStatusCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<TogglePipelineStatusCommand>();
 			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync((Pipeline?)null);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -35,13 +30,14 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 		[Test]
 		public async Task Handle_WithPipelineRunning_ShouldReturnLockedObject() {
 			// Arrange
+			var handler = new TogglePipelineStatusCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<TogglePipelineStatusCommand>();
 			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().With(x => x.Status, Core.Enums.PipelineStatusEnum.Running).Create();
 			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync(pipeline);
 			_mockUnitOfWork.Setup(x => x.PipelineLogsRepository.DurationAverage(It.IsAny<Guid>(), default)).ReturnsAsync(It.IsAny<double>());
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -61,13 +57,14 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 		[Test]
 		public async Task Handle_WithValidRequest_ShouldReturnNoContentObject() {
 			// Arrange
+			var handler = new TogglePipelineStatusCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<TogglePipelineStatusCommand>();
 			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().With(x => x.Status, Core.Enums.PipelineStatusEnum.Awaiting).Create();
 			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync(pipeline);
 			_mockClaims.Setup(x => x.Id).Returns(It.IsAny<Guid>());
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			_mockUnitOfWork.Verify(x => x.PipelineRepository.Update(It.IsAny<Pipeline>()), Times.Once);

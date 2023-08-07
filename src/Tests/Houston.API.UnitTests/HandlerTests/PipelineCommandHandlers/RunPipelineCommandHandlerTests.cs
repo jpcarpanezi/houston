@@ -7,21 +7,16 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 		private readonly Mock<IEventBus> _mockEventBus = new();
 		private readonly Mock<IUserClaimsService> _mockClaims = new();
 		private readonly Fixture _fixture = new();
-		private RunPipelineCommandHandler _handler;
-
-		[SetUp]
-		public void SetUp() {
-			_handler = new RunPipelineCommandHandler(_mockUnitOfWork.Object, _mockEventBus.Object, _mockClaims.Object);
-		}
 
 		[Test]
 		public async Task Handle_WithPipelineNotFound_ShouldReturnNotFoundObject() {
 			// Arrange
+			var handler = new RunPipelineCommandHandler(_mockUnitOfWork.Object, _mockEventBus.Object, _mockClaims.Object);
 			var command = _fixture.Create<RunPipelineCommand>();
 			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync((Pipeline?)null);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -36,13 +31,14 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 		[Test]
 		public async Task Handle_WithPipelineRunning_ShouldReturnLockedObject() {
 			// Arrange
+			var handler = new RunPipelineCommandHandler(_mockUnitOfWork.Object, _mockEventBus.Object, _mockClaims.Object);
 			var command = _fixture.Create<RunPipelineCommand>();
 			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().With(x => x.Status, Core.Enums.PipelineStatusEnum.Running).Create();
 			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync(pipeline);
 			_mockUnitOfWork.Setup(x => x.PipelineLogsRepository.DurationAverage(It.IsAny<Guid>(), default)).ReturnsAsync(It.IsAny<double>());
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -62,6 +58,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 		[Test]
 		public async Task Handle_WithEventBusException_ShouldReturnInternalServerErrorObject() {
 			// Arrange
+			var handler = new RunPipelineCommandHandler(_mockUnitOfWork.Object, _mockEventBus.Object, _mockClaims.Object);
 			var command = _fixture.Create<RunPipelineCommand>();
 			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().With(x => x.Status, Core.Enums.PipelineStatusEnum.Awaiting).Create();
 			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync(pipeline);
@@ -69,7 +66,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 			_mockEventBus.Setup(x => x.Publish(It.IsAny<IntegrationEvent>())).Throws(new Exception());
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -84,6 +81,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 		[Test]
 		public async Task Handle_WithValidRequest_ShouldReturnNoContentObject() {
 			// Arrange
+			var handler = new RunPipelineCommandHandler(_mockUnitOfWork.Object, _mockEventBus.Object, _mockClaims.Object);
 			var command = _fixture.Create<RunPipelineCommand>();
 			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().With(x => x.Status, Core.Enums.PipelineStatusEnum.Awaiting).Create();
 			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync(pipeline);
@@ -92,7 +90,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 			_mockEventBus.Setup(x => x.Publish(It.IsAny<IntegrationEvent>()));
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			_mockEventBus.Verify(x => x.Publish(It.IsAny<IntegrationEvent>()), Times.Once);

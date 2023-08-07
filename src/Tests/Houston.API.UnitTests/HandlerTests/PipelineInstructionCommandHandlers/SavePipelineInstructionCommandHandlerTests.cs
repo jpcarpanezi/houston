@@ -6,16 +6,11 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineInstructionCommandHandlers 
 		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
 		private readonly Mock<IUserClaimsService> _mockClaims = new();
 		private readonly Fixture _fixture = new();
-		private SavePipelineInstructionCommandHandler _handler;
-
-		[SetUp]
-		public void SetUp() {
-			_handler = new SavePipelineInstructionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
-		}
 
 		[Test]
 		public async Task Handle_WhenViolatesForeignKey_ShouldReturnConflictObject() {
 			// Arrange
+			var handler = new SavePipelineInstructionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<SavePipelineInstructionCommand>();
 			var databasePipelineInstructions = _fixture.Build<PipelineInstruction>().OmitAutoProperties().CreateMany().ToList();
 			var databaseConnectorFunctions = _fixture.Build<ConnectorFunction>().OmitAutoProperties().CreateMany().ToList();
@@ -23,7 +18,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineInstructionCommandHandlers 
 			_mockUnitOfWork.Setup(x => x.PipelineInstructionRepository.GetByPipelineId(It.IsAny<Guid>())).ReturnsAsync(databasePipelineInstructions);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -38,6 +33,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineInstructionCommandHandlers 
 		[Test]
 		public async Task Handle_WithInvalidConnectorFunctionInputs_ShouldReturnForbiddenObject() {
 			// Arrange
+			var handler = new SavePipelineInstructionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			Guid connectorFunctionId = Guid.NewGuid();
 			var pipelineInstructions = _fixture.Build<SavePipelineInstruction>()
 									  .With(x => x.ConnectorFunctionId, connectorFunctionId)
@@ -59,7 +55,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineInstructionCommandHandlers 
 			_mockUnitOfWork.Setup(x => x.PipelineInstructionRepository.GetByPipelineId(It.IsAny<Guid>())).ReturnsAsync(databasePipelineInstructions);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -74,6 +70,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineInstructionCommandHandlers 
 		[Test]
 		public async Task Handle_WithValidRequest_ShouldReturnCreatedObject() {
 			// Arrange
+			var handler = new SavePipelineInstructionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Build<SavePipelineInstructionCommand>().With(x => x.PipelineInstructions, new List<SavePipelineInstruction>()).Create();
 			var databasePipelineInstructions = _fixture.Build<PipelineInstruction>().OmitAutoProperties().CreateMany().ToList();
 			var databaseConnectorFunctions = _fixture.Build<ConnectorFunction>().OmitAutoProperties().CreateMany().ToList();
@@ -82,7 +79,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineInstructionCommandHandlers 
 			_mockClaims.Setup(x => x.Id).Returns(It.IsAny<Guid>());
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			_mockUnitOfWork.Verify(x => x.PipelineInstructionRepository.RemoveRange(It.IsAny<List<PipelineInstruction>>()), Times.Once);

@@ -1,29 +1,30 @@
 ﻿using Houston.Application.CommandHandlers.AuthCommandHandlers.SignIn;
-using Houston.Core.Services;
 
 namespace Houston.API.UnitTests.HandlerTests.AuthCommandHandlers {
 	[TestFixture]
 	public class SignInCommandHandlerTests {
 		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
-		private readonly IDistributedCache _cache = new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions()));
 		private readonly Fixture _fixture = new();
-		private SignInCommandHandler _handler;
+		private IDistributedCache _cache;
+		private SigningConfigurations _signingConfigurations;
+		private TokenConfigurations _tokenConfigurations;
 
 		[SetUp]
 		public void SetUp() {
-			var signingConfigurations = new SigningConfigurations(File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PrivateKey.pem")));
-			var tokenConfigurations = new TokenConfigurations("houston", "houston", 1200, 3600);
-			_handler = new SignInCommandHandler(_mockUnitOfWork.Object, signingConfigurations, tokenConfigurations, _cache);
+			_signingConfigurations = new SigningConfigurations(File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PrivateKey.pem")));
+			_tokenConfigurations = new TokenConfigurations("houston", "houston", 1200, 3600);
+			_cache = new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions()));
 		}
 
 		[Test]
 		public async Task Handle_WithNotFoundUser_ShouldReturnForbiddenObject() {
 			// Arrange
+			var handler = new SignInCommandHandler(_mockUnitOfWork.Object, _signingConfigurations, _tokenConfigurations, _cache);
 			var command = _fixture.Create<SignInCommand>();
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync((User?)null);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -38,6 +39,7 @@ namespace Houston.API.UnitTests.HandlerTests.AuthCommandHandlers {
 		[Test]
 		public async Task Handle_WithWrongPassword_ShouldReturnForbiddenObject() {
 			// Arrange
+			var handler = new SignInCommandHandler(_mockUnitOfWork.Object, _signingConfigurations, _tokenConfigurations, _cache);
 			var command = _fixture.Create<SignInCommand>();
 			var user = _fixture.Build<User>()
 					  .OmitAutoProperties()
@@ -46,7 +48,7 @@ namespace Houston.API.UnitTests.HandlerTests.AuthCommandHandlers {
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -61,6 +63,7 @@ namespace Houston.API.UnitTests.HandlerTests.AuthCommandHandlers {
 		[Test]
 		public async Task Handle_WithInactiveUser_ShouldReturnUnauthorizedObject() {
 			// Arrange
+			var handler = new SignInCommandHandler(_mockUnitOfWork.Object, _signingConfigurations, _tokenConfigurations, _cache);
 			var command = _fixture.Build<SignInCommand>().With(x => x.Password, "Abcd1234").Create();
 			var user = _fixture.Build<User>()
 					  .OmitAutoProperties()
@@ -70,7 +73,7 @@ namespace Houston.API.UnitTests.HandlerTests.AuthCommandHandlers {
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -85,6 +88,7 @@ namespace Houston.API.UnitTests.HandlerTests.AuthCommandHandlers {
 		[Test]
 		public async Task Handle_WithFirstAccess_ShouldReturnTemporaryRedirectObject() {
 			// Arrange
+			var handler = new SignInCommandHandler(_mockUnitOfWork.Object, _signingConfigurations, _tokenConfigurations, _cache);
 			var command = _fixture.Build<SignInCommand>().With(x => x.Password, "Abcd1234").Create();
 			var user = _fixture.Build<User>()
 					  .OmitAutoProperties()
@@ -95,7 +99,7 @@ namespace Houston.API.UnitTests.HandlerTests.AuthCommandHandlers {
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -110,6 +114,7 @@ namespace Houston.API.UnitTests.HandlerTests.AuthCommandHandlers {
 		[Test]
 		public async Task Handle_WithValidRequest_ShouldReturnOkObject() {
 			// Arrange
+			var handler = new SignInCommandHandler(_mockUnitOfWork.Object, _signingConfigurations, _tokenConfigurations, _cache);
 			var command = _fixture.Build<SignInCommand>().With(x => x.Password, "Abcd1234").Create();
 			var user = _fixture.Build<User>()
 					  .OmitAutoProperties()
@@ -122,7 +127,7 @@ namespace Houston.API.UnitTests.HandlerTests.AuthCommandHandlers {
 			_mockUnitOfWork.Setup(x => x.UserRepository.FindByEmail(It.IsAny<string>())).ReturnsAsync(user);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<SuccessResultCommand<BearerTokenViewModel, BearerTokenViewModel>>();

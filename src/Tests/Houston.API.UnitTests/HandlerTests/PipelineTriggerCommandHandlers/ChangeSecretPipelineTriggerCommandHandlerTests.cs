@@ -6,21 +6,16 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineTriggerCommandHandlers {
 		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
 		private readonly Mock<IUserClaimsService> _mockClaims = new();
 		private readonly Fixture _fixture = new();
-		private ChangeSecretPipelineTriggerCommandHandler _handler;
-
-		[SetUp]
-		public void SetUp() {
-			_handler = new ChangeSecretPipelineTriggerCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
-		}
 
 		[Test]
 		public async Task Handle_WithPipelineTriggerNotFound_ShouldReturnNotFoundObject() {
 			// Arrange
+			var handler = new ChangeSecretPipelineTriggerCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<ChangeSecretPipelineTriggerCommand>();
 			_mockUnitOfWork.Setup(x => x.PipelineTriggerRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync((PipelineTrigger?)null);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -35,13 +30,14 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineTriggerCommandHandlers {
 		[Test]
 		public async Task Handle_WithValidRequest_ShouldReturnNoContentObject() {
 			// Arrange
+			var handler = new ChangeSecretPipelineTriggerCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<ChangeSecretPipelineTriggerCommand>();
 			var pipelineTrigger = _fixture.Build<PipelineTrigger>().OmitAutoProperties().Create();
 			_mockUnitOfWork.Setup(x => x.PipelineTriggerRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(pipelineTrigger);
 			_mockClaims.Setup(x => x.Id).Returns(It.IsAny<Guid>());
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			_mockUnitOfWork.Verify(x => x.PipelineTriggerRepository.Update(It.IsAny<PipelineTrigger>()), Times.Once);

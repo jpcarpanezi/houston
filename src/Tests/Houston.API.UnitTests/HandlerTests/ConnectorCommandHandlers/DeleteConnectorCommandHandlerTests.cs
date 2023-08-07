@@ -6,21 +6,16 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorCommandHandlers {
 		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
 		private readonly Mock<IUserClaimsService> _mockClaims = new();
 		private readonly Fixture _fixture = new();
-		private DeleteConnectorCommandHandler _handler;
-
-		[SetUp]
-		public void SetUp() {
-			_handler = new DeleteConnectorCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
-		}
 
 		[Test]
 		public async Task Handle_WithNotFoundConnector_ShouldReturnNotFoundObject() {
 			// Arrange
+			var handler = new DeleteConnectorCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<DeleteConnectorCommand>();
 			_mockUnitOfWork.Setup(x => x.ConnectorRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync((Connector?)null);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -35,6 +30,7 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorCommandHandlers {
 		[Test]
 		public async Task Handle_WithInactiveConnector_ShouldReturnNotFoundObject() {
 			// Arrange
+			var handler = new DeleteConnectorCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<DeleteConnectorCommand>();
 			var connector = _fixture.Build<Connector>()
 							   .OmitAutoProperties()
@@ -43,7 +39,7 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorCommandHandlers {
 			_mockUnitOfWork.Setup(x => x.ConnectorRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(connector);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -58,6 +54,7 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorCommandHandlers {
 		[Test]
 		public async Task Handle_WithValidRequest_ShouldReturnNoContent() {
 			// Arrange
+			var handler = new DeleteConnectorCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<DeleteConnectorCommand>();
 			var connector = _fixture.Build<Connector>()
 							   .OmitAutoProperties()
@@ -66,7 +63,7 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorCommandHandlers {
 			_mockUnitOfWork.Setup(x => x.ConnectorRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(connector);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			_mockUnitOfWork.Verify(x => x.ConnectorRepository.Update(It.IsAny<Connector>()), Times.Once);

@@ -6,21 +6,16 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineTriggerCommandHandlers {
 		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
 		private readonly Mock<IUserClaimsService> _mockClaims = new();
 		private readonly Fixture _fixture = new();
-		private CreatePipelineTriggerCommandHandler _handler;
-
-		[SetUp]
-		public void SetUp() {
-			_handler = new CreatePipelineTriggerCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
-		}
 
 		[Test]
 		public async Task Handle_WithExistingPipelineTrigger_ShouldReturnForbiddenObject() {
 			// Arrange
+			var handler = new CreatePipelineTriggerCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<CreatePipelineTriggerCommand>();
 			_mockUnitOfWork.Setup(x => x.PipelineTriggerRepository.AnyPipelineTrigger(It.IsAny<Guid>())).ReturnsAsync(true);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -35,6 +30,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineTriggerCommandHandlers {
 		[Test]
 		public async Task Handle_WithValidRequest_ShouldReturnCreatedObject() {
 			// Arrange
+			var handler = new CreatePipelineTriggerCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<CreatePipelineTriggerCommand>();
 			var pipelineTrigger = _fixture.Build<PipelineTrigger>().OmitAutoProperties().Create();
 			_mockUnitOfWork.Setup(x => x.PipelineTriggerRepository.AnyPipelineTrigger(It.IsAny<Guid>())).ReturnsAsync(false);
@@ -42,7 +38,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineTriggerCommandHandlers {
 			_mockClaims.Setup(x => x.Id).Returns(It.IsAny<Guid>());
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			_mockUnitOfWork.Verify(x => x.PipelineTriggerRepository.Add(It.IsAny<PipelineTrigger>()), Times.Once);

@@ -6,21 +6,16 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorFunctionCommandHandlers {
 		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
 		private readonly Mock<IUserClaimsService> _mockClaims = new();
 		private readonly Fixture _fixture = new();
-		private UpdateConnectorFunctionCommandHandler _handler;
-
-		[SetUp]
-		public void SetUp() {
-			_handler = new UpdateConnectorFunctionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
-		}
 
 		[Test]
 		public async Task Handle_WithConnectorFunctionNotFound_ShouldReturnNotFoundObject() {
 			// Arrange
+			var handler = new UpdateConnectorFunctionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<UpdateConnectorFunctionCommand>();
 			_mockUnitOfWork.Setup(x => x.ConnectorFunctionRepository.GetByIdWithInputs(It.IsAny<Guid>())).ReturnsAsync((ConnectorFunction?)null);
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			result.Should().BeOfType<ErrorResultCommand>();
@@ -35,13 +30,14 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorFunctionCommandHandlers {
 		[Test]
 		public async Task Handle_WithValidRequest_ShouldReturnOkObject() {
 			// Arrange
+			var handler = new UpdateConnectorFunctionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<UpdateConnectorFunctionCommand>();
 			var connectorFunction = _fixture.Build<ConnectorFunction>().OmitAutoProperties().Create();
 			_mockUnitOfWork.Setup(x => x.ConnectorFunctionRepository.GetByIdWithInputs(It.IsAny<Guid>())).ReturnsAsync(connectorFunction);
 			_mockClaims.Setup(x => x.Id).Returns(It.IsAny<Guid>());
 
 			// Act
-			var result = await _handler.Handle(command, default);
+			var result = await handler.Handle(command, default);
 
 			// Assert
 			_mockUnitOfWork.Verify(x => x.ConnectorFunctionRepository.Update(It.IsAny<ConnectorFunction>()), Times.Once);
