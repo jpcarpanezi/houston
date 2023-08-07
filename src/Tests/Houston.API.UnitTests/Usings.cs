@@ -18,6 +18,8 @@ global using Houston.Core.Interfaces.Repository;
 global using Houston.Core.Interfaces.Services;
 global using Houston.Core.Entities.Postgres;
 global using Houston.Core.Entities.Redis;
+global using Houston.Core.Enums;
+global using Houston.Core.Services;
 
 global using Houston.Application.Results;
 global using Houston.Application.Security;
@@ -28,3 +30,4 @@ global using Houston.Application.ViewModel.PipelineInstructionViewModels;
 global using Houston.Application.ViewModel.PipelineLogViewModels;
 global using Houston.Application.ViewModel.PipelineViewModels;
 global using Houston.Application.ViewModel.PipelineTriggerViewModels;
+global using Houston.Application.ViewModel.UserViewModels;
