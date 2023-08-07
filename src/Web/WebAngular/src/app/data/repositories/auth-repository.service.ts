@@ -13,10 +13,10 @@ export class AuthRepositoryService implements AuthRepositoryInterface {
 	constructor(private http: HttpClient) { }
 
 	refreshToken(refreshToken: string): Observable<BearerTokenViewModel> {
-		return this.http.get<BearerTokenViewModel>(`${environment.apiUrl}/auth/${refreshToken}`);
+		return this.http.get<BearerTokenViewModel>(`${environment.apiUrl}/v1/auth/${refreshToken}`);
 	}
 
 	signIn(body: GeneralSignInCommand): Observable<BearerTokenViewModel> {
-		return this.http.post<BearerTokenViewModel>(`${environment.apiUrl}/auth`, body);
+		return this.http.post<BearerTokenViewModel>(`${environment.apiUrl}/v1/auth`, body);
 	}
 }

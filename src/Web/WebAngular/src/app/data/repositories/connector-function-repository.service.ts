@@ -17,22 +17,22 @@ export class ConnectorFunctionRepositoryService implements ConnectorFunctionRepo
 	) { }
 
 	update(body: UpdateConnectorFunctionCommand): Observable<ConnectorFunctionViewModel> {
-		return this.http.put<ConnectorFunctionViewModel>(`${environment.apiUrl}/connectorFunction`, body);
+		return this.http.put<ConnectorFunctionViewModel>(`${environment.apiUrl}/v1/connectorFunction`, body);
 	}
 
 	delete(connectorFunctionId: string): Observable<any> {
-		return this.http.delete<any>(`${environment.apiUrl}/connectorFunction/${connectorFunctionId}`)
+		return this.http.delete<any>(`${environment.apiUrl}/v1/connectorFunction/${connectorFunctionId}`)
 	}
 
 	get(connectorFunctionId: string): Observable<ConnectorFunctionViewModel> {
-		return this.http.get<ConnectorFunctionViewModel>(`${environment.apiUrl}/connectorFunction/item/${connectorFunctionId}`);
+		return this.http.get<ConnectorFunctionViewModel>(`${environment.apiUrl}/v1/connectorFunction/item/${connectorFunctionId}`);
 	}
 
 	create(body: CreateConnectorFunctionCommand): Observable<ConnectorFunctionViewModel> {
-		return this.http.post<ConnectorFunctionViewModel>(`${environment.apiUrl}/connectorFunction`, body);
+		return this.http.post<ConnectorFunctionViewModel>(`${environment.apiUrl}/v1/connectorFunction`, body);
 	}
 
 	getAll(connectorId: string, pageSize: number, pageIndex: number): Observable<PaginatedItemsViewModel<ConnectorFunctionViewModel>> {
-		return this.http.get<PaginatedItemsViewModel<ConnectorFunctionViewModel>>(`${environment.apiUrl}/connectorFunction/${connectorId}?pageSize=${pageSize}&pageIndex=${pageIndex}`);
+		return this.http.get<PaginatedItemsViewModel<ConnectorFunctionViewModel>>(`${environment.apiUrl}/v1/connectorFunction/${connectorId}?pageSize=${pageSize}&pageIndex=${pageIndex}`);
 	}
 }

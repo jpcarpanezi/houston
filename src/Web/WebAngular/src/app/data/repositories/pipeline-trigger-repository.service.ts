@@ -18,30 +18,30 @@ export class PipelineTriggerRepositoryService implements PipelineTriggerReposito
 	) { }
 
 	updateDeployKeys(pipelineId: string): Observable<any> {
-		return this.http.patch<any>(`${environment.apiUrl}/pipelineTrigger/deployKeys/${pipelineId}`, null);
+		return this.http.patch<any>(`${environment.apiUrl}/v1/pipelineTrigger/deployKeys/${pipelineId}`, null);
 	}
 
 	revealKeys(pipelineId: string): Observable<PipelineTriggerKeysViewModel> {
-		return this.http.get<PipelineTriggerKeysViewModel>(`${environment.apiUrl}/pipelineTrigger/deployKeys/${pipelineId}`);
+		return this.http.get<PipelineTriggerKeysViewModel>(`${environment.apiUrl}/v1/pipelineTrigger/deployKeys/${pipelineId}`);
 	}
 
 	create(body: CreatePipelineTriggerCommand): Observable<PipelineTriggerViewModel> {
-		return this.http.post<PipelineTriggerViewModel>(`${environment.apiUrl}/pipelineTrigger`, body);
+		return this.http.post<PipelineTriggerViewModel>(`${environment.apiUrl}/v1/pipelineTrigger`, body);
 	}
 
 	update(body: UpdatePipelineTriggerCommand): Observable<PipelineTriggerViewModel> {
-		return this.http.put<PipelineTriggerViewModel>(`${environment.apiUrl}/pipelineTrigger`, body);
+		return this.http.put<PipelineTriggerViewModel>(`${environment.apiUrl}/v1/pipelineTrigger`, body);
 	}
 
 	changeSecret(body: ChangeSecretPipelineTriggerCommand): Observable<any> {
-		return this.http.patch<any>(`${environment.apiUrl}/pipelineTrigger/changeSecret`, body);
+		return this.http.patch<any>(`${environment.apiUrl}/v1/pipelineTrigger/changeSecret`, body);
 	}
 
 	delete(pipelineTriggerId: string): Observable<any> {
-		return this.http.delete<any>(`${environment.apiUrl}/pipelineTrigger/${pipelineTriggerId}`);
+		return this.http.delete<any>(`${environment.apiUrl}/v1/pipelineTrigger/${pipelineTriggerId}`);
 	}
 
 	get(pipelineId: string): Observable<PipelineTriggerViewModel> {
-		return this.http.get<PipelineTriggerViewModel>(`${environment.apiUrl}/pipelineTrigger/${pipelineId}`);
+		return this.http.get<PipelineTriggerViewModel>(`${environment.apiUrl}/v1/pipelineTrigger/${pipelineId}`);
 	}
 }
