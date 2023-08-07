@@ -63,7 +63,7 @@ jobs:
         with:
           push: ${{ github.event_name != 'pull_request' }}
           tags: jpcarpanezi/houston-workers:dev
-          file: src/UserInterface/Houston.Workers/Dockerfile
+          file: src/Adapters/Houston.Workers/Dockerfile
           context: ./
           
       - name: Build and push Docker images (TAGS)
@@ -74,5 +74,5 @@ jobs:
           tags: | 
             jpcarpanezi/houston-workers:${{ steps.tag.outputs.tag }}
             jpcarpanezi/houston-workers:latest
-          file: src/UserInterface/Houston.Workers/Dockerfile
+          file: src/Adapters/Houston.Workers/Dockerfile
           context: ./
