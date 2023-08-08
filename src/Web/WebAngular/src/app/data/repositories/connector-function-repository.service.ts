@@ -33,6 +33,6 @@ export class ConnectorFunctionRepositoryService implements ConnectorFunctionRepo
 	}
 
 	getAll(connectorId: string, pageSize: number, pageIndex: number): Observable<PaginatedItemsViewModel<ConnectorFunctionViewModel>> {
-		return this.http.get<PaginatedItemsViewModel<ConnectorFunctionViewModel>>(`${environment.apiUrl}/v1/connectorFunction/${connectorId}?pageSize=${pageSize}&pageIndex=${pageIndex}`);
+		return this.http.get<PaginatedItemsViewModel<ConnectorFunctionViewModel>>(`${environment.apiUrl}/v1/connectorFunction/${connectorId}?connectorId=${connectorId}&pageSize=${pageSize}&pageIndex=${pageIndex}`);
 	}
 }
