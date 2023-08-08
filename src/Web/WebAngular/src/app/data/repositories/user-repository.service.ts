@@ -17,30 +17,30 @@ export class UserRepositoryService implements UserRepositoryInterface {
 	constructor(private http: HttpClient) { }
 
 	getAll(pageSize: number, pageIndex: number): Observable<PaginatedItemsViewModel<UserViewModel>> {
-		return this.http.get<PaginatedItemsViewModel<UserViewModel>>(`${environment.apiUrl}/user?pageSize=${pageSize}&pageIndex=${pageIndex}`);
+		return this.http.get<PaginatedItemsViewModel<UserViewModel>>(`${environment.apiUrl}/v1/user?pageSize=${pageSize}&pageIndex=${pageIndex}`);
 	}
 
 	create(body: CreateUserCommand): Observable<UserViewModel> {
-		return this.http.post<UserViewModel>(`${environment.apiUrl}/user`, body);
+		return this.http.post<UserViewModel>(`${environment.apiUrl}/v1/user`, body);
 	}
 
 	toggleStatus(id: string): Observable<any> {
-		return this.http.patch<any>(`${environment.apiUrl}/user/toggleStatus/${id}`, null);
+		return this.http.patch<any>(`${environment.apiUrl}/v1/user/toggleStatus/${id}`, null);
 	}
 
 	changePassword(body: UpdatePasswordCommand): Observable<any> {
-		return this.http.patch<any>(`${environment.apiUrl}/user/changePassword`, body);
+		return this.http.patch<any>(`${environment.apiUrl}/v1/user/changePassword`, body);
 	}
 
 	isFirstSetup(): Observable<any> {
-		return this.http.get<any>(`${environment.apiUrl}/user/isFirstSetup`);
+		return this.http.get<any>(`${environment.apiUrl}/v1/user/isFirstSetup`);
 	}
 
 	firstSetup(body: CreateFirstSetupCommand): Observable<UserViewModel> {
-		return this.http.post<UserViewModel>(`${environment.apiUrl}/user/firstSetup`, body);
+		return this.http.post<UserViewModel>(`${environment.apiUrl}/v1/user/firstSetup`, body);
 	}
 
 	firstAccess(body: UpdateFirstAccessPasswordCommand): Observable<any> {
-		return this.http.patch<any>(`${environment.apiUrl}/user/firstAccess`, body);
+		return this.http.patch<any>(`${environment.apiUrl}/v1/user/firstAccess`, body);
 	}
 }

@@ -15,10 +15,10 @@ export class PipelineLogRepositoryService implements PipelineLogRepositoryInterf
 	) { }
 
 	get(id: string): Observable<PipelineLogViewModel> {
-		return this.http.get<PipelineLogViewModel>(`${environment.apiUrl}/pipelineLog/item/${id}`);
+		return this.http.get<PipelineLogViewModel>(`${environment.apiUrl}/v1/pipelineLog/item/${id}`);
 	}
 
 	getAll(pipelineId: string, pageSize: number, pageIndex: number): Observable<PaginatedItemsViewModel<PipelineLogViewModel>> {
-		return this.http.get<PaginatedItemsViewModel<PipelineLogViewModel>>(`${environment.apiUrl}/pipelineLog/${pipelineId}?pageSize=${pageSize}&pageIndex=${pageIndex}`);
+		return this.http.get<PaginatedItemsViewModel<PipelineLogViewModel>>(`${environment.apiUrl}/v1/pipelineLog/${pipelineId}?pageSize=${pageSize}&pageIndex=${pageIndex}`);
 	}
 }

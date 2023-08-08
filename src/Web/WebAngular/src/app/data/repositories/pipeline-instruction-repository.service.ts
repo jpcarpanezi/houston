@@ -15,10 +15,10 @@ export class PipelineInstructionRepositoryService implements PipelineInstruction
 	) { }
 
 	save(body: SavePipelineInstructionCommand): Observable<PipelineInstructionViewModel> {
-		return this.http.post<PipelineInstructionViewModel>(`${environment.apiUrl}/pipelineInstruction`, body);
+		return this.http.post<PipelineInstructionViewModel>(`${environment.apiUrl}/v1/pipelineInstruction`, body);
 	}
 
 	get(pipelineId: string): Observable<PipelineInstructionViewModel[]> {
-		return this.http.get<PipelineInstructionViewModel[]>(`${environment.apiUrl}/pipelineInstruction/${pipelineId}`);
+		return this.http.get<PipelineInstructionViewModel[]>(`${environment.apiUrl}/v1/pipelineInstruction/${pipelineId}`);
 	}
 }

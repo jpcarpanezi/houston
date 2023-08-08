@@ -17,18 +17,18 @@ export class ConnectorRepositoryService implements ConnectorRepositoryInterface 
 	) { }
 
 	update(body: UpdateConnectorCommand): Observable<ConnectorViewModel> {
-		return this.http.put<ConnectorViewModel>(`${environment.apiUrl}/connector`, body);
+		return this.http.put<ConnectorViewModel>(`${environment.apiUrl}/v1/connector`, body);
 	}
 
 	delete(id: string): Observable<any> {
-		return this.http.delete<any>(`${environment.apiUrl}/connector/${id}`);
+		return this.http.delete<any>(`${environment.apiUrl}/v1/connector/${id}`);
 	}
 
 	create(body: CreateConnectorCommand): Observable<ConnectorViewModel> {
-		return this.http.post<ConnectorViewModel>(`${environment.apiUrl}/connector`, body);
+		return this.http.post<ConnectorViewModel>(`${environment.apiUrl}/v1/connector`, body);
 	}
 
 	getAll(pageSize: number, pageIndex: number): Observable<PaginatedItemsViewModel<ConnectorViewModel>> {
-		return this.http.get<PaginatedItemsViewModel<ConnectorViewModel>>(`${environment.apiUrl}/connector?pageSize=${pageSize}&pageIndex=${pageIndex}`);
+		return this.http.get<PaginatedItemsViewModel<ConnectorViewModel>>(`${environment.apiUrl}/v1/connector?pageSize=${pageSize}&pageIndex=${pageIndex}`);
 	}
 }

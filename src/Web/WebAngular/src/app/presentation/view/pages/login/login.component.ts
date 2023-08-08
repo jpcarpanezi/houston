@@ -27,7 +27,13 @@ export class LoginComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.userUseCase.isFirstSetup().subscribe({
-			error: () => Swal.fire("First setup detected", "Seems it's the first time you are here, let's start from the beginning.", "info").then(() => this.router.navigateByUrl("/first-setup")),
+			error: (error: HttpErrorResponse[]) => {
+				if (error[0].error["errorCode"] == "firstSetup") {
+					Swal.fire("First setup detected", "Seems it's the first time you are here, let's start from the beginning.", "info").then(() => this.router.navigateByUrl("/first-setup"))
+				} else {
+					Swal.fire("Something went wrong", "Try again later.", "error");
+				}
+			}
 		}).add(() => this.isLoading = false);
 	}
 
