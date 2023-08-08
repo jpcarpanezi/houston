@@ -102,7 +102,7 @@
 
 			<button type="button" class="!px-3 ml-3 btn-primary" (click)="updateConnector.open(row)" matTooltip="Edit"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></button>
 
-			<button type="button" class="!px-3 ml-3 btn-primary" [class.spinner]="deleteConnectorBtn.disabled" (click)="deleteConnector(deleteConnectorBtn, row)" matTooltip="Delete" #deleteConnectorBtn>
+			<button type="button" class="!px-3 ml-3 btn-danger" [class.spinner]="deleteConnectorBtn.disabled" (click)="deleteConnector(deleteConnectorBtn, row)" matTooltip="Delete" #deleteConnectorBtn>
 				<span class="spinner-text"><fa-icon [icon]="['fas', 'trash']"></fa-icon></span>
 			</button>
 		</ng-template>
