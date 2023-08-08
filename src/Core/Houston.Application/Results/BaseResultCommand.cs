@@ -1,4 +1,7 @@
-﻿namespace Houston.Application.Results {
+﻿using AutoMapper;
+using static StackExchange.Redis.Role;
+
+namespace Houston.Application.Results {
 	public abstract class BaseResultCommand<TEntity, TDto> : IResultCommand where TEntity : class where TDto : class {
 		public HttpStatusCode StatusCode { get; protected set; }
 
@@ -49,25 +52,23 @@
 				StatusCode = (int)StatusCode
 			};
 
-			if (ResponseCustomBody is not null && ResponseErrorMessage is null) {
-				objectResult.Value = ResponseCustomBody;
+			Type responseType = GetType();
+
+			var config = new MapperConfiguration(cfg => cfg.AddProfile<MapProfile>());
+			var mapper = new Mapper(config);
+
+			if (responseType == typeof(ErrorResultCommand)) {
+				objectResult.Value = ResponseCustomBody is not null ? ResponseCustomBody : new MessageViewModel(ResponseErrorMessage, ResponseErrorCode);
 			}
 
-			if (ResponseErrorMessage is not null) {
-				objectResult.Value = new MessageViewModel(ResponseErrorMessage, ResponseErrorCode);
+			if (responseType == typeof(SuccessResultCommand<TEntity, TDto>)) {
+				var dto = mapper.Map<TDto>(ResponseEntity);
+				objectResult.Value = dto;
 			}
 
-			if (ResponseEntity is not null) {
-				var config = new MapperConfiguration(cfg => cfg.AddProfile<MapProfile>());
-				var mapper = new Mapper(config);
-
-				if (typeof(IEnumerable).IsAssignableFrom(typeof(TEntity))) {
-					var dto = mapper.Map<List<TDto>>(ResponseEntity);
-					objectResult.Value = new PaginatedItemsViewModel<TDto>(ResponsePageIndex, ResponsePageSize, ResponseCount, dto);
-				} else {
-					var dto = mapper.Map<TDto>(ResponseEntity);
-					objectResult.Value = dto;
-				}
+			if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() == typeof(PaginatedResultCommand<,>)) {
+				var dto = mapper.Map<List<TDto>>(ResponseEntity);
+				objectResult.Value = new PaginatedItemsViewModel<TDto>(ResponsePageIndex, ResponsePageSize, ResponseCount, dto);
 			}
 
 			await objectResult.ExecuteResultAsync(context);
