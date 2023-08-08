@@ -27,12 +27,12 @@ namespace Houston.API.Controllers.V1 {
 		/// <response code="404">Initial configurations not found</response>
 		[HttpGet("isFirstSetup")]
 		[ProducesResponseType((int)HttpStatusCode.OK)]
-		[ProducesResponseType((int)HttpStatusCode.NotFound)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		public async Task<IActionResult> IsFirstSetup() {
 			var configurations = await _cache.GetStringAsync("configurations");
 
 			if (configurations is null) {
-				return NotFound();
+				return NotFound(new MessageViewModel("First setup detected.", "firstSetup"));
 			}
 
 			return Ok();
