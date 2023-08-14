@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package houston;
+
+service Houston {
+	rpc RunPipeline (RunPipelineRequest) returns (RunPipelineResponse) { }
+}
+
+message RunPipelineRequest {
+	repeated string scripts = 1;
+}
+
+message RunPipelineResponse {
+	int32 exitCode = 1;
+	optional string stdout = 2;
+	optional string stderr = 3;
+	optional string function_with_error = 4;
+}
