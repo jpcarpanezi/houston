@@ -12,7 +12,12 @@ message RunPipelineRequest {
 
 message RunPipelineResponse {
 	int32 exitCode = 1;
-	optional string stdout = 2;
-	optional string stderr = 3;
-	optional string function_with_error = 4;
+	repeated RunPipelineInstruction instructions = 2;
+}
+
+message RunPipelineInstruction {
+	string script = 1;
+	bool hasError = 2;
+	optional string stdout = 3;
+	optional string stderr = 4;
 }

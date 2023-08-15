@@ -6,24 +6,33 @@ export default class Pipeline {
 	runPipeline(call, callback) {
 		let response = {
 			exitCode: 0,
-			stdout: null,
-			stderr: null,
-			function_with_error: null
+			instructions: []
 		};
 
 		for (const script of call.request.scripts) {
+			let instruction = {
+				script,
+				hasError: false,
+				stdout: null,
+				stderr: null
+			};
+
 			try {
-				console.log(`Running script: ${script}`);
+				const options = { encoding: "utf-8", stdio: "pipe" };
+				var stdout = execSync(`node app/scripts/${script}.js`, options);
 
-				var stdout = execSync(`node app/scripts/${script}.js`);
-
-				if (stdout != null)
-					response.stdout = stdout.toString();
+				instruction.stdout = stdout;
 			} catch (error) {
-				response.exitCode = error.status;
-				response.stderr = error.stderr;
-				response.stdout = error.stdout;
-				response.function_with_error = script;
+				instruction.hasError = true;
+				instruction.stderr = error.stderr ? error.stderr.toString() : null;
+				instruction.stdout = error.stdout ? error.stdout.toString() : null;
+				response.exitCode = error.status || 1;
+			}
+
+			response.instructions.push(instruction);
+
+			if (response.exitCode !== 0) {
+				break;
 			}
 		}
 
