@@ -18,8 +18,9 @@ export default class Pipeline {
 			};
 
 			try {
-				const options = { encoding: "utf-8", stdio: "pipe" };
-				var stdout = execSync(`node app/scripts/${script}.js`, options);
+				const options = { encoding: "utf-8", stdio: "pipe", cwd: `app/scripts/${script}/` };
+				execSync("npm install", options);
+				var stdout = execSync(`node ${script}.js`, options);
 
 				instruction.stdout = stdout;
 			} catch (error) {
