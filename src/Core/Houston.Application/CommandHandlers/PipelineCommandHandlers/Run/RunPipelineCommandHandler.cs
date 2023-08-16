@@ -1,10 +1,10 @@
 ﻿namespace Houston.Application.CommandHandlers.PipelineCommandHandlers.Run {
 	public class RunPipelineCommandHandler : IRequestHandler<RunPipelineCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
-		private readonly IEventBus _eventBus;
+		private readonly IPublishEndpoint _eventBus;
 		private readonly IUserClaimsService _claims;
 
-		public RunPipelineCommandHandler(IUnitOfWork unitOfWork, IEventBus eventBus, IUserClaimsService claims) {
+		public RunPipelineCommandHandler(IUnitOfWork unitOfWork, IPublishEndpoint eventBus, IUserClaimsService claims) {
 			_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			_eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
 			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
@@ -25,7 +25,7 @@
 			}
 
 			try {
-				_eventBus.Publish(new RunPipelineMessage(request.Id, _claims.Id));
+				await _eventBus.Publish(new RunPipelineMessage(request.Id, _claims.Id), cancellationToken);
 			} catch (Exception e) {
 				Log.Error(e, $"Failed to publish {nameof(RunPipelineMessage)}");
 				return ResultCommand.InternalServerError("Error while trying to run the pipeline.", "cannotRunPipeline");

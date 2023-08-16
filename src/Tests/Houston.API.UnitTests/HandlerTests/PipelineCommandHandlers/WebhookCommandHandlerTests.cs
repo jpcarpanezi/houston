@@ -4,7 +4,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 	[TestFixture]
 	public class WebhookCommandHandlerTests {
 		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
-		private readonly Mock<IEventBus> _mockEventBus = new();
+		private readonly Mock<IPublishEndpoint> _mockEventBus = new();
 		private readonly Mock<IHttpContextAccessor> _mockContext = new();
 		private readonly Mock<IWebhookService> _mockWebhookService = new();
 		private readonly Fixture _fixture = new();

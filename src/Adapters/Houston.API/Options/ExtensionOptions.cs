@@ -14,6 +14,16 @@
 			}
 		}
 
+		public static void ConfigureMassTransit(IBusRegistrationConfigurator configurator, IConfiguration configuration) {
+			configurator.UsingRabbitMq((ctx, cfg) => {
+				cfg.Host(configuration.GetConnectionString("RabbitMQ"));
+
+				cfg.ReceiveEndpoint("Houston.API", e => {
+					e.ExchangeType = ExchangeType.Topic;
+				});
+			});
+		}
+
 		public static void ConfigureControllers(MvcOptions options) {
 			options.Filters.Add(new ProducesAttribute("application/json"));
 			options.Filters.Add(new ForeignKeyExceptionFilter());

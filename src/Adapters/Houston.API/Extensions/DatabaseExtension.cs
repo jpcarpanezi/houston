@@ -1,4 +1,4 @@
-﻿namespace Houston.API.Setups {
+﻿namespace Houston.API.Extensions {
 	public static class DatabaseExtension {
 		public static void AddPostgres(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env) {
 			services.AddDbContext<PostgresContext>(opts => {

@@ -1,6 +1,10 @@
 ﻿using Autofac.Extensions.DependencyInjection;
+using Houston.Workers.Consumers;
 using Houston.Workers.Setups;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
+using RabbitMQ.Client;
+using System.Reflection;
 
 IHost host = Host.CreateDefaultBuilder(args)
 	.UseServiceProviderFactory(new AutofacServiceProviderFactory())
@@ -9,12 +13,25 @@ IHost host = Host.CreateDefaultBuilder(args)
 			options.Configuration = hostContext.Configuration.GetConnectionString("Redis");
 			options.InstanceName = "houston-";
 		});
+
 		services.AddAutofac();
+
 		services.AddDependencyInjection();
+
 		services.AddPostgres(hostContext.Configuration);
-		services.AddEventBus(hostContext.Configuration);
+
+		services.AddMassTransit(x => {
+			x.AddConsumers(Assembly.GetExecutingAssembly());
+			
+			x.UsingRabbitMq((ctx, cfg) => {
+				cfg.Host(hostContext.Configuration.GetConnectionString("RabbitMQ"));
+				cfg.ReceiveEndpoint("Houston.Workers", e => {
+					e.ExchangeType = ExchangeType.Topic;
+					e.ConfigureConsumers(ctx);
+				});
+			});
+		});
 	})
 	.Build();
 
-host.Services.ConfigureEventBus();
 await host.RunAsync();
