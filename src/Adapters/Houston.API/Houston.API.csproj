@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\EventBus\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
     <ProjectReference Include="..\..\Core\Houston.Application\Houston.Application.csproj" />
     <ProjectReference Include="..\..\Core\Houston.Core\Houston.Core.csproj" />
     <ProjectReference Include="..\..\Core\Houston.Infrastructure\Houston.Infrastructure.csproj" />

@@ -23,15 +23,12 @@ global using FluentValidation;
 global using FluentValidation.Results;
 global using FluentValidation.AspNetCore;
 global using MediatR;
-global using MediatR.Pipeline;
+global using MassTransit;
 global using Autofac;
 global using Serilog;
 global using Serilog.Events;
 
 global using RabbitMQ.Client;
-global using EventBus.EventBus;
-global using EventBus.EventBus.Abstractions;
-global using EventBus.EventBusRabbitMQ;
 
 global using Houston.Application.ViewModel;
 global using Houston.Application.Security;

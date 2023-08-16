@@ -1,10 +1,10 @@
 ﻿namespace Houston.Application.CommandHandlers.PipelineCommandHandlers.Webhook {
 	public class WebhookCommandHandler : IRequestHandler<WebhookCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
-		private readonly IEventBus _eventBus;
+		private readonly IPublishEndpoint _eventBus;
 		private readonly IHttpContextAccessor _context;
 
-		public WebhookCommandHandler(IUnitOfWork unitOfWork, IEventBus eventBus, IHttpContextAccessor context) {
+		public WebhookCommandHandler(IUnitOfWork unitOfWork, IPublishEndpoint eventBus, IHttpContextAccessor context) {
 			_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			_eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
 			_context = context ?? throw new ArgumentNullException(nameof(context));
@@ -34,7 +34,7 @@
 			var runPipeline = webhookService.RunPipeline(request.JsonPayload, pipelineTriggerEvents);
 
 			if (runPipeline) {
-				_eventBus.Publish(new RunPipelineMessage(request.PipelineId, null));
+				await _eventBus.Publish(new RunPipelineMessage(request.PipelineId, null), cancellationToken);
 			}
 
 			return ResultCommand.NoContent();
