@@ -1,4 +1,4 @@
-﻿namespace Houston.API.Setups {
+﻿namespace Houston.API.Extensions {
 	public static class AuthenticationExtension {
 		public static void AddBearerAuthentication(this IServiceCollection services, IConfiguration configuration) {
 			SigningConfigurations signingConfigurations = new();
