@@ -1,4 +1,4 @@
-FROM node:18.15.0
+FROM node:20-alpine3.17
 
 WORKDIR /usr/src/houston
 
@@ -10,5 +10,8 @@ COPY . .
 
 RUN mkdir -p /usr/src/houston/app/scripts
 
+RUN npm i -g @vercel/ncc
+
 EXPOSE 50051
+
 CMD [ "node", "app/index.js" ]
