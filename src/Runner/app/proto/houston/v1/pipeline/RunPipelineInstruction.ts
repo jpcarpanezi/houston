@@ -3,7 +3,7 @@
 
 export interface RunPipelineInstruction {
 	'script'?: (string);
-	'hasError'?: (boolean);
+	'has_error'?: (boolean);
 	'stdout'?: (string);
 	'stderr'?: (string);
 	'_stdout'?: "stdout";
@@ -12,7 +12,7 @@ export interface RunPipelineInstruction {
 
 export interface RunPipelineInstruction__Output {
 	'script': (string);
-	'hasError': (boolean);
+	'has_error': (boolean);
 	'stdout'?: (string);
 	'stderr'?: (string);
 	'_stdout': "stdout";
