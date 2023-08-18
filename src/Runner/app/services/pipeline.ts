@@ -5,38 +5,36 @@ import { RunPipelineResponse } from "../proto/houston/v1/pipeline/RunPipelineRes
 import { RunPipelineInstruction } from "../proto/houston/v1/pipeline/RunPipelineInstruction";
 import { BuildConnectorRequest__Output } from "../proto/houston/v1/pipeline/BuildConnectorRequest";
 import { BuildConnectorResponse } from "../proto/houston/v1/pipeline/BuildConnectorResponse";
+import fs from "fs";
 
 export default class PipelineService {
 	public runPipeline(call: ServerUnaryCall<RunPipelineRequest__Output, RunPipelineResponse>, callback: sendUnaryData<RunPipelineResponse>): void {
-		const response: RunPipelineResponse = {
-			exitCode: 0,
+		let response: RunPipelineResponse = {
+			exit_code: 0,
 			instructions: []
 		};
 
 		for (const script of call.request.scripts) {
-			const instruction: RunPipelineInstruction = {
+			let instruction: RunPipelineInstruction = {
 				script,
-				hasError: false,
-				stdout: "",
-				stderr: ""
+				has_error: false
 			};
 
 			try {
-				const options: ExecSyncOptionsWithStringEncoding = { encoding: "utf-8", stdio: "pipe", cwd: `app/scripts/${script}/` };
-				execSync("npm install", options);
-				var stdout = execSync(`node ${script}.js`, options);
+				const options: ExecSyncOptionsWithStringEncoding = { encoding: "utf-8", stdio: "pipe", cwd: `app/scripts/` };
+				var stdout: string = execSync(`node ${script}.js`, options);
 
 				instruction.stdout = stdout;
 			} catch (error: any) {
-				instruction.hasError = true;
-				instruction.stderr = error.stderr ? error.stderr.toString() : null;
-				instruction.stdout = error.stdout ? error.stdout.toString() : null;
-				response.exitCode = error.status || 1;
+				instruction.has_error = true;
+				instruction.stderr = error.stderr ? error.stderr.toString() : undefined;
+				instruction.stdout = error.stdout ? error.stdout.toString() : undefined;
+				response.exit_code = error.status || 1;
 			}
 
 			response.instructions?.push(instruction);
 
-			if (response.exitCode !== 0) {
+			if (response.exit_code !== 0) {
 				break;
 			}
 		}
@@ -45,6 +43,26 @@ export default class PipelineService {
 	}
 
 	public buildConnector(call: ServerUnaryCall<BuildConnectorRequest__Output, BuildConnectorResponse>, callback: sendUnaryData<BuildConnectorResponse>): void {
-		callback(null, null);
+		const response: BuildConnectorResponse = {
+			exit_code: 0
+		};
+
+		try {
+			fs.writeFileSync("app/scripts/index.js", call.request.index);
+			fs.writeFileSync("app/scripts/package.json", call.request.package);
+
+			const options: ExecSyncOptionsWithStringEncoding = { encoding: "utf-8", stdio: "pipe", cwd: `app/scripts/` };
+			execSync("npm install", options);
+			execSync("node index.js", options);
+			execSync(`ncc build index.js --minify`, options);
+
+			var file: Buffer = fs.readFileSync("app/scripts/dist/index.js");
+			response.dist = file;
+		} catch (error: any) {
+			response.exit_code = Number(error.status) || 1;
+			response.stderr = error.stderr ? error.stderr.toString() : undefined;
+		}
+
+		callback(null, response);
 	}
 }

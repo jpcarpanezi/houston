@@ -2,7 +2,7 @@
 
 
 export interface BuildConnectorResponse {
-	'exitCode'?: (number);
+	'exit_code'?: (number);
 	'dist'?: (Buffer | Uint8Array | string);
 	'stderr'?: (string);
 	'_dist'?: "dist";
@@ -10,7 +10,7 @@ export interface BuildConnectorResponse {
 }
 
 export interface BuildConnectorResponse__Output {
-	'exitCode': (number);
+	'exit_code': (number);
 	'dist'?: (Buffer);
 	'stderr'?: (string);
 	'_dist': "dist";

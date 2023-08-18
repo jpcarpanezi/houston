@@ -3,6 +3,6 @@
 		"app"
 	],
 	"ext": ".ts, .js",
-	"ignore": [],
+	"ignore": ["app/scripts"],
 	"exec": "npx ts-node ./app/index.ts"
 }
