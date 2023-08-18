@@ -6,7 +6,7 @@ import { RunPipelineResponse } from "../../proto/houston/v1/pipeline/RunPipeline
 import { ServerUnaryCall, sendUnaryData } from "@grpc/grpc-js";
 import PipelineService from "../../services/pipeline";
 
-var pipelineService = new PipelineService();
+const pipelineService = new PipelineService();
 
 export const PipelineRouter: PipelineServiceHandlers = {
 	BuildConnector: function (call: ServerUnaryCall<BuildConnectorRequest__Output, BuildConnectorResponse>, callback: sendUnaryData<BuildConnectorResponse>): void {
