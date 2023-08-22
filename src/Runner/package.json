@@ -4,8 +4,9 @@
 	"description": "",
 	"main": "app/index.js",
 	"scripts": {
+		"build": "npx tsc -p .",
 		"start:dev": "npx nodemon",
-		"build:proto": "proto-loader-gen-types --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=app/proto/ proto/houston/v1/*.proto",
+		"build:proto": "proto-loader-gen-types --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=app/proto/ proto/houston/v1/houston.proto",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {

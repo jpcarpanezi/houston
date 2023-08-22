@@ -2,7 +2,7 @@ import { Server, loadPackageDefinition } from "@grpc/grpc-js";
 import { Options, loadSync } from "@grpc/proto-loader";
 import { PipelineRouter } from "./presentation/routers/pipeline-router";
 import { GitRouter } from "./presentation/routers/git-router";
-import { ProtoGrpcType } from "./proto/proto";
+import { ProtoGrpcType } from "./proto/houston";
 
 export default function getServer(): Server {
 	const server = new Server();

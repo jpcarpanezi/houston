@@ -14,4 +14,5 @@ message CloneRepositoryRequest {
 
 message CloneRepositoryResponse {
 	bool has_error = 1;
+	optional string stderr = 2;
 }

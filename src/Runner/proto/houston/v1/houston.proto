@@ -1,0 +1,4 @@
+syntax = "proto3";
+
+import public "pipeline.proto";
+import public "git.proto";
