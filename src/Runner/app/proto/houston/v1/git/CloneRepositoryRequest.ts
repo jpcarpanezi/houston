@@ -4,11 +4,11 @@
 export interface CloneRepositoryRequest {
 	'url'?: (string);
 	'branch'?: (string);
-	'privateKey'?: (string);
+	'private_key'?: (string);
 }
 
 export interface CloneRepositoryRequest__Output {
 	'url': (string);
 	'branch': (string);
-	'privateKey': (string);
+	'private_key': (string);
 }

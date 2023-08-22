@@ -2,9 +2,13 @@
 
 
 export interface CloneRepositoryResponse {
-	'hasError'?: (boolean);
+	'has_error'?: (boolean);
+	'stderr'?: (string);
+	'_stderr'?: "stderr";
 }
 
 export interface CloneRepositoryResponse__Output {
-	'hasError': (boolean);
+	'has_error': (boolean);
+	'stderr'?: (string);
+	'_stderr': "stderr";
 }
