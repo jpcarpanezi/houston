@@ -4,5 +4,5 @@
 	],
 	"ext": ".ts, .js",
 	"ignore": ["app/scripts"],
-	"exec": "npx ts-node ./app/index.ts"
+	"exec": "npx ts-node --files ./app/index.ts"
 }
