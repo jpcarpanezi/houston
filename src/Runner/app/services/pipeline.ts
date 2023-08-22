@@ -3,9 +3,11 @@ import { ExecSyncOptionsWithStringEncoding, execSync } from "child_process";
 import { RunPipelineRequest__Output } from "../proto/houston/v1/pipeline/RunPipelineRequest";
 import { RunPipelineResponse } from "../proto/houston/v1/pipeline/RunPipelineResponse";
 import { RunPipelineInstruction } from "../proto/houston/v1/pipeline/RunPipelineInstruction";
-import { BuildConnectorRequest__Output } from "../proto/houston/v1/pipeline/BuildConnectorRequest";
-import { BuildConnectorResponse } from "../proto/houston/v1/pipeline/BuildConnectorResponse";
+import { BuildConnectorFunctionRequest__Output } from "../proto/houston/v1/pipeline/BuildConnectorFunctionRequest";
+import { BuildConnectorFunctionResponse } from "../proto/houston/v1/pipeline/BuildConnectorFunctionResponse";
+import tar from "tar";
 import fs from "fs";
+import { promisify } from "util";
 
 export default class PipelineService {
 	public runPipeline(call: ServerUnaryCall<RunPipelineRequest__Output, RunPipelineResponse>, callback: sendUnaryData<RunPipelineResponse>): void {
@@ -42,27 +44,42 @@ export default class PipelineService {
 		callback(null, response);
 	}
 
-	public buildConnector(call: ServerUnaryCall<BuildConnectorRequest__Output, BuildConnectorResponse>, callback: sendUnaryData<BuildConnectorResponse>): void {
-		const response: BuildConnectorResponse = {
+	public async buildConnector(call: ServerUnaryCall<BuildConnectorFunctionRequest__Output, BuildConnectorFunctionResponse>, callback: sendUnaryData<BuildConnectorFunctionResponse>): Promise<void> {
+		const response: BuildConnectorFunctionResponse = {
 			exit_code: 0
 		};
 
 		try {
-			fs.writeFileSync("app/scripts/index.js", call.request.index);
-			fs.writeFileSync("app/scripts/package.json", call.request.package);
+			const outputFolder = "app/scripts";
+			const outputTar = `${outputFolder}/index.tar.gz`;
 
-			const options: ExecSyncOptionsWithStringEncoding = { encoding: "utf-8", stdio: "pipe", cwd: `app/scripts/` };
+			if (!fs.existsSync(outputFolder)) {
+				fs.mkdirSync(outputFolder);
+			}
+
+			fs.writeFileSync(outputTar, call.request.files);
+			const extractOptions: tar.ExtractOptions & tar.FileOptions = { file: outputTar, cwd: outputFolder };
+			await promisify(tar.x)(extractOptions, undefined);
+
+			const options: ExecSyncOptionsWithStringEncoding = { encoding: "utf-8", stdio: "pipe", cwd: outputFolder };
 			execSync("npm install", options);
-			execSync("node index.js", options);
-			execSync(`ncc build index.js --minify`, options);
+			execSync("ncc build index.js --minify", options);
 
-			var file: Buffer = fs.readFileSync("app/scripts/dist/index.js");
+			var file: Buffer = fs.readFileSync(`${outputFolder}/dist/index.js`);
 			response.dist = file;
+			response.type = this.getPackageType(outputFolder) || "commonjs";
 		} catch (error: any) {
 			response.exit_code = Number(error.status) || 1;
 			response.stderr = error.stderr ? error.stderr.toString() : undefined;
 		}
 
 		callback(null, response);
+	}
+
+	private getPackageType(outputFolder: string): string | undefined {
+		const packageJson = fs.readFileSync(`${outputFolder}/package.json`);
+		const packageObject: PackageJson = JSON.parse(packageJson.toString());
+
+		return packageObject.type;
 	}
 }

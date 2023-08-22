@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "npx tsc -p .",
 		"start:dev": "npx nodemon",
-		"build:proto": "proto-loader-gen-types --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=app/proto/ proto/houston/v1/houston.proto",
+		"build:proto": "proto-loader-gen-types --longs=String --enums=String --keepCase --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=app/proto/ proto/houston/v1/houston.proto",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
@@ -23,10 +23,13 @@
 		"@grpc/grpc-js": "^1.9.0",
 		"@grpc/proto-loader": "^0.7.8",
 		"dotenv": "^16.3.1",
-		"simple-git": "^3.19.1"
+		"simple-git": "^3.19.1",
+		"tar": "^6.1.15"
 	},
 	"devDependencies": {
 		"@types/node": "^20.5.0",
+		"@types/tar": "^6.1.5",
+		"@vercel/ncc": "^0.36.1",
 		"nodemon": "^3.0.1",
 		"ts-node": "^10.9.1",
 		"typescript": "^5.1.6"

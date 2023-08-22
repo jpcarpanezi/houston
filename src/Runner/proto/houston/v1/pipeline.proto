@@ -4,7 +4,7 @@ package houston.v1.pipeline;
 
 service PipelineService {
 	rpc RunPipeline (RunPipelineRequest) returns (RunPipelineResponse) { }
-	rpc BuildConnector (BuildConnectorRequest) returns (BuildConnectorResponse) { }
+	rpc BuildConnectorFunction (BuildConnectorFunctionRequest) returns (BuildConnectorFunctionResponse) { }
 }
 
 message RunPipelineRequest {
@@ -23,13 +23,13 @@ message RunPipelineInstruction {
 	optional string stderr = 4;
 }
 
-message BuildConnectorRequest {
-	bytes index = 1;
-	bytes package = 2;
+message BuildConnectorFunctionRequest {
+	bytes files = 1;
 }
 
-message BuildConnectorResponse {
+message BuildConnectorFunctionResponse {
 	int32 exit_code = 1;
 	optional bytes dist = 2;
-	optional string stderr = 3;
+	optional string type = 3;
+	optional string stderr = 4;
 }

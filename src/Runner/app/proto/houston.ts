@@ -17,8 +17,8 @@ export interface ProtoGrpcType {
 				GitService: SubtypeConstructor<typeof grpc.Client, _houston_v1_git_GitServiceClient> & { service: _houston_v1_git_GitServiceDefinition }
 			}
 			pipeline: {
-				BuildConnectorRequest: MessageTypeDefinition
-				BuildConnectorResponse: MessageTypeDefinition
+				BuildConnectorFunctionRequest: MessageTypeDefinition
+				BuildConnectorFunctionResponse: MessageTypeDefinition
 				PipelineService: SubtypeConstructor<typeof grpc.Client, _houston_v1_pipeline_PipelineServiceClient> & { service: _houston_v1_pipeline_PipelineServiceDefinition }
 				RunPipelineInstruction: MessageTypeDefinition
 				RunPipelineRequest: MessageTypeDefinition
