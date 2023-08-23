@@ -8,7 +8,8 @@ service PipelineService {
 }
 
 message RunPipelineRequest {
-	repeated string scripts = 1;
+	bytes files = 1;
+	repeated string scripts = 2;
 }
 
 message RunPipelineResponse {
