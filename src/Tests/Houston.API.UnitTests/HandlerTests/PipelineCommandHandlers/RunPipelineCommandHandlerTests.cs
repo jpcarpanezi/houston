@@ -34,7 +34,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 			// Arrange
 			var handler = new RunPipelineCommandHandler(_mockUnitOfWork.Object, _mockEventBus.Object, _mockClaims.Object);
 			var command = _fixture.Create<RunPipelineCommand>();
-			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().With(x => x.Status, Core.Enums.PipelineStatusEnum.Running).Create();
+			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().With(x => x.Status, Core.Enums.PipelineStatus.Running).Create();
 			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync(pipeline);
 			_mockUnitOfWork.Setup(x => x.PipelineLogsRepository.DurationAverage(It.IsAny<Guid>(), default)).ReturnsAsync(It.IsAny<double>());
 
@@ -61,7 +61,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 			// Arrange
 			var handler = new RunPipelineCommandHandler(_mockUnitOfWork.Object, _mockEventBus.Object, _mockClaims.Object);
 			var command = _fixture.Create<RunPipelineCommand>();
-			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().With(x => x.Status, Core.Enums.PipelineStatusEnum.Awaiting).Create();
+			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().With(x => x.Status, Core.Enums.PipelineStatus.Awaiting).Create();
 			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync(pipeline);
 			_mockClaims.Setup(x => x.Id).Returns(It.IsAny<Guid>());
 			_mockEventBus.Setup(x => x.Publish(It.IsAny<RunPipelineMessage>(), default)).Throws(new Exception());
@@ -84,7 +84,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineCommandHandlers {
 			// Arrange
 			var handler = new RunPipelineCommandHandler(_mockUnitOfWork.Object, _mockEventBus.Object, _mockClaims.Object);
 			var command = _fixture.Create<RunPipelineCommand>();
-			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().With(x => x.Status, Core.Enums.PipelineStatusEnum.Awaiting).Create();
+			var pipeline = _fixture.Build<Pipeline>().OmitAutoProperties().With(x => x.Status, Core.Enums.PipelineStatus.Awaiting).Create();
 			_mockUnitOfWork.Setup(x => x.PipelineRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync(pipeline);
 			_mockClaims.Setup(x => x.Id).Returns(It.IsAny<Guid>());
 			_mockEventBus.Invocations.Clear(); // Remove invocation from previous test

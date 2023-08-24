@@ -11,8 +11,19 @@
 			RuleForEach(x => x.Inputs)
 				.SetValidator(new CreateConnectorFunctionInputCommandValidator());
 
+			RuleFor(x => x.Version)
+				.NotEmpty().NotNull().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty)
+				.Must(IsValidVersionFormat).WithMessage("The version must be in the format of 'x.x.x'");
+
 			RuleForEach(x => x.Script)
 				.NotEmpty().NotNull().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty);
+
+			RuleForEach(x => x.Package)
+				.NotEmpty().NotNull().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty);
+		}
+
+		private bool IsValidVersionFormat(string version) {
+			return Regex.IsMatch(version, @"^\d+\.\d+\.\d+$");
 		}
 	}
 }

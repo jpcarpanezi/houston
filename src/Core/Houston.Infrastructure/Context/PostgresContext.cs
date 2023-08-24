@@ -99,8 +99,6 @@ public partial class PostgresContext : DbContext {
 
 			entity.Property(e => e.Id).ValueGeneratedNever();
 
-			entity.HasOne(d => d.ConnectionNavigation).WithMany(p => p.InverseConnectionNavigation).HasConstraintName("PipelineInstruction_id_connection_fk");
-
 			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.PipelineInstructionCreatedByNavigation)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("User_id_created_by_id");

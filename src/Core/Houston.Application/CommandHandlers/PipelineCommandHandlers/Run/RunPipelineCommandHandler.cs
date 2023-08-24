@@ -16,7 +16,7 @@
 				return ResultCommand.NotFound("The requested pipeline could not be found.", "pipelineNotFound");
 			}
 
-			if (pipeline.Status == PipelineStatusEnum.Running) {
+			if (pipeline.Status == PipelineStatus.Running) {
 				var avg = await _unitOfWork.PipelineLogsRepository.DurationAverage(request.Id);
 				var estimatedCompletionTime = DateTime.UtcNow.AddTicks((long)avg);
 

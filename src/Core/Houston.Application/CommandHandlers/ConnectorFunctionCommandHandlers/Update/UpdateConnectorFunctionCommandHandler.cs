@@ -14,9 +14,13 @@
 				return ResultCommand.NotFound("The requested connector function could not be found.", "connectorFunctionNotFound");
 			}
 
+			// TODO: Checar se houve mudança no script para executar o build novamente
 			connectorFunction.Name = request.Name;
 			connectorFunction.Description = request.Description;
 			connectorFunction.Script = request.Script;
+			connectorFunction.Package = request.Package;
+			connectorFunction.Version = request.Version;
+			connectorFunction.BuildStatus = BuildStatus.Unknown;
 			connectorFunction.UpdatedBy = _claims.Id;
 			connectorFunction.LastUpdate = DateTime.UtcNow;
 

@@ -44,4 +44,3 @@ global using Houston.Infrastructure.Context;
 global using Houston.API.Filters;
 global using Houston.API.Extensions;
 global using Houston.API.Options;
-global using Houston.API.Extensions;

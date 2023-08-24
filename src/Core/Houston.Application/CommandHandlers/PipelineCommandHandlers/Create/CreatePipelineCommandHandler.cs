@@ -15,7 +15,7 @@
 				Name = request.Name,
 				Description = request.Description,
 				Active = true,
-				Status = PipelineStatusEnum.Awaiting,
+				Status = PipelineStatus.Awaiting,
 				CreatedBy = _claims.Id,
 				CreationDate = DateTime.UtcNow,
 				UpdatedBy = _claims.Id,

@@ -33,12 +33,12 @@ namespace Houston.Workers.MessageHandlers {
 
 			var pipeline = await _unitOfWork.PipelineRepository.GetActiveWithInverseProperties(message.PipelineId) ?? throw new Exception($"Could not find a pipeline with the provided ID: {message.PipelineId}.");
 
-			if (pipeline.Status != PipelineStatusEnum.Awaiting) {
+			if (pipeline.Status != PipelineStatus.Awaiting) {
 				_logger.LogInformation("Pipeline with ID {pipelineId} and status {pipelineStatus} was not executed because it was not in awaiting mode.", pipeline.Id, pipeline.Status);
 				return;
 			}
 
-			await UpdatePipelineStatus(pipeline, PipelineStatusEnum.Running);
+			await UpdatePipelineStatus(pipeline, PipelineStatus.Running);
 
 			var stopwatch = Stopwatch.StartNew();
 			DateTime startTime = DateTime.UtcNow;
@@ -68,7 +68,7 @@ namespace Houston.Workers.MessageHandlers {
 
 			stopwatch.Stop();
 
-			await UpdatePipelineStatus(pipeline, PipelineStatusEnum.Awaiting);
+			await UpdatePipelineStatus(pipeline, PipelineStatus.Awaiting);
 
 			var log = new PipelineLog {
 				Id = Guid.NewGuid(),
@@ -85,7 +85,7 @@ namespace Houston.Workers.MessageHandlers {
 			await _unitOfWork.Commit();
 		}
 
-		private async Task UpdatePipelineStatus(Pipeline pipeline, PipelineStatusEnum status) {
+		private async Task UpdatePipelineStatus(Pipeline pipeline, PipelineStatus status) {
 			pipeline.Status = status;
 
 			_unitOfWork.PipelineRepository.Update(pipeline);

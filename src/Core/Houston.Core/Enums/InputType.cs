@@ -1,5 +1,5 @@
 ﻿namespace Houston.Core.Enums {
-	public enum InputTypeEnum {
+	public enum InputType {
 		List,
 		String,
 		MultilineList

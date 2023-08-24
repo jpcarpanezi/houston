@@ -18,8 +18,23 @@ public partial class ConnectorFunction {
 	[Column("connector_id")]
 	public Guid ConnectorId { get; set; }
 
-	[Column("script", TypeName = "character varying[]")]
-	public string[] Script { get; set; } = null!;
+	[Column("version", TypeName = "character varying")]
+	public string Version { get; set; } = null!;
+
+	[Column("script")]
+	public byte[] Script { get; set; } = null!;
+
+	[Column("package")]
+	public byte[] Package { get; set; } = null!;
+
+	[Column("build_status")]
+	public BuildStatus BuildStatus { get; set; }
+
+	[Column("script_dist")]
+	public byte[]? ScriptDist { get; set; } = null!;
+
+	[Column("package_type")]
+	public PackageType? PackageType { get; set; }
 
 	[Column("created_by")]
 	public Guid CreatedBy { get; set; }

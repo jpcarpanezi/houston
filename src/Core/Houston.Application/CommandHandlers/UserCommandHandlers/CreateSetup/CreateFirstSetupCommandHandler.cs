@@ -29,7 +29,7 @@
 				Name = request.UserName,
 				Email = request.UserEmail,
 				Password = PasswordService.HashPassword(request.UserPassword),
-				Role = UserRoleEnum.Admin,
+				Role = UserRole.Admin,
 				FirstAccess = false,
 				Active = true,
 				CreatedBy = userId,

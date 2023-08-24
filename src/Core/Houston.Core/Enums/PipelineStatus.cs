@@ -1,5 +1,5 @@
 ﻿namespace Houston.Core.Enums {
-	public enum PipelineStatusEnum {
+	public enum PipelineStatus {
 		Running,
 		Stopped,
 		Canceled,

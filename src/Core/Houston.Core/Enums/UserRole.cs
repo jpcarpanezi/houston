@@ -1,5 +1,5 @@
 ﻿namespace Houston.Core.Enums {
-	public enum UserRoleEnum {
+	public enum UserRole {
 		Admin,
 		User
 	}
