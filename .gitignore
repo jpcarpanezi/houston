@@ -362,4 +362,8 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
+# Security keys
 *.pem
+
+# JetBrains IDE files
+.idea/**
