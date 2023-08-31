@@ -1,37 +1,21 @@
-﻿using Autofac.Extensions.DependencyInjection;
-using Houston.Workers.Consumers;
-using Houston.Workers.Setups;
-using MassTransit;
-using Microsoft.Extensions.Configuration;
-using RabbitMQ.Client;
-using System.Reflection;
-
-IHost host = Host.CreateDefaultBuilder(args)
+﻿IHost host = Host.CreateDefaultBuilder(args)
 	.UseServiceProviderFactory(new AutofacServiceProviderFactory())
-	.ConfigureServices((hostContext, services) => {
-		services.AddStackExchangeRedisCache(options => {
-			options.Configuration = hostContext.Configuration.GetConnectionString("Redis");
-			options.InstanceName = "houston-";
-		});
+	.ConfigureServices((hc, services) => {
+		services.AddRedis(hc.Configuration);
 
 		services.AddAutofac();
 
-		services.AddDependencyInjection();
+		services.AddPostgres(hc.Configuration, hc.HostingEnvironment);
 
-		services.AddPostgres(hostContext.Configuration);
+		services.AddRepositories();
 
-		services.AddMassTransit(x => {
-			x.AddConsumers(Assembly.GetExecutingAssembly());
-			
-			x.UsingRabbitMq((ctx, cfg) => {
-				cfg.Host(hostContext.Configuration.GetConnectionString("RabbitMQ"));
-				cfg.ReceiveEndpoint("Houston.Workers", e => {
-					e.ExchangeType = ExchangeType.Topic;
-					e.ConfigureConsumers(ctx);
-				});
-			});
-		});
+		services.AddMediatR(ExtensionOptions.ConfigureMediatR);
+
+		services.AddDependencyInjections();
+
+		services.AddMassTransit(x => ExtensionOptions.ConfigureMassTransit(x, hc.Configuration));
 	})
+	.UseSerilog(ExtensionOptions.ConfigureSerilog)
 	.Build();
 
 await host.RunAsync();

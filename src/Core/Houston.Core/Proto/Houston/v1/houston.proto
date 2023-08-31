@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+option csharp_namespace = "Houston.Core.Proto.Houston.v1";
+
+import public "pipeline.proto";
+import public "git.proto";

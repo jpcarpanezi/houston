@@ -36,6 +36,9 @@ public partial class ConnectorFunction {
 	[Column("package_type")]
 	public PackageType? PackageType { get; set; }
 
+	[Column("build_stderr")]
+	public byte[]? BuildStderr { get; set; } = null!;
+
 	[Column("created_by")]
 	public Guid CreatedBy { get; set; }
 
