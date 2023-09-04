@@ -63,9 +63,11 @@
 				_logger.LogDebug("Executing build command for connector function: {ConnectorFunctionId}.", connectorFunction.Id);
 				response = await _mediator.Send(command);
 			} catch (Exception ex) {
+				var errorMessage = $"An unhandled exception has occurred during the pipeline execution.\nException: {ex}";
 				response.ExitCode = 1;
 				connectorFunction.BuildStatus = BuildStatus.Failed;
-				connectorFunction.BuildStderr = Encoding.ASCII.GetBytes($"An unhandled exception has occurred during the pipeline execution.\nException: {ex}");
+				connectorFunction.BuildStderr = Encoding.ASCII.GetBytes(errorMessage);
+				response.Stderr = errorMessage;
 			}
 
 			return response;
