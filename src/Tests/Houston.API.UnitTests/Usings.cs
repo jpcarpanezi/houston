@@ -19,6 +19,7 @@ global using Houston.Core.Entities.Redis;
 global using Houston.Core.Enums;
 global using Houston.Core.Services;
 global using Houston.Core.Messages;
+global using Houston.Core.Models.Options;
 
 global using Houston.Application.Results;
 global using Houston.Application.Security;

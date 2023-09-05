@@ -5,12 +5,13 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorFunctionCommandHandlers {
 	public class CreateConnectorFunctionCommandHandlerTests {
 		private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
 		private readonly Mock<IUserClaimsService> _mockClaims = new();
+		private readonly Mock<IPublishEndpoint> _mockPublishEndpoint = new();
 		private readonly Fixture _fixture = new();
 
 		[Test]
 		public async Task Handle_WithValidRequest_ShouldReturnCreatedObject() {
 			// Arrange
-			var handler = new CreateConnectorFunctionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
+			var handler = new CreateConnectorFunctionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object, _mockPublishEndpoint.Object);
 			var request = _fixture.Create<CreateConnectorFunctionCommand>();
 			_mockUnitOfWork.Setup(x => x.ConnectorFunctionRepository).Returns(Mock.Of<IConnectorFunctionRepository>);
 			_mockUnitOfWork.Setup(x => x.ConnectorFunctionInputRepository).Returns(Mock.Of<IConnectorFunctionInputRepository>);
