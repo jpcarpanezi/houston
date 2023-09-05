@@ -11,7 +11,7 @@
 		}
 
 		public async Task<IResultCommand> Handle(CreateFirstSetupCommand request, CancellationToken cancellationToken) {
-			var configurations = await _cache.GetStringAsync(_appConfiguration.Value.ConfigurationKey);
+			var configurations = await _cache.GetStringAsync(_appConfiguration.Value.ConfigurationKey, cancellationToken);
 			if (configurations is not null) {
 				return ResultCommand.Forbidden("The system has already been set up and configured.", "alreadyConfigured");
 			}
