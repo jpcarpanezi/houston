@@ -4,6 +4,6 @@
 
 		public string Stdout { get; set; } = string.Empty;
 
-		public Guid InstructionWithError { get; set; }
+		public Guid? InstructionWithError { get; set; }
 	}
 }

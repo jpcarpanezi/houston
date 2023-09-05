@@ -1,4 +1,5 @@
 ﻿namespace Houston.Core.Exceptions {
+	[Serializable]
 	public class ScriptBuildNotCompleteException : Exception {
 		public BuildStatus BuildStatus { get; private set; }
 

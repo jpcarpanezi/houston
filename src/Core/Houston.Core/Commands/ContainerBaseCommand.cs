@@ -14,9 +14,11 @@
 
 		public List<string> Env { get; init; } = new List<string>();
 
-		public string? ContainerId { get; set; } = null!;
+		public string? ContainerId { get; set; } = null;
 
-		protected ContainerBaseCommand(string containerImage, string imageTag, string registryEmail, string registryUsername, string registryPassword, string containerName, List<string> env, string? containerId) {
+		public string? RunnerPort { get; set; } = null;
+
+		protected ContainerBaseCommand(string containerImage, string imageTag, string registryEmail, string registryUsername, string registryPassword, string containerName, List<string> env, string? containerId, string? runnerPort) {
 			ContainerImage = containerImage ?? throw new ArgumentNullException(nameof(containerImage));
 			ImageTag = imageTag ?? throw new ArgumentNullException(nameof(imageTag));
 			RegistryEmail = registryEmail ?? throw new ArgumentNullException(nameof(registryEmail));
@@ -25,6 +27,7 @@
 			ContainerName = containerName ?? throw new ArgumentNullException(nameof(containerName));
 			Env = env ?? throw new ArgumentNullException(nameof(env));
 			ContainerId = containerId;
+			RunnerPort = runnerPort;
 		}
 	}
 }

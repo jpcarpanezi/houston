@@ -13,6 +13,7 @@ global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Caching.Distributed;
 global using Microsoft.IdentityModel.Tokens;
+global using Microsoft.Extensions.Configuration;
 
 global using MediatR;
 global using MediatR.Pipeline;
@@ -44,6 +45,7 @@ global using Houston.Application.ViewModel.PipelineInstructionInputViewModels;
 global using Houston.Application.ViewModel.ConnectorFunctionInputViewModels;
 global using Houston.Application.ViewModel.PipelineTriggerFilterViewModels;
 global using Houston.Application.ViewModel.PipelineTriggerEventViewModels;
+global using Houston.Application.CommandHandlers.WorkerCommandHandlers.RunPipeline;
 
 global using Houston.Core.Interfaces.Repository;
 global using Houston.Core.Interfaces.Results;

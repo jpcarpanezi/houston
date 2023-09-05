@@ -9,7 +9,7 @@
 		}
 
 		public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken) {
-			_logger.LogInformation("Creating container image {ContainerImage}:{ImageTag}", request.ContainerImage, request.ImageTag);
+			_logger.LogDebug("Creating container image {ContainerImage}:{ImageTag}", request.ContainerImage, request.ImageTag);
 
 			var imageCreateParameters = new ImagesCreateParameters() {
 				FromImage = request.ContainerImage,

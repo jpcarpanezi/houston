@@ -7,8 +7,8 @@
 		}
 
 		public async Task<BuildConnectorFunctionViewModel> Handle(WorkerBuildConnectorFunctionCommand request, CancellationToken cancellationToken) {
-			_logger.LogInformation("Building connector function in container {ContainerId}", request.ContainerId);
-			using var channel = GrpcChannel.ForAddress($"http://{request.ContainerName}:50051", new GrpcChannelOptions {
+			_logger.LogDebug("Building connector function in container {ContainerId}", request.ContainerId);
+			using var channel = GrpcChannel.ForAddress($"http://{request.ContainerName}:{request.RunnerPort}", new GrpcChannelOptions {
 				HttpHandler = new HttpClientHandler {
 					ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 				}

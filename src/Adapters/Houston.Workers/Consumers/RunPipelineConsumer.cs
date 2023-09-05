@@ -3,45 +3,33 @@
 		private readonly IDistributedCache _cache;
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMediator _mediator;
+		private readonly ILogger<RunPipelineConsumer> _logger;
 
-		public RunPipelineConsumer(IDistributedCache cache, IUnitOfWork unitOfWork, IMediator mediator) {
+		public RunPipelineConsumer(IDistributedCache cache, IUnitOfWork unitOfWork, IMediator mediator, ILogger<RunPipelineConsumer> logger) {
 			_cache = cache ?? throw new ArgumentNullException(nameof(cache));
 			_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			_mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
 
 		public async Task Consume(ConsumeContext<RunPipelineMessage> context) {
 			var systemConfiguration = await GetSystemConfiguration();
 
-			var pipeline = await _unitOfWork.PipelineRepository.GetActiveWithInverseProperties(context.Message.PipelineId) ?? 
-				throw new Exception($"Could not find a pipeline with the provided ID: {context.Message.PipelineId}.");
+			var pipeline = await GetPipeline(context.Message.PipelineId);
+
+			var inputs = CreateInputsList(pipeline);
 
 			await UpdatePipelineStatus(pipeline, PipelineStatus.Running);
 
-			var stopwatch = Stopwatch.StartNew();
-
-			var log = new PipelineLog {
-				Id = Guid.NewGuid(),
-				PipelineId = pipeline.Id,
-				StartTime = DateTime.UtcNow,
-				TriggeredBy = context.Message.TriggeredBy,
-			};
+			var log = CreatePipelineLog(pipeline, context.Message.TriggeredBy);
 
 			try {
-				string containerName = $"houston-runner-{Guid.NewGuid()}";
-				var address = $"{containerName}:50051";
-
-				var command = new WorkerRunPipelineCommand(
-					pipeline, 
-					systemConfiguration.ContainerImage, 
-					systemConfiguration.ImageTag, 
-					systemConfiguration.RegistryEmail, 
-					systemConfiguration.RegistryPassword, 
-					systemConfiguration.RegistryPassword, 
-					containerName, 
-					new List<string>()
-				);
+				_logger.LogDebug("Running pipeline {PipelineId}", pipeline.Id);
+				
+				var command = CreateWorkerRunPipelineCommand(pipeline, systemConfiguration, inputs);
 				var response = await _mediator.Send(command);
+
+				_logger.LogDebug("Pipeline {PipelineId} finished with exit code {ExitCode}.", pipeline.Id, response.ExitCode);
 
 				log.ExitCode = response.ExitCode;
 				log.Stdout = response.Stdout;
@@ -56,9 +44,7 @@
 				log.InstructionWithError = null;
 			}
 
-			stopwatch.Stop();
-
-			log.Duration = stopwatch.Elapsed;
+			log.Duration = DateTime.UtcNow - log.StartTime;
 
 			await UpdatePipelineStatus(pipeline, PipelineStatus.Awaiting);
 
@@ -70,6 +56,54 @@
 			var redisConfigurations = await _cache.GetStringAsync("configurations") ?? throw new Exception("Cannot retrieve configurations file from Redis.");
 			return JsonSerializer.Deserialize<SystemConfiguration>(redisConfigurations)!;
 		}
+
+		private async Task<Pipeline> GetPipeline(Guid pipelineId) {
+			var pipeline = await _unitOfWork.PipelineRepository.GetActiveWithInverseProperties(pipelineId);
+
+			return pipeline ?? throw new Exception($"Could not find a pipeline with the provided ID: {pipelineId}.");
+		}
+
+		private static PipelineLog CreatePipelineLog(Pipeline pipeline, Guid? triggeredBy) {
+			return new PipelineLog {
+				Id = Guid.NewGuid(),
+				PipelineId = pipeline.Id,
+				StartTime = DateTime.UtcNow,
+				TriggeredBy = triggeredBy,
+			};
+		}
+		
+		private static WorkerRunPipelineCommand CreateWorkerRunPipelineCommand(Pipeline pipeline, SystemConfiguration systemConfiguration, List<string> envs) {
+			string containerName = $"houston-runner-{Guid.NewGuid()}";
+
+			return new WorkerRunPipelineCommand(
+				pipeline,
+				systemConfiguration.ContainerImage,
+				systemConfiguration.ImageTag,
+				systemConfiguration.RegistryEmail,
+				systemConfiguration.RegistryPassword,
+				systemConfiguration.RegistryPassword,
+				containerName,
+				envs
+			);
+		}
+
+		private static List<string> CreateInputsList(Pipeline pipeline) {
+			var inputs = new List<string>();
+
+			foreach (var instruction in pipeline.PipelineInstructions) {
+				foreach (var input in instruction.PipelineInstructionInputs) {
+					var env = new StringBuilder().Append(input.ConnectorFunctionInput.Replace)
+								  .Append("=INPUT_")
+								  .Append(input.ReplaceValue)
+								  .ToString();
+
+					inputs.Add(env);
+				}
+			}
+
+			return inputs;
+		}
+
 
 		private async Task UpdatePipelineStatus(Pipeline pipeline, PipelineStatus status) {
 			pipeline.Status = status;

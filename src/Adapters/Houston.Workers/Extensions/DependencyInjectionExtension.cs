@@ -6,6 +6,7 @@
 				return new DockerClientConfiguration(new Uri(dockerSock)).CreateClient();
 			});
 
+			services.AddTransient(typeof(IRequestExceptionHandler<,,>), typeof(StopAndRemoveContainerOnExceptionBehavior<,,>));
 			services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CreateContainerImageBehavior<,>));
 			services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CreateContainerBehavior<,>));
 			services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CloneRepositoryBehavior<,>));

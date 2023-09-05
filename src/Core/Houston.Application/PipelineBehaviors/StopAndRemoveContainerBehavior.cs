@@ -9,7 +9,7 @@
 		}
 
 		public async Task Process(TRequest request, TResponse response, CancellationToken cancellationToken) {
-			_logger.LogInformation("Stopping and removing container {ContainerId}", request.ContainerId);
+			_logger.LogDebug("Stopping and removing container {ContainerId}", request.ContainerId);
 
 			if (request.ContainerId is null) return;
 

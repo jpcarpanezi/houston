@@ -1,11 +1,27 @@
 ﻿namespace Houston.Application.CommandHandlers.WorkerCommandHandlers.RunPipeline {
 	public class WorkerRunPipelineCommandHandler : IRequestHandler<WorkerRunPipelineCommand, RunPipelineViewModel> {
+		private readonly ILogger<WorkerRunPipelineCommandHandler> _logger;
+
+		public WorkerRunPipelineCommandHandler(ILogger<WorkerRunPipelineCommandHandler> logger) {
+			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
+		}
+
 		public async Task<RunPipelineViewModel> Handle(WorkerRunPipelineCommand request, CancellationToken cancellationToken) {
-			using var channel = GrpcChannel.ForAddress($"{request.ContainerName}:50051");
+			_logger.LogDebug("Running pipeline {PipelineId} in container {ContainerId}", request.Pipeline.Id, request.ContainerId);
+
+			using var channel = GrpcChannel.ForAddress($"http://{request.ContainerName}:{request.RunnerPort}", new GrpcChannelOptions {
+				HttpHandler = new HttpClientHandler {
+					ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+				}
+			});
+
 			var client = new PipelineService.PipelineServiceClient(channel);
 
 			var files = CompressFiles(request.Pipeline.PipelineInstructions);
+
 			var scripts = request.Pipeline.PipelineInstructions.Select(x => x.Id.ToString()).ToArray();
+
+			await Task.Delay(5000, cancellationToken);
 
 			var runPipelineRequest = new RunPipelineRequest {
 				Files = Google.Protobuf.ByteString.CopyFrom(files),
@@ -20,8 +36,8 @@
 
 			var response = new RunPipelineViewModel {
 				ExitCode = runPipelineResponse.ExitCode,
-				InstructionWithError = runPipelineResponse.Instructions.Where(x => x.HasError == true).Select(x => Guid.Parse(x.Script)).First(),
-				Stdout = stdout + "\n" + stderr,
+				InstructionWithError = runPipelineResponse.Instructions.Where(x => x.HasError == true).Select(x => (Guid?)Guid.Parse(x.Script)).DefaultIfEmpty(null).FirstOrDefault(),
+				Stdout = new StringBuilder().AppendLine(stdout).AppendLine(stderr).ToString(),
 			};
 
 			return response;
@@ -41,7 +57,8 @@
 						);
 					}
 
-					var package = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(instruction.ConnectorFunction.PackageType?.ToString().ToLower()));
+					var packageJson = new { Type = instruction.ConnectorFunction.PackageType?.ToString().ToLower() };
+					var package = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(packageJson, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
 
 					writer.Write($"{instruction.Id}/index.js", new MemoryStream(instruction.ConnectorFunction.ScriptDist), DateTime.Now);
 					writer.Write($"{instruction.Id}/package.json", new MemoryStream(package), DateTime.Now);
