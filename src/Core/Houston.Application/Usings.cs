@@ -14,6 +14,7 @@ global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Caching.Distributed;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.Options;
 
 global using MediatR;
 global using MediatR.Pipeline;
@@ -58,4 +59,5 @@ global using Houston.Core.Entities.Redis;
 global using Houston.Core.Exceptions;
 global using Houston.Core.Models;
 global using Houston.Core.Commands;
+global using Houston.Core.Models.Options;
 global using Houston.Core.Proto.Houston.v1;

@@ -5,6 +5,10 @@
 					.Bind(configuration.GetSection("Cors"))
 					.ValidateOnStart();
 
+			services.AddOptions<AppConfiguration>()
+					.Bind(configuration.GetSection("AppConfiguration"))
+					.ValidateOnStart();
+
 			return services;
 		}
 
