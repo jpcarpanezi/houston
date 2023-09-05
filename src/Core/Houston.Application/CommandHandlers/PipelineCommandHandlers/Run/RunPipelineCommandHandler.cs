@@ -25,7 +25,7 @@
 			}
 
 			try {
-				await _eventBus.Publish(new RunPipelineMessage(request.Id, _claims.Id), cancellationToken);
+				await _eventBus.Publish(new RunPipelineMessage(request.Id, _claims.Id, request.Branch), cancellationToken);
 			} catch (Exception e) {
 				Log.Error(e, $"Failed to publish {nameof(RunPipelineMessage)}");
 				return ResultCommand.InternalServerError("Error while trying to run the pipeline.", "cannotRunPipeline");

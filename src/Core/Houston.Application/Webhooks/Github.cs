@@ -9,12 +9,12 @@ namespace Houston.Application.Webhooks {
 			_context = context ?? throw new ArgumentNullException(nameof(context));
 		}
 
-		public bool RunPipeline(string jsonPayload, List<PipelineTriggerEvent> pipelineTriggerEvents) {
-			var @event = _context.HttpContext.Request.Headers["X-GitHub-Event"];
+		public RunPipelineResult RunPipeline(string jsonPayload, List<PipelineTriggerEvent> pipelineTriggerEvents) {
+			var @event = _context.HttpContext?.Request.Headers["X-GitHub-Event"];
 
 			return (string?)@event switch {
 				"push" => HandlePush(jsonPayload, pipelineTriggerEvents),
-				_ => false
+				_ => new RunPipelineResult(false, null)
 			};
 		}
 
@@ -28,11 +28,12 @@ namespace Houston.Application.Webhooks {
 			}
 		}
 
-		private static bool HandlePush(string jsonPayload, List<PipelineTriggerEvent> pipelineTriggerEvents) {
+		private static RunPipelineResult HandlePush(string jsonPayload, List<PipelineTriggerEvent> pipelineTriggerEvents) {
+			var result = new RunPipelineResult(false, null);
+
 			try {
 				var payload = JsonSerializer.Deserialize<PushPayload>(jsonPayload);
-				if (payload is null)
-					return false;
+				if (payload is null) return result;
 
 				var paths = new List<string>();
 
@@ -46,9 +47,13 @@ namespace Houston.Application.Webhooks {
 				var @ref = refSplit[1];
 				var refName = string.Join("/", refSplit, 2, refSplit.Length - 2);
 
-				return PushEvent.IsValid(pipelineTriggerEvents, @ref, refName, paths);
+				var shouldRun = PushEvent.IsValid(pipelineTriggerEvents, @ref, refName, paths);
+				result.Branch = refName;
+				result.ShouldRun = true;
+
+				return result;
 			} catch (Exception) {
-				return false;
+				return result;
 			}
 		}
 	}

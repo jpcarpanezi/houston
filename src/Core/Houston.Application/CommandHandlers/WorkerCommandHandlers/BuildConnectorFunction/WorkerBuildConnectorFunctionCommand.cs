@@ -1,5 +1,5 @@
 ﻿namespace Houston.Application.CommandHandlers.WorkerCommandHandlers.BuildConnectorFunction {
-	public record WorkerBuildConnectorFunctionCommand : ContainerBaseCommand, IRequest<BuildConnectorFunctionViewModel> {
+	public sealed record WorkerBuildConnectorFunctionCommand : ContainerBaseCommand, IRequest<BuildConnectorFunctionViewModel> {
 		public byte[] Script { get; init; }
 
 		public byte[] Package { get; init; }

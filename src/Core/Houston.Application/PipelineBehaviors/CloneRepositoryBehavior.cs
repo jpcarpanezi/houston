@@ -21,7 +21,7 @@
 
 			var cloneRepositoryRequest = new CloneRepositoryRequest {
 				Url = request.Pipeline.PipelineTrigger.SourceGit,
-				Branch = "master",
+				Branch = request.Branch,
 				PrivateKey = request.Pipeline.PipelineTrigger.PrivateKey
 			};
 			var cloneRepositoryResponse = await client.CloneRepositoryAsync(cloneRepositoryRequest, cancellationToken: cancellationToken);

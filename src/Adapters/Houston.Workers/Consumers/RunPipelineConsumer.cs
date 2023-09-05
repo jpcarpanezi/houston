@@ -26,7 +26,7 @@
 			try {
 				_logger.LogDebug("Running pipeline {PipelineId}", pipeline.Id);
 				
-				var command = CreateWorkerRunPipelineCommand(pipeline, systemConfiguration, inputs);
+				var command = CreateWorkerRunPipelineCommand(pipeline, context.Message.Branch, systemConfiguration, inputs);
 				var response = await _mediator.Send(command);
 
 				_logger.LogDebug("Pipeline {PipelineId} finished with exit code {ExitCode}.", pipeline.Id, response.ExitCode);
@@ -72,11 +72,12 @@
 			};
 		}
 		
-		private static WorkerRunPipelineCommand CreateWorkerRunPipelineCommand(Pipeline pipeline, SystemConfiguration systemConfiguration, List<string> envs) {
+		private static WorkerRunPipelineCommand CreateWorkerRunPipelineCommand(Pipeline pipeline, string branch, SystemConfiguration systemConfiguration, List<string> envs) {
 			string containerName = $"houston-runner-{Guid.NewGuid()}";
 
 			return new WorkerRunPipelineCommand(
 				pipeline,
+				branch,
 				systemConfiguration.ContainerImage,
 				systemConfiguration.ImageTag,
 				systemConfiguration.RegistryEmail,
