@@ -1,0 +1,28 @@
+{
+	"name": "houston-runner",
+	"version": "1.0.0",
+	"description": "",
+	"main": "app/index.js",
+	"type": "module",
+	"scripts": {
+		"start:dev": "npx nodemon",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jpcarpanezi/houston.git"
+	},
+	"author": "João Pedro Carpanezi dos Santos",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/jpcarpanezi/houston/issues"
+	},
+	"homepage": "https://github.com/jpcarpanezi/houston#readme",
+	"dependencies": {
+		"@grpc/grpc-js": "^1.9.0",
+		"dotenv": "^16.3.1"
+	},
+	"devDependencies": {
+		"nodemon": "^3.0.1"
+	}
+}

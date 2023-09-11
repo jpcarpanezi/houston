@@ -29,7 +29,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddRedis(builder.Configuration);
 
-builder.Services.AddEventBus(builder.Configuration);
+builder.Services.AddMassTransit(x => ExtensionOptions.ConfigureMassTransit(x, builder.Configuration));
 
 builder.Services.AddHttpContextAccessor();
 
@@ -69,7 +69,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.Services.ConfigureEventBus();
 
 app.Run();

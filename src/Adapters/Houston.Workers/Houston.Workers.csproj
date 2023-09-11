@@ -17,8 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\EventBus\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
-    <ProjectReference Include="..\..\Core\EventBus\EventBus\EventBus.csproj" />
     <ProjectReference Include="..\..\Core\Houston.Application\Houston.Application.csproj" />
     <ProjectReference Include="..\..\Core\Houston.Infrastructure\Houston.Infrastructure.csproj" />
   </ItemGroup>

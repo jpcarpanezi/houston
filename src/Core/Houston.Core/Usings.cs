@@ -7,8 +7,6 @@ global using System.Text.Json.Serialization;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Mvc;
 
-global using EventBus.EventBus.Events;
-
 global using BCrypt.Net;
 
 global using Houston.Core.Enums;

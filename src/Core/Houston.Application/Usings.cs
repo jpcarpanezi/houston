@@ -16,13 +16,12 @@ global using Microsoft.Extensions.Caching.Distributed;
 global using Microsoft.IdentityModel.Tokens;
 
 global using MediatR;
+global using MassTransit;
 global using Serilog;
 global using AutoMapper;
 global using FluentValidation;
 global using Docker.DotNet;
 global using Docker.DotNet.Models;
-
-global using EventBus.EventBus.Abstractions;
 
 global using Houston.Infrastructure.Services;
 
