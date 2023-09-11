@@ -24,6 +24,7 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorFunctionCommandHandlers {
 			_mockUnitOfWork.Verify(x => x.ConnectorFunctionRepository.Add(It.IsAny<ConnectorFunction>()), Times.Once);
 			_mockUnitOfWork.Verify(x => x.ConnectorFunctionInputRepository.AddRange(It.IsAny<List<ConnectorFunctionInput>>()), Times.Once);
 			_mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
+			_mockPublishEndpoint.Verify(x => x.Publish(It.IsAny<BuildConnectorFunctionMessage>(), default), Times.Once);
 		}
 	}
 }
