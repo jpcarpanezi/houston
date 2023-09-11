@@ -23,6 +23,8 @@
 		}
 
 		private bool IsValidVersionFormat(string version) {
+			if (string.IsNullOrEmpty(version)) return false;
+
 			return Regex.IsMatch(version, @"^\d+\.\d+\.\d+$");
 		}
 	}
