@@ -1,0 +1,9 @@
+<app-modal #connectorFunctionStderrModal>
+	<span title>Build logs</span>
+
+	<span subhead>This modal displays error messages and output from the standard error stream, providing insights into any issues or errors encountered during the operation.</span>
+
+	<div class="mt-4">
+		<ngx-codemirror [options]="{ lineNumbers: true, theme: 'material-darker', mode: 'text/x-log' }" #codeEditor></ngx-codemirror>
+	</div>
+</app-modal>

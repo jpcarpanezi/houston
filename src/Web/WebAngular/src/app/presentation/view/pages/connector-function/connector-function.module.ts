@@ -5,11 +5,13 @@ import { ConnectorFunctionRoutingModule } from './connector-function-routing.mod
 import { ConnectorFunctionComponent } from './connector-function.component';
 import { SharedModule } from '../../shared/shared.module';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+import { ConnectorFunctionStderrComponent } from './connector-function-stderr/connector-function-stderr.component';
 
 
 @NgModule({
 	declarations: [
-		ConnectorFunctionComponent
+		ConnectorFunctionComponent,
+  ConnectorFunctionStderrComponent
 	],
 	imports: [
 		CommonModule,

@@ -33,7 +33,7 @@
 						"scripts": [],
 						"allowedCommonJsDependencies": [
 							"sweetalert2",
-							"codemirror/mode/shell/shell"
+							"codemirror/mode/javascript/javascript"
 						]
 					},
 					"configurations": {

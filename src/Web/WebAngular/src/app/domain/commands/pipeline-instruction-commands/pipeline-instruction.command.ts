@@ -1,6 +1,6 @@
 export interface PipelineInstructionCommand {
 	connectorFunctionId: string;
 	connectedToArrayIndex: number | null;
-	script: string[];
+	script: Buffer;
 	inputs: { [key: string]: string | null };
 }
