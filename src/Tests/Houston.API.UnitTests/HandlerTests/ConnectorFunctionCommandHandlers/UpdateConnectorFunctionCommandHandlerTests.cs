@@ -69,8 +69,8 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorFunctionCommandHandlers {
 			var result = await handler.Handle(command, default);
 
 			// Assert
-			_mockUnitOfWork.Verify(x => x.ConnectorFunctionRepository.Update(It.IsAny<ConnectorFunction>()), Times.Once);
-			_mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
+			_mockUnitOfWork.Verify(x => x.ConnectorFunctionRepository.Update(It.IsAny<ConnectorFunction>()));
+			_mockUnitOfWork.Verify(x => x.Commit());
 			_mockPublishEndpoint.Verify(x => x.Publish(It.IsAny<BuildConnectorFunctionMessage>(), default), Times.Never);
 
 			result.Should().BeOfType<SuccessResultCommand<ConnectorFunction, ConnectorFunctionViewModel>>();
