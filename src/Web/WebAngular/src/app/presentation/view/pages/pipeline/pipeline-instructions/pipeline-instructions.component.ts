@@ -106,7 +106,6 @@ export class PipelineInstructionsComponent implements OnInit {
 		const instruction: PipelineInstructionCommand = {
 			connectorFunctionId: connectorFunction.id,
 			connectedToArrayIndex: connectedTo,
-			script: connectorFunction.script,
 			inputs: {}
 		};
 
@@ -169,7 +168,6 @@ export class PipelineInstructionsComponent implements OnInit {
 			let command: PipelineInstructionCommand = {
 				connectorFunctionId: instruction.connectorFunctionId,
 				connectedToArrayIndex: i == 0 ? null : i - 1,
-				script: instruction.script,
 				inputs: {}
 			};
 
