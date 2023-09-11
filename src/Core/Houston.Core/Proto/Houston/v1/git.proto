@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "Houston.Core.Proto.Houston.v1";
+
+package houston.v1.git;
+
+service GitService {
+	rpc CloneRepository (CloneRepositoryRequest) returns (CloneRepositoryResponse) { }
+}
+
+message CloneRepositoryRequest {
+	string url = 1;
+	string branch = 2;
+	string private_key = 3;
+}
+
+message CloneRepositoryResponse {
+	bool has_error = 1;
+	optional string stderr = 2;
+}

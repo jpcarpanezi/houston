@@ -9,7 +9,7 @@
 		}
 
 		public async Task<IResultCommand> Handle(UpdatePasswordCommand request, CancellationToken cancellationToken) {
-			if (request.UserId is not null && !_claims.Roles.Contains(UserRoleEnum.Admin)) {
+			if (request.UserId is not null && !_claims.Roles.Contains(UserRole.Admin)) {
 				return ResultCommand.Forbidden("Only administators are allowed to change the password of other users.", "unauthorizedPasswordChange");
 			}
 

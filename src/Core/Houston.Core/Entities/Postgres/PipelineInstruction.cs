@@ -1,4 +1,6 @@
-﻿namespace Houston.Core.Entities.Postgres;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
+namespace Houston.Core.Entities.Postgres;
 
 [Table("PipelineInstruction", Schema = "houston")]
 public partial class PipelineInstruction {
@@ -12,14 +14,8 @@ public partial class PipelineInstruction {
 	[Column("connector_function_id")]
 	public Guid ConnectorFunctionId { get; set; }
 
-	[Column("connection")]
-	public Guid? Connection { get; set; }
-
 	[Column("connected_to_array_index")]
 	public int? ConnectedToArrayIndex { get; set; }
-
-	[Column("script", TypeName = "character varying[]")]
-	public string[] Script { get; set; } = null!;
 
 	[Column("created_by")]
 	public Guid CreatedBy { get; set; }
@@ -33,16 +29,9 @@ public partial class PipelineInstruction {
 	[Column("last_update", TypeName = "timestamp(3) with time zone")]
 	public DateTime LastUpdate { get; set; }
 
-	[ForeignKey(nameof(Connection))]
-	[InverseProperty(nameof(InverseConnectionNavigation))]
-	public virtual PipelineInstruction? ConnectionNavigation { get; set; }
-
 	[ForeignKey(nameof(CreatedBy))]
 	[InverseProperty(nameof(User.PipelineInstructionCreatedByNavigation))]
 	public virtual User CreatedByNavigation { get; set; } = null!;
-
-	[InverseProperty(nameof(ConnectionNavigation))]
-	public virtual ICollection<PipelineInstruction> InverseConnectionNavigation { get; } = new List<PipelineInstruction>();
 
 	[ForeignKey(nameof(PipelineId))]
 	[InverseProperty(nameof(Postgres.Pipeline.PipelineInstructions))]

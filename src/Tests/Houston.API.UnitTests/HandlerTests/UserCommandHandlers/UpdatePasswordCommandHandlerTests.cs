@@ -12,7 +12,7 @@ namespace Houston.API.UnitTests.HandlerTests.UserCommandHandlers {
 			// Arrange
 			var handler = new UpdatePasswordCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Build<UpdatePasswordCommand>().With(x => x.UserId, Guid.NewGuid()).Create();
-			_mockClaims.Setup(x => x.Roles).Returns(new List<UserRoleEnum> { UserRoleEnum.User });
+			_mockClaims.Setup(x => x.Roles).Returns(new List<UserRole> { UserRole.User });
 
 			// Act
 			var result = await handler.Handle(command, default);
@@ -32,7 +32,7 @@ namespace Houston.API.UnitTests.HandlerTests.UserCommandHandlers {
 			// Arrange
 			var handler = new UpdatePasswordCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Build<UpdatePasswordCommand>().With(x => x.UserId, (Guid?)null).Create();
-			_mockClaims.Setup(x => x.Roles).Returns(new List<UserRoleEnum> { UserRoleEnum.User });
+			_mockClaims.Setup(x => x.Roles).Returns(new List<UserRole> { UserRole.User });
 			_mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync((User?)null);
 
 			// Act
@@ -54,7 +54,7 @@ namespace Houston.API.UnitTests.HandlerTests.UserCommandHandlers {
 			var handler = new UpdatePasswordCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Build<UpdatePasswordCommand>().With(x => x.UserId, (Guid?)null).Create();
 			var user = _fixture.Build<User>().OmitAutoProperties().With(x => x.Active, false).Create();
-			_mockClaims.Setup(x => x.Roles).Returns(new List<UserRoleEnum> { UserRoleEnum.User });
+			_mockClaims.Setup(x => x.Roles).Returns(new List<UserRole> { UserRole.User });
 			_mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
 
 			// Act
@@ -76,7 +76,7 @@ namespace Houston.API.UnitTests.HandlerTests.UserCommandHandlers {
 			var handler = new UpdatePasswordCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Build<UpdatePasswordCommand>().With(x => x.UserId, (Guid?)null).Create();
 			var user = _fixture.Build<User>().OmitAutoProperties().With(x => x.Active, true).With(x => x.Password, PasswordService.HashPassword("OldPassword")).Create();
-			_mockClaims.Setup(x => x.Roles).Returns(new List<UserRoleEnum> { UserRoleEnum.User });
+			_mockClaims.Setup(x => x.Roles).Returns(new List<UserRole> { UserRole.User });
 			_mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
 
 			// Act
@@ -98,7 +98,7 @@ namespace Houston.API.UnitTests.HandlerTests.UserCommandHandlers {
 			var handler = new UpdatePasswordCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Build<UpdatePasswordCommand>().With(x => x.UserId, (Guid?)null).With(x => x.OldPassword, "OldPassword").Create();
 			var user = _fixture.Build<User>().OmitAutoProperties().With(x => x.Active, true).With(x => x.Password, PasswordService.HashPassword("OldPassword")).Create();
-			_mockClaims.Setup(x => x.Roles).Returns(new List<UserRoleEnum> { UserRoleEnum.User });
+			_mockClaims.Setup(x => x.Roles).Returns(new List<UserRole> { UserRole.User });
 			_mockUnitOfWork.Setup(x => x.UserRepository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(user);
 
 			// Act

@@ -16,7 +16,7 @@ public partial class Pipeline {
 	public bool Active { get; set; }
 
 	[Column("status")]
-	public PipelineStatusEnum Status { get; set; }
+	public PipelineStatus Status { get; set; }
 
 	[Column("created_by")]
 	public Guid CreatedBy { get; set; }

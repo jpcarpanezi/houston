@@ -8,7 +8,7 @@
 
 		public string Email { get => GetUserEmail(); }
 
-		public List<UserRoleEnum> Roles { get => GetUserRoles(); }
+		public List<UserRole> Roles { get => GetUserRoles(); }
 
 		public UserClaimsService(IHttpContextAccessor context) {
 			_context = context;
@@ -28,8 +28,8 @@
 			return _context.HttpContext?.User.FindFirst(ClaimTypes.Name)?.Value ?? throw new ArgumentNullException(nameof(ClaimTypes.Name), "Cannot get user name from JWT.");
 		}
 
-		public List<UserRoleEnum> GetUserRoles() {
-			return _context.HttpContext?.User.FindAll(ClaimTypes.Role).Select(x => (UserRoleEnum) Enum.Parse(typeof(UserRoleEnum), x.Value)).ToList() ?? throw new ArgumentNullException(nameof(ClaimTypes.Role), "Cannot get user roles from JWT.");
+		public List<UserRole> GetUserRoles() {
+			return _context.HttpContext?.User.FindAll(ClaimTypes.Role).Select(x => (UserRole) Enum.Parse(typeof(UserRole), x.Value)).ToList() ?? throw new ArgumentNullException(nameof(ClaimTypes.Role), "Cannot get user roles from JWT.");
 		}
 	}
 }

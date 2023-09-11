@@ -14,7 +14,7 @@
 				return ResultCommand.NotFound("The requested pipeline could not be found.", "pipelineNotFound");
 			}
 
-			if (pipeline.Status == PipelineStatusEnum.Running) {
+			if (pipeline.Status == PipelineStatus.Running) {
 				var avg = await _unitOfWork.PipelineLogsRepository.DurationAverage(request.Id);
 				var estimatedCompletionTime = DateTime.UtcNow.AddTicks((long)avg);
 
@@ -22,9 +22,9 @@
 				return ResultCommand.Locked(response);
 			}
 
-			pipeline.Status = pipeline.Status == PipelineStatusEnum.Stopped
-				? PipelineStatusEnum.Awaiting
-				: PipelineStatusEnum.Stopped;
+			pipeline.Status = pipeline.Status == PipelineStatus.Stopped
+				? PipelineStatus.Awaiting
+				: PipelineStatus.Stopped;
 			pipeline.UpdatedBy = _claims.Id;
 			pipeline.LastUpdate = DateTime.UtcNow;
 

@@ -16,7 +16,7 @@ public partial class ConnectorFunctionInput {
 	public string Placeholder { get; set; } = null!;
 
 	[Column("type")]
-	public InputTypeEnum Type { get; set; }
+	public InputType Type { get; set; }
 
 	[Required]
 	[Column("required")]

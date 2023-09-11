@@ -2,18 +2,16 @@
 	public class CreateFirstSetupCommandHandler : IRequestHandler<CreateFirstSetupCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IDistributedCache _cache;
+		private readonly IOptions<AppConfiguration> _appConfiguration;
 
-		private const string ConfigurationKey = "configurations";
-		private const string DefaultOs = "debian";
-		private const string DefaultOsVersion = "11.6";
-
-		public CreateFirstSetupCommandHandler(IUnitOfWork unitOfWork, IDistributedCache cache) {
+		public CreateFirstSetupCommandHandler(IUnitOfWork unitOfWork, IDistributedCache cache, IOptions<AppConfiguration> appConfiguration) {
 			_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			_cache = cache ?? throw new ArgumentNullException(nameof(cache));
+			_appConfiguration = appConfiguration ?? throw new ArgumentNullException(nameof(appConfiguration));
 		}
 
 		public async Task<IResultCommand> Handle(CreateFirstSetupCommand request, CancellationToken cancellationToken) {
-			var configurations = await _cache.GetStringAsync(ConfigurationKey);
+			var configurations = await _cache.GetStringAsync(_appConfiguration.Value.ConfigurationKey, cancellationToken);
 			if (configurations is not null) {
 				return ResultCommand.Forbidden("The system has already been set up and configured.", "alreadyConfigured");
 			}
@@ -29,7 +27,7 @@
 				Name = request.UserName,
 				Email = request.UserEmail,
 				Password = PasswordService.HashPassword(request.UserPassword),
-				Role = UserRoleEnum.Admin,
+				Role = UserRole.Admin,
 				FirstAccess = false,
 				Active = true,
 				CreatedBy = userId,
@@ -41,7 +39,7 @@
 			_unitOfWork.UserRepository.Add(user);
 			await _unitOfWork.Commit();
 
-			var systemConfiguration = new SystemConfiguration(request.RegistryAddress, request.RegistryEmail, request.RegistryUsername, request.RegistryPassword, DefaultOs, DefaultOsVersion, false);
+			var systemConfiguration = new SystemConfiguration(request.RegistryAddress, request.RegistryEmail, request.RegistryUsername, request.RegistryPassword, _appConfiguration.Value.RunnerImage, _appConfiguration.Value.RunnerTag, false);
 			await _cache.SetStringAsync("configurations", JsonSerializer.Serialize(systemConfiguration), cancellationToken);
 
 			return ResultCommand.Created<User, UserViewModel>(user);

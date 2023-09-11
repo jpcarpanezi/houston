@@ -3,11 +3,11 @@
 		Guid Id { get; }
 		string Name { get; }
 		string Email { get; }
-		List<UserRoleEnum> Roles { get; }
+		List<UserRole> Roles { get; }
 
 		Guid GetUserId();
 		string GetUserEmail();
 		string GetUserName();
-		List<UserRoleEnum> GetUserRoles(); 
+		List<UserRole> GetUserRoles(); 
 	}
 }

@@ -2,7 +2,7 @@
 	"watch": [
 		"app"
 	],
-	"ext": ".js",
-	"ignore": [],
-	"exec": "node ./app/index.js"
+	"ext": ".ts, .js",
+	"ignore": ["app/scripts"],
+	"exec": "npx ts-node --files ./app/index.ts"
 }

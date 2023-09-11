@@ -8,6 +8,6 @@
 
 		public bool Active { get; set; }
 
-		public UserRoleEnum Role { get; set; }
+		public UserRole Role { get; set; }
 	}
 }

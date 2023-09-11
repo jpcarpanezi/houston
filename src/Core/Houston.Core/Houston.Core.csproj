@@ -7,7 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Proto\Houston\v1\git.proto" />
+    <None Remove="Proto\Houston\v1\houston.proto" />
+    <None Remove="Proto\Houston\v1\pipeline.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Google.Protobuf" Version="3.24.2" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.56.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.57.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.9">
       <PrivateAssets>all</PrivateAssets>
@@ -20,6 +32,13 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+
   </ItemGroup>
 
+  <ItemGroup>
+    <Protobuf Include="Proto\Houston\v1\git.proto" GrpcServices="Client" ProtoRoot="Proto\Houston\v1" />
+    <Protobuf Include="Proto\Houston\v1\pipeline.proto" GrpcServices="Client" ProtoRoot="Proto\Houston\v1" />
+	<Protobuf Include="Proto\Houston\v1\houston.proto" GrpcServices="None" ProtoRoot="Proto\Houston\v1" />
+  </ItemGroup>
+	
 </Project>

@@ -2,10 +2,12 @@
 	public class CreateConnectorFunctionCommandHandler : IRequestHandler<CreateConnectorFunctionCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _claims;
+		private readonly IPublishEndpoint _eventBus;
 
-		public CreateConnectorFunctionCommandHandler(IUnitOfWork unitOfWork, IUserClaimsService claims) {
+		public CreateConnectorFunctionCommandHandler(IUnitOfWork unitOfWork, IUserClaimsService claims, IPublishEndpoint eventBus) {
 			_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
+			_eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
 		}
 
 		public async Task<IResultCommand> Handle(CreateConnectorFunctionCommand request, CancellationToken cancellationToken) {
@@ -42,6 +44,9 @@
 				Active = true,
 				ConnectorId = request.ConnectorId,
 				Script = request.Script,
+				Package = request.Package,
+				Version = request.Version,
+				BuildStatus = BuildStatus.Unknown,
 				CreatedBy = _claims.Id,
 				CreationDate = DateTime.UtcNow,
 				UpdatedBy = _claims.Id,
@@ -52,6 +57,8 @@
 			_unitOfWork.ConnectorFunctionInputRepository.AddRange(connectorFunctionInputs);
 
 			await _unitOfWork.Commit();
+
+			await _eventBus.Publish(new BuildConnectorFunctionMessage(connectorFunctionId), cancellationToken);
 
 			return ResultCommand.Created<ConnectorFunction, ConnectorFunctionViewModel>(connectorFunction);
 		}

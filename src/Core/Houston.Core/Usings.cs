@@ -13,3 +13,4 @@ global using Houston.Core.Enums;
 global using Houston.Core.Models;
 global using Houston.Core.Entities.Postgres;
 global using Houston.Core.Models.GitHub.Base;
+global using Houston.Core.Proto.Houston.v1;

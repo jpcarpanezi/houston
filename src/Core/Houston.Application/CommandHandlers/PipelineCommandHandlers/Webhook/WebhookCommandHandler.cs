@@ -33,8 +33,8 @@
 
 			var runPipeline = webhookService.RunPipeline(request.JsonPayload, pipelineTriggerEvents);
 
-			if (runPipeline) {
-				await _eventBus.Publish(new RunPipelineMessage(request.PipelineId, null), cancellationToken);
+			if (runPipeline.ShouldRun) {
+				await _eventBus.Publish(new RunPipelineMessage(request.PipelineId, null, runPipeline.Branch!), cancellationToken);
 			}
 
 			return ResultCommand.NoContent();

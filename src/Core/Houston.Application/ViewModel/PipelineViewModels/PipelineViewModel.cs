@@ -6,7 +6,7 @@
 
 		public string? Description { get; set; }
 
-		public PipelineStatusEnum Status { get; set; }
+		public PipelineStatus Status { get; set; }
 
 		public string CreatedBy { get; set; } = null!;
 

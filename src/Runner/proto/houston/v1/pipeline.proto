@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package houston.v1.pipeline;
+
+service PipelineService {
+	rpc RunPipeline (RunPipelineRequest) returns (RunPipelineResponse) { }
+	rpc BuildConnectorFunction (BuildConnectorFunctionRequest) returns (BuildConnectorFunctionResponse) { }
+}
+
+message RunPipelineRequest {
+	bytes files = 1;
+	repeated string scripts = 2;
+}
+
+message RunPipelineResponse {
+	int32 exit_code = 1;
+	repeated RunPipelineInstruction instructions = 2;
+}
+
+message RunPipelineInstruction {
+	string script = 1;
+	bool has_error = 2;
+	optional string stdout = 3;
+	optional string stderr = 4;
+}
+
+message BuildConnectorFunctionRequest {
+	bytes files = 1;
+}
+
+message BuildConnectorFunctionResponse {
+	int32 exit_code = 1;
+	optional bytes dist = 2;
+	optional string type = 3;
+	optional string stderr = 4;
+}

@@ -18,7 +18,7 @@ public partial class User {
 	public string Password { get; set; } = null!;
 
 	[Column("role")]
-	public UserRoleEnum Role { get; set; }
+	public UserRole Role { get; set; }
 
 	[Required]
 	[Column("active")]

@@ -2,10 +2,12 @@
 	public class UpdateConnectorFunctionCommandHandler : IRequestHandler<UpdateConnectorFunctionCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _claims;
+		private readonly IPublishEndpoint _eventBus;
 
-		public UpdateConnectorFunctionCommandHandler(IUnitOfWork unitOfWork, IUserClaimsService claims) {
+		public UpdateConnectorFunctionCommandHandler(IUnitOfWork unitOfWork, IUserClaimsService claims, IPublishEndpoint eventBus) {
 			_unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			_claims = claims ?? throw new ArgumentNullException(nameof(claims));
+			_eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
 		}
 
 		public async Task<IResultCommand> Handle(UpdateConnectorFunctionCommand request, CancellationToken cancellationToken) {
@@ -14,9 +16,17 @@
 				return ResultCommand.NotFound("The requested connector function could not be found.", "connectorFunctionNotFound");
 			}
 
+			var buildScript = false;
+			if (request.Script != connectorFunction.Script || request.Package != connectorFunction.Package) {
+				buildScript = true;
+			}
+			
 			connectorFunction.Name = request.Name;
 			connectorFunction.Description = request.Description;
 			connectorFunction.Script = request.Script;
+			connectorFunction.Package = request.Package;
+			connectorFunction.Version = request.Version;
+			connectorFunction.BuildStatus = BuildStatus.Unknown;
 			connectorFunction.UpdatedBy = _claims.Id;
 			connectorFunction.LastUpdate = DateTime.UtcNow;
 
@@ -65,6 +75,10 @@
 
 			_unitOfWork.ConnectorFunctionRepository.Update(connectorFunction);
 			await _unitOfWork.Commit();
+
+			if (buildScript) {
+				await _eventBus.Publish(new BuildConnectorFunctionMessage(connectorFunction.Id), cancellationToken);
+			}
 
 			return ResultCommand.Ok<ConnectorFunction, ConnectorFunctionViewModel>(connectorFunction);
 		}

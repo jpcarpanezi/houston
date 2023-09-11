@@ -8,7 +8,7 @@
 
 		public string Placeholder { get; set; } = null!;
 
-		public InputTypeEnum InputType { get; set; }
+		public InputType InputType { get; set; }
 
 		public bool Required { get; set; }
 
