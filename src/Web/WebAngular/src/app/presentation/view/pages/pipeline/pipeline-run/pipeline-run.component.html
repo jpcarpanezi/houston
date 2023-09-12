@@ -1,0 +1,18 @@
+<div class="w-full relative float-right" [class.hidden]="!isRunPipelineOpen">
+	<div tabindex="-1" aria-orientation="vertical" role="menu" class="absolute w-full md:w-auto right-0 top-3 text-left py-4 px-4 mb-4 bg-white dark:bg-slate-800 rounded-md shadow-lg min-w-max ring-1 ring-black ring-opacity-5 focus:outline-none" style="z-index: 100;">
+		<form [formGroup]="runPipelineForm" (submit)="submitRunPipeline()">
+			<div class="block">
+				<label for="name">Run from branch</label>
+				<input type="text" name="branch" id="branch" formControlName="branch" placeholder="Enter branch name" maxlength="50" class="w-full mb-2 text-input">
+				<app-form-errors controlName="branch" error="required">Pipeline name required.</app-form-errors>
+				<app-form-errors controlName="branch" error="maxlength">Maximum characters are 250.</app-form-errors>
+			</div>
+
+			<div class="block mt-4">
+				<button type="submit" class="btn-success" [class.spinner]="isLoading" [disabled]="isLoading">
+					<span class="spinner-text">Run</span>
+				</button>
+			</div>
+		</form>
+	</div>
+</div>

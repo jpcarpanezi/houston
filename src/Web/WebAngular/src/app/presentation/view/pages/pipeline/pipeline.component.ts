@@ -4,11 +4,8 @@ import { PipelineTriggerComponent } from './pipeline-trigger/pipeline-trigger.co
 import { PipelineInstructionsComponent } from './pipeline-instructions/pipeline-instructions.component';
 import { PipelineUseCaseInterface } from 'src/app/domain/interfaces/use-cases/pipeline-use-case.interface';
 import { ActivatedRoute } from '@angular/router';
-import { RunPipelineCommand } from 'src/app/domain/commands/pipeline-commands/run-pipeline.command';
 import Swal from 'sweetalert2';
-import { Subscription, exhaustMap, filter, find, interval, repeat, retry, share, skipWhile, startWith, switchMap, take, takeUntil, takeWhile, timer } from 'rxjs';
-import { PipelineStatus } from 'src/app/domain/enums/pipeline-status.enum';
-import { PipelineViewModel } from 'src/app/domain/view-models/pipeline.view-model';
+import { Subscription, interval, startWith, switchMap, takeWhile, timer } from 'rxjs';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 
 @Component({
@@ -56,27 +53,11 @@ export class PipelineComponent implements OnInit, OnDestroy {
 		this.pipelineTrigger!.isLoading = true;
 		this.pipelineInstructions!.isLoading = true;
 
-		this.pipelineUseCase.run({ id: this.pipelineId! }).subscribe({
-			next: () => this.checkPipelineStatus(),
-			error: (error: HttpErrorResponse[]) => this.pipelineStatusError(error[0])
-		});
-	}
-
-	private pipelineStatusError(error: HttpErrorResponse): void {
-		if (error.status == HttpStatusCode.Locked) {
-			Swal.fire("Already running", "The pipeline was already running. Please wait!", "warning").then(() => {
-				this.checkPipelineStatus();
-			});
-		} else {
-			Swal.fire("Error", "An error occurred while running the pipeline.", "error");
-			this.isRunning = false;
-			this.pipelineDetails!.isLoading = false;
-			this.pipelineTrigger!.isLoading = false;
-			this.pipelineInstructions!.isLoading = false;
-		}
+		this.checkPipelineStatus();
 	}
 
 	private checkPipelineStatus(): void {
+		console.log("teste");
 		timer(10000).pipe(
 			switchMap(() => interval(5000).pipe(
 				startWith(0),
