@@ -57,7 +57,6 @@ export class PipelineComponent implements OnInit, OnDestroy {
 	}
 
 	private checkPipelineStatus(): void {
-		console.log("teste");
 		timer(10000).pipe(
 			switchMap(() => interval(5000).pipe(
 				startWith(0),
