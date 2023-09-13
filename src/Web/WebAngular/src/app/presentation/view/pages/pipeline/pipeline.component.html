@@ -11,11 +11,13 @@
 			<span class="spinner-text">Save <fa-icon [icon]="['fas', 'floppy-disk']"></fa-icon></span>
 		</button>
 
-		<button type="button" class="w-full md:w-auto md:ml-5 mt-5 md:mt-0 btn-success" (click)="runPipeline()"
+		<button type="button" class="w-full md:w-auto md:ml-5 mt-5 md:mt-0 btn-success" (click)="pipelineRun.toggle($event)"
 			[class.spinner]="pipelineDetails.isLoading || pipelineTrigger.isLoading || pipelineInstructions.isLoading || isRunning"
 			[disabled]="pipelineDetails.isLoading || pipelineTrigger.isLoading || pipelineInstructions.isLoading || isRunning">
 			<span class="spinner-text">Run <fa-icon [icon]="['fas', 'play']"></fa-icon></span>
 		</button>
+
+		<app-pipeline-run #pipelineRun (run)="runPipeline()" [isLoading]="pipelineDetails.isLoading || pipelineTrigger.isLoading || pipelineInstructions.isLoading || isRunning"></app-pipeline-run>
 	</div>
 </div>
 

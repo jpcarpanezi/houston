@@ -8,6 +8,7 @@ import { PipelineDetailsComponent } from './pipeline-details/pipeline-details.co
 import { PipelineTriggerComponent } from './pipeline-trigger/pipeline-trigger.component';
 import { PipelineInstructionsComponent } from './pipeline-instructions/pipeline-instructions.component';
 import { PipelineTriggerKeysComponent } from './pipeline-trigger/pipeline-trigger-keys/pipeline-trigger-keys.component';
+import { PipelineRunComponent } from './pipeline-run/pipeline-run.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { PipelineTriggerKeysComponent } from './pipeline-trigger/pipeline-trigge
 		PipelineDetailsComponent,
 		PipelineTriggerComponent,
 		PipelineInstructionsComponent,
-		PipelineTriggerKeysComponent
+		PipelineTriggerKeysComponent,
+		PipelineRunComponent
 	],
 	imports: [
 		CommonModule,
