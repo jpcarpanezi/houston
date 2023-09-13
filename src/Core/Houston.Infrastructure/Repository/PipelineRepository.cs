@@ -21,7 +21,8 @@
 								.Include(x => x.PipelineInstructions.OrderBy(x => x.ConnectedToArrayIndex == null ? 0 : 1).ThenBy(x => x.ConnectedToArrayIndex))
 									.ThenInclude(x => x.PipelineInstructionInputs)
 										.ThenInclude(x => x.ConnectorFunctionInput)
-											.ThenInclude(x => x.ConnectorFunction)
+								.Include(x => x.PipelineInstructions)
+									.ThenInclude(x => x.ConnectorFunction)
 								.Include(x => x.PipelineTrigger)
 								.Where(x => x.Id == id && x.Active)
 								.FirstOrDefaultAsync();
