@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-
-namespace Houston.Core.Entities.Postgres;
+﻿namespace Houston.Core.Entities.Postgres;
 
 [Table("PipelineInstruction", Schema = "houston")]
 public partial class PipelineInstruction {
@@ -12,7 +10,7 @@ public partial class PipelineInstruction {
 	public Guid PipelineId { get; set; }
 
 	[Column("connector_function_id")]
-	public Guid ConnectorFunctionId { get; set; }
+	public Guid ConnectorFunctionHistoryId { get; set; }
 
 	[Column("connected_to_array_index")]
 	public int? ConnectedToArrayIndex { get; set; }
@@ -47,7 +45,7 @@ public partial class PipelineInstruction {
 	[InverseProperty(nameof(PipelineLog.PipelineInstruction))]
 	public virtual ICollection<PipelineLog> PipelineLogs { get; } = new List<PipelineLog>();
 
-	[ForeignKey(nameof(ConnectorFunctionId))]
-	[InverseProperty(nameof(Postgres.ConnectorFunction.PipelineInstructions))]
-	public virtual ConnectorFunction ConnectorFunction { get; set; } = null!;
+	[ForeignKey(nameof(ConnectorFunctionHistoryId))]
+	[InverseProperty(nameof(Postgres.ConnectorFunctionHistory.PipelineInstructions))]
+	public virtual ConnectorFunction ConnectorFunctionHistory { get; set; } = null!;
 }
