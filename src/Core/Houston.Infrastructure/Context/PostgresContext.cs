@@ -30,218 +30,32 @@ public partial class PostgresContext : DbContext {
 	public virtual DbSet<PipelineLog> PipelineLog { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder) {
-		modelBuilder.Entity<Connector>(entity => {
-			entity.HasKey(e => e.Id).HasName("Connector_pk");
+		modelBuilder.ApplyConfiguration(new ConnectorConfiguration());
 
-			entity.Property(e => e.Id).ValueGeneratedNever();
+		modelBuilder.ApplyConfiguration(new ConnectorFunctionConfiguration());
 
-			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ConnectorCreatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("fk_User_id_created_by");
+		modelBuilder.ApplyConfiguration(new ConnectorFunctionInputConfiguration());
 
-			entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.ConnectorUpdatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("fk_User_id_updated_by");
-		});
+		modelBuilder.ApplyConfiguration(new PipelineConfiguration());
 
-		modelBuilder.Entity<ConnectorFunction>(entity => {
-			entity.HasKey(e => e.Id).HasName("ConnectorFunction_pk");
+		modelBuilder.ApplyConfiguration(new PipelineInstructionConfiguration());
 
-			entity.Property(e => e.Id).ValueGeneratedNever();
+		modelBuilder.ApplyConfiguration(new PipelineInstructionInputConfiguration());
 
-			entity.HasOne(d => d.Connector).WithMany(p => p.ConnectorFunction)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("Connector_id_connector_id_fk");
+		modelBuilder.ApplyConfiguration(new PipelineTriggerConfiguration());
 
-			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ConnectorFunctionCreatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("User_id_created_by_fk");
+		modelBuilder.ApplyConfiguration(new PipelineTriggerEventConfiguration());
 
-			entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.ConnectorFunctionUpdatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("User_id_updated_by_fk");
-		});
+		modelBuilder.ApplyConfiguration(new PipelineTriggerFilterConfiguration());
 
-		modelBuilder.Entity<ConnectorFunctionInput>(entity => {
-			entity.HasKey(e => e.Id).HasName("ConnectorFunctionInput_pk");
+		modelBuilder.ApplyConfiguration(new TriggerEventConfiguration());
 
-			entity.Property(e => e.Id).ValueGeneratedNever();
+		modelBuilder.ApplyConfiguration(new TriggerFilterConfiguration());
 
-			entity.HasOne(d => d.ConnectorFunction).WithMany(p => p.ConnectorFunctionInputs)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("ConnectorFunction_id_connector_function_id_fk");
+		modelBuilder.ApplyConfiguration(new UserConfiguration());
 
-			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ConnectorFunctionInputCreatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("User_id_created_by_fk");
+		modelBuilder.ApplyConfiguration(new PipelineLogConfiguration());
 
-			entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.ConnectorFunctionInputUpdatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("User_id_updated_by_fk");
-		});
-
-		modelBuilder.Entity<Pipeline>(entity => {
-			entity.HasKey(e => e.Id).HasName("Pipeline_pk");
-
-			entity.Property(e => e.Id).ValueGeneratedNever();
-
-			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.PipelineCreatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("User_id_created_by_fk");
-
-			entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.PipelineUpdatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("User_id_updated_by_fk");
-		});
-
-		modelBuilder.Entity<PipelineInstruction>(entity => {
-			entity.HasKey(e => e.Id).HasName("PipelineInstruction_pk");
-
-			entity.Property(e => e.Id).ValueGeneratedNever();
-
-			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.PipelineInstructionCreatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("User_id_created_by_id");
-
-			entity.HasOne(d => d.Pipeline).WithMany(p => p.PipelineInstructions)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("Pipeline_id_pipeline_id_fk");
-
-			entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.PipelineInstructionUpdatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("User_id_updated_by_fk");
-
-			entity.HasOne(d => d.ConnectorFunction).WithMany(p => p.PipelineInstructions)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("PipelineInstruction_connector_function_id_fk");
-		});
-
-		modelBuilder.Entity<PipelineInstructionInput>(entity => {
-			entity.HasKey(e => e.Id).HasName("PipelineInstructionInput_pk");
-
-			entity.Property(e => e.Id).ValueGeneratedNever();
-
-			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.PipelineInstructionInputCreatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("User_id_created_by_fk");
-
-			entity.HasOne(d => d.ConnectorFunctionInput).WithMany(p => p.PipelineInstructionInputs)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("ConnectorFunctionInput_id_input_id_fk");
-
-			entity.HasOne(d => d.PipelineInstruction).WithMany(p => p.PipelineInstructionInputs)
-				.OnDelete(DeleteBehavior.Cascade)
-				.HasConstraintName("PipelineInstruction_id_input_id_fk");
-
-			entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.PipelineInstructionInputUpdatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("User_id_updated_by_fk");
-		});
-
-		modelBuilder.Entity<PipelineTrigger>(entity => {
-			entity.HasKey(e => e.Id).HasName("PipelineTrigger_pk");
-
-			entity.Property(e => e.Id).ValueGeneratedNever();
-
-			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.PipelineTriggerCreatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("User_id_created_by_fk");
-
-			entity.HasOne(d => d.Pipeline).WithOne(p => p.PipelineTrigger)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("Pipeline_id_pipeline_id_fk");
-
-			entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.PipelineTriggerUpdatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("User_id_updated_by_fk");
-		});
-
-		modelBuilder.Entity<PipelineTriggerEvent>(entity => {
-			entity.HasKey(e => e.Id).HasName("PipelineTriggerEvent_pk");
-
-			entity.Property(e => e.Id).ValueGeneratedNever();
-
-			entity.HasOne(d => d.PipelineTrigger).WithMany(p => p.PipelineTriggerEvents)
-				.OnDelete(DeleteBehavior.Cascade)
-				.HasConstraintName("PipelineTriggerEvent_pipeline_trigger_id_fk");
-
-			entity.HasOne(d => d.TriggerEvent).WithMany(p => p.PipelineTriggerEvents)
-				.OnDelete(DeleteBehavior.Cascade)
-				.HasConstraintName("PipelineTriggerEvent_trigger_event_id_fk");
-		});
-
-		modelBuilder.Entity<PipelineTriggerFilter>(entity => {
-			entity.HasKey(e => e.Id).HasName("PipelineTriggerFilter_pk");
-
-			entity.Property(e => e.Id).ValueGeneratedNever();
-
-			entity.HasOne(d => d.PipelineTriggerEvent).WithMany(p => p.PipelineTriggerFilters)
-				.OnDelete(DeleteBehavior.Cascade)
-				.HasConstraintName("PipelineTriggerFilter_pipeline_trigger_event_id_fk");
-
-			entity.HasOne(d => d.TriggerFilter).WithMany(p => p.PipelineTriggerFilters)
-				.OnDelete(DeleteBehavior.Cascade)
-				.HasConstraintName("PipelineTriggerFilter_trigger_filter_id_fk");
-		});
-
-		modelBuilder.Entity<TriggerEvent>(entity => {
-			entity.HasKey(e => e.Id).HasName("TriggerEvent_pk");
-
-			entity.Property(e => e.Id).ValueGeneratedNever();
-
-			entity.HasData(
-				new TriggerEvent { Id = Guid.Parse("c0437ca0-a971-4d40-99f6-2a3c35e6fb41"), Value = "push" },
-				new TriggerEvent { Id = Guid.Parse("e9b3eb7e-526b-4f89-968c-7cc0f60228cd"), Value = "pull_request" }
-			);
-		});
-
-		modelBuilder.Entity<TriggerFilter>(entity => {
-			entity.HasKey(e => e.Id).HasName("TriggerFilter_pk");
-
-			entity.Property(e => e.Id).ValueGeneratedNever();
-
-			entity.HasData(
-				new TriggerFilter { Id = Guid.Parse("24a42711-ed13-405b-8527-b5e53c680b4d"), Value = "branches" },
-				new TriggerFilter { Id = Guid.Parse("f7c800a4-1f05-478f-9a0b-46fed919eae2"), Value = "paths" },
-				new TriggerFilter { Id = Guid.Parse("aecde3fd-e2cf-4817-9701-178305697f46"), Value = "tags" },
-				new TriggerFilter { Id = Guid.Parse("e859f16a-588b-46e2-b9f4-f7b60051e387"), Value = "types" }
-			);
-		});
-
-		modelBuilder.Entity<User>(entity => {
-			entity.HasKey(e => e.Id).HasName("User_pk");
-
-			entity.Property(e => e.Id).ValueGeneratedNever();
-
-			entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.InverseCreatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("fk_User_id_created_by");
-
-			entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.InverseUpdatedByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("fk_User_id_updated_by");
-		});
-
-		modelBuilder.Entity<PipelineLog>(entity => {
-			entity.HasKey(e => e.Id).HasName("PipelineLog_pk");
-
-			entity.Property(e => e.Id).ValueGeneratedNever();
-
-			entity.HasOne(d => d.Pipeline).WithMany(p => p.PipelineLogs)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("Pipeline_id_pipeline_id_fk");
-
-			entity.HasOne(d => d.TriggeredByNavigation).WithMany(p => p.PipelineLogTriggeredByNavigation)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("User_id_triggered_by_fk");
-
-			entity.HasOne(d => d.PipelineInstruction).WithMany(p => p.PipelineLogs)
-				.OnDelete(DeleteBehavior.ClientSetNull)
-				.HasConstraintName("PipelineInstruction_id_instruction_with_error");
-		});
-
-		OnModelCreatingPartial(modelBuilder);
+		base.OnModelCreating(modelBuilder);
 	}
-
-	partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
