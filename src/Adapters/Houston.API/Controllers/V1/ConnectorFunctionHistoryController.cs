@@ -1,5 +1,6 @@
 ﻿using Houston.Application.CommandHandlers.ConnectorFunctionHistoryCommandHandlers.Create;
 using Houston.Application.CommandHandlers.ConnectorFunctionHistoryCommandHandlers.Delete;
+using Houston.Application.CommandHandlers.ConnectorFunctionHistoryCommandHandlers.Get;
 using Houston.Application.ViewModel.ConnectorFunctionHistoryViewModels;
 
 namespace Houston.API.Controllers.V1 {
@@ -31,5 +32,16 @@ namespace Houston.API.Controllers.V1 {
 		[ProducesResponseType((int)HttpStatusCode.NoContent)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		public async Task<IActionResult> Delete(Guid id) => await _mediator.Send(new DeleteConnectorFunctionHistoryCommand(id));
+
+		/// <summary>
+		/// Retrieves details of a connector function version by its unique identifier.
+		/// </summary>
+		/// <param name="id">The unique identifier of the connector function version to retrieve.</param>
+		/// <response code="200">Returns the details of the connector function version.</response>
+		/// <response code="404">The specified connector function version could not be found.</response>
+		[HttpGet("item/{id:guid}")]
+		[ProducesResponseType(typeof(ConnectorFunctionHistoryDetailViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
+		public async Task<IActionResult> Get(Guid id) => await _mediator.Send(new GetConnectorFunctionHistoryCommand(id));
 	}
 }
