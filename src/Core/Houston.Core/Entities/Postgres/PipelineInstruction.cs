@@ -47,5 +47,5 @@ public partial class PipelineInstruction {
 
 	[ForeignKey(nameof(ConnectorFunctionHistoryId))]
 	[InverseProperty(nameof(Postgres.ConnectorFunctionHistory.PipelineInstructions))]
-	public virtual ConnectorFunction ConnectorFunctionHistory { get; set; } = null!;
+	public virtual ConnectorFunctionHistory ConnectorFunctionHistory { get; set; } = null!;
 }

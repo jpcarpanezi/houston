@@ -6,7 +6,7 @@ public partial class ConnectorFunctionInput {
 	[Column("id")]
 	public Guid Id { get; set; }
 
-	[Column("connector_function_id")]
+	[Column("connector_function_history_id")]
 	public Guid ConnectorFunctionHistoryId { get; set; }
 
 	[Column("name", TypeName = "character varying")]

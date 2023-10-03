@@ -7,6 +7,8 @@ public partial class PostgresContext : DbContext {
 
 	public virtual DbSet<ConnectorFunction> ConnectorFunction { get; set; }
 
+	public virtual DbSet<ConnectorFunctionHistory> ConnectorFunctionHistory { get; set; }
+
 	public virtual DbSet<ConnectorFunctionInput> ConnectorFunctionInput { get; set; }
 
 	public virtual DbSet<Pipeline> Pipeline { get; set; }
@@ -33,6 +35,8 @@ public partial class PostgresContext : DbContext {
 		modelBuilder.ApplyConfiguration(new ConnectorConfiguration());
 
 		modelBuilder.ApplyConfiguration(new ConnectorFunctionConfiguration());
+
+		modelBuilder.ApplyConfiguration(new ConnectorFunctionHistoryConfiguration());
 
 		modelBuilder.ApplyConfiguration(new ConnectorFunctionInputConfiguration());
 
