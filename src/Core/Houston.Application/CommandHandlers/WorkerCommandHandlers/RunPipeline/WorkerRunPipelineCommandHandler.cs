@@ -47,20 +47,20 @@
 			using MemoryStream memoryStream = new();
 			using (var writer = WriterFactory.Open(memoryStream, ArchiveType.Tar, CompressionType.GZip)) {
 				foreach (var instruction in instructions) {
-					if (instruction.ConnectorFunction.PackageType is null || instruction.ConnectorFunction.ScriptDist is null || instruction.ConnectorFunction.BuildStatus != BuildStatus.Success) {
+					if (instruction.ConnectorFunctionHistory.PackageType is null || instruction.ConnectorFunctionHistory.ScriptDist is null || instruction.ConnectorFunctionHistory.BuildStatus != BuildStatus.Success) {
 						throw new ScriptBuildNotCompleteException(
 							"The script could not be compressed because build is not complete.",
-							instruction.ConnectorFunction.BuildStatus,
+							instruction.ConnectorFunctionHistory.BuildStatus,
 							instruction.Id,
-							instruction.ConnectorFunctionId,
-							instruction.ConnectorFunction.Name
+							instruction.ConnectorFunctionHistoryId,
+							instruction.ConnectorFunctionHistory.ConnectorFunction.Name
 						);
 					}
 
-					var packageJson = new { Type = instruction.ConnectorFunction.PackageType?.ToString().ToLower() };
+					var packageJson = new { Type = instruction.ConnectorFunctionHistory.PackageType?.ToString().ToLower() };
 					var package = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(packageJson, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
 
-					writer.Write($"{instruction.Id}/index.js", new MemoryStream(instruction.ConnectorFunction.ScriptDist), DateTime.Now);
+					writer.Write($"{instruction.Id}/index.js", new MemoryStream(instruction.ConnectorFunctionHistory.ScriptDist), DateTime.Now);
 					writer.Write($"{instruction.Id}/package.json", new MemoryStream(package), DateTime.Now);
 				}
 			}

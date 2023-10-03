@@ -10,10 +10,6 @@
 
 		public async Task<ConnectorFunction?> GetActive(Guid id) {
 			return await Context.ConnectorFunction
-								   .Include(x => x.ConnectorFunctionInputs)
-										.ThenInclude(x => x.UpdatedByNavigation)
-								   .Include(x => x.ConnectorFunctionInputs)
-										.ThenInclude(x => x.CreatedByNavigation)
 								   .Include(x => x.UpdatedByNavigation)
 								   .Include(x => x.CreatedByNavigation)
 								   .Where(x => x.Id == id && x.Active)
@@ -24,7 +20,6 @@
 			return await Context.ConnectorFunction.Include(x => x.CreatedByNavigation)
 								 .Include(x => x.UpdatedByNavigation)
 								 .Include(x => x.Connector)
-								 .Include(x => x.ConnectorFunctionInputs)
 								 .OrderBy(x => x.Name)
 								 .Where(x => x.ConnectorId == connectorId && x.Active && x.Connector.Active)
 								 .Skip(pageSize * pageIndex)
@@ -33,15 +28,11 @@
 		}
 
 		public async Task<List<ConnectorFunction>> GetByIdList(List<Guid> ids) {
-			return await Context.ConnectorFunction.Include(x => x.ConnectorFunctionInputs).Where(x => ids.Contains(x.Id)).ToListAsync();
+			return await Context.ConnectorFunction.Where(x => ids.Contains(x.Id)).ToListAsync();
 		}
 
 		public async Task<ConnectorFunction?> GetByIdWithInputs(Guid id) {
 			return await Context.ConnectorFunction
-								   .Include(x => x.ConnectorFunctionInputs)
-										.ThenInclude(x => x.UpdatedByNavigation)
-								   .Include(x => x.ConnectorFunctionInputs)
-										.ThenInclude(x => x.CreatedByNavigation)
 								   .Include(x => x.UpdatedByNavigation)
 								   .Include(x => x.CreatedByNavigation)
 								   .Where(x => x.Id == id)
