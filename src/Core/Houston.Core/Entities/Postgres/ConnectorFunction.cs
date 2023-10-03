@@ -42,9 +42,6 @@ public partial class ConnectorFunction {
 	[InverseProperty(nameof(User.ConnectorFunctionUpdatedByNavigation))]
 	public virtual User UpdatedByNavigation { get; set; } = null!;
 
-	[InverseProperty(nameof(PipelineInstruction.ConnectorFunction))]
-	public virtual ICollection<PipelineInstruction> PipelineInstructions { get; } = new List<PipelineInstruction>();
-
 	[InverseProperty(nameof(ConnectorFunctionHistory.ConnectorFunction))]
 	public virtual ICollection<ConnectorFunctionHistory> ConnectorFunctionHistories { get; } = new List<ConnectorFunctionHistory>();
 }
