@@ -11,6 +11,11 @@
 		}
 
 		public async Task<IResultCommand> Handle(CreateConnectorFunctionHistoryCommand request, CancellationToken cancellationToken) {
+			var connectorFunction = await _unitOfWork.ConnectorFunctionRepository.GetActive(request.ConnectorFunctionId);
+			if (connectorFunction is null) {
+				return ResultCommand.NotFound("The requested connector function could not be found.", "connectorFunctionNotFound");
+			}
+
 			var connectorFunctionInputs = new List<ConnectorFunctionInput>();
 			var connectorFunctionHistoryId = Guid.NewGuid();
 
@@ -37,7 +42,7 @@
 				}
 			}
 
-			var connectorFunction = new ConnectorFunctionHistory {
+			var connectorFunctionHistory = new ConnectorFunctionHistory {
 				Id = connectorFunctionHistoryId,
 				Active = true,
 				ConnectorFunctionId = request.ConnectorFunctionId,
@@ -51,14 +56,14 @@
 				LastUpdate = DateTime.UtcNow
 			};
 
-			_unitOfWork.ConnectorFunctionHistoryRepository.Add(connectorFunction);
+			_unitOfWork.ConnectorFunctionHistoryRepository.Add(connectorFunctionHistory);
 			_unitOfWork.ConnectorFunctionInputRepository.AddRange(connectorFunctionInputs);
 
 			await _unitOfWork.Commit();
 
 			await _eventBus.Publish(new BuildConnectorFunctionMessage(connectorFunctionHistoryId), cancellationToken);
 
-			return ResultCommand.Created<ConnectorFunctionHistory, ConnectorFunctionHistoryDetailViewModel>(connectorFunction);
+			return ResultCommand.Created<ConnectorFunctionHistory, ConnectorFunctionHistoryDetailViewModel>(connectorFunctionHistory);
 		}
 	}
 }
