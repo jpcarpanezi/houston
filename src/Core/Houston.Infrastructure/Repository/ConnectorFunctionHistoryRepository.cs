@@ -16,5 +16,9 @@
 												.Where(x => x.Id == id && x.Active && x.ConnectorFunction.Active)
 												.FirstOrDefaultAsync();
 		}
+
+		public async Task<bool> VersionExists(Guid connectorFunctionId, string version) {
+			return await Context.ConnectorFunctionHistory.AnyAsync(x => x.ConnectorFunctionId == connectorFunctionId && x.Version == version);
+		}
 	}
 }

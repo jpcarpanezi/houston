@@ -16,6 +16,11 @@
 				return ResultCommand.NotFound("The requested connector function could not be found.", "connectorFunctionNotFound");
 			}
 
+			var versionExists = await _unitOfWork.ConnectorFunctionHistoryRepository.VersionExists(request.ConnectorFunctionId, request.Version);
+			if (versionExists) {
+				return ResultCommand.Conflict("The requested version already exists.", "versionAlreadyExists");
+			}
+
 			var connectorFunctionInputs = new List<ConnectorFunctionInput>();
 			var connectorFunctionHistoryId = Guid.NewGuid();
 

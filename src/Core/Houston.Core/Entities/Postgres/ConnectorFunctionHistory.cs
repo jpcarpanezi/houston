@@ -1,6 +1,7 @@
 ﻿namespace Houston.Core.Entities.Postgres;
 
 [Table("ConnectorFunctionHistory", Schema = "houston")]
+[Index("Version", Name = "ConnectorFunctionHistory_version_index", IsUnique = false)]
 public class ConnectorFunctionHistory {
 	[Key]
 	[Column("id")]
