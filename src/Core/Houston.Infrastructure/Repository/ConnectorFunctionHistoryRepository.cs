@@ -20,5 +20,9 @@
 		public async Task<bool> VersionExists(Guid connectorFunctionId, string version) {
 			return await Context.ConnectorFunctionHistory.AnyAsync(x => x.ConnectorFunctionId == connectorFunctionId && x.Version == version);
 		}
+
+		public async Task<List<ConnectorFunctionHistory>> GetByIdList(List<Guid> ids) {
+			return await Context.ConnectorFunctionHistory.Include(x => x.ConnectorFunctionInputs).Where(x => ids.Contains(x.Id)).ToListAsync();
+		}
 	}
 }

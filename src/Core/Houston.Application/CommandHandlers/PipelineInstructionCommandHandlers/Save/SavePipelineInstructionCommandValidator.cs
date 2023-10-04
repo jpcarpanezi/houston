@@ -9,4 +9,11 @@
 			RuleForEach(x => x.PipelineInstructions).SetValidator(new SavePipelineInstructionValidator());
 		}
 	}
+
+	public class SavePipelineInstructionValidator : AbstractValidator<SavePipelineInstruction> {
+		public SavePipelineInstructionValidator() {
+			RuleFor(x => x.ConnectorFunctionHistoryId)
+				.NotNull().WithMessage(ValidatorsModelErrorMessages.Null);
+		}
+	}
 }

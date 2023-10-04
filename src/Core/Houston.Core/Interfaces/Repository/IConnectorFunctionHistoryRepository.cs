@@ -5,5 +5,7 @@
 		Task<ConnectorFunctionHistory?> GetActive(Guid id);
 
 		Task<bool> VersionExists(Guid connectorFunctionId, string version);
+
+		Task<List<ConnectorFunctionHistory>> GetByIdList(List<Guid> ids);
 	}
 }

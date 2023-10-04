@@ -9,7 +9,7 @@ public partial class PipelineInstruction {
 	[Column("pipeline_id")]
 	public Guid PipelineId { get; set; }
 
-	[Column("connector_function_id")]
+	[Column("connector_function_history_id")]
 	public Guid ConnectorFunctionHistoryId { get; set; }
 
 	[Column("connected_to_array_index")]
