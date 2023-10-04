@@ -11,7 +11,7 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorFunctionCommandHandlers {
 		[Test]
 		public async Task Handle_WithValidRequest_ShouldReturnCreatedObject() {
 			// Arrange
-			var handler = new CreateConnectorFunctionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object, _mockPublishEndpoint.Object);
+			var handler = new CreateConnectorFunctionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var request = _fixture.Create<CreateConnectorFunctionCommand>();
 			_mockUnitOfWork.Setup(x => x.ConnectorFunctionRepository).Returns(Mock.Of<IConnectorFunctionRepository>);
 			_mockUnitOfWork.Setup(x => x.ConnectorFunctionInputRepository).Returns(Mock.Of<IConnectorFunctionInputRepository>);
@@ -22,9 +22,13 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorFunctionCommandHandlers {
 
 			// Assert
 			_mockUnitOfWork.Verify(x => x.ConnectorFunctionRepository.Add(It.IsAny<ConnectorFunction>()), Times.Once);
-			_mockUnitOfWork.Verify(x => x.ConnectorFunctionInputRepository.AddRange(It.IsAny<List<ConnectorFunctionInput>>()), Times.Once);
 			_mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
-			_mockPublishEndpoint.Verify(x => x.Publish(It.IsAny<BuildConnectorFunctionMessage>(), default), Times.Once);
+
+			result.Should().BeOfType<SuccessResultCommand<ConnectorFunction, ConnectorFunctionViewModel>>();
+
+			var successResult = result as SuccessResultCommand<ConnectorFunction, ConnectorFunctionViewModel>;
+			successResult?.StatusCode.Should().Be(HttpStatusCode.Created);
+			successResult?.Response.Should().BeOfType<ConnectorFunction>();
 		}
-	}
+	} 
 }
