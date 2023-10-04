@@ -1,6 +1,7 @@
 ﻿using Houston.Application.CommandHandlers.ConnectorFunctionHistoryCommandHandlers.Create;
 using Houston.Application.CommandHandlers.ConnectorFunctionHistoryCommandHandlers.Delete;
 using Houston.Application.CommandHandlers.ConnectorFunctionHistoryCommandHandlers.Get;
+using Houston.Application.CommandHandlers.ConnectorFunctionHistoryCommandHandlers.Update;
 using Houston.Application.ViewModel.ConnectorFunctionHistoryViewModels;
 
 namespace Houston.API.Controllers.V1 {
@@ -43,5 +44,16 @@ namespace Houston.API.Controllers.V1 {
 		[ProducesResponseType(typeof(ConnectorFunctionHistoryDetailViewModel), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
 		public async Task<IActionResult> Get(Guid id) => await _mediator.Send(new GetConnectorFunctionHistoryCommand(id));
+
+		/// <summary>
+		/// Updates a connector function version with the provided data.
+		/// </summary>
+		/// <param name="command">The data to update the connector function version.</param>
+		/// <response code="200">Returns the updated details of the connector function version.</response>
+		/// <response code="404">The specified connector function version could not be found.</response>
+		[HttpPut]
+		[ProducesResponseType(typeof(ConnectorFunctionHistoryDetailViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
+		public async Task<IActionResult> Update([FromBody] UpdateConnectorFunctionHistoryCommand command) => await _mediator.Send(command);
 	}
 }

@@ -6,6 +6,7 @@
 			return await Context.ConnectorFunctionHistory
 								   .Include(x => x.UpdatedByNavigation)
 								   .Include(x => x.CreatedByNavigation)
+								   .Include(x => x.ConnectorFunctionInputs)
 								   .Where(x => x.Id == id)
 								   .FirstOrDefaultAsync();
 		}

@@ -3,6 +3,7 @@
 		public const string MaxLength = "The input exceeds the maximum length allowed.";
 		public const string NullOrEmpty = "The input cannot be null or empty.";
 		public const string Null = "The input cannot be null.";
+		public const string Empty = "The input cannot be empty.";
 		public const string MinLength = "The input does not meet the minimum length requirement.";
 		public const string Email = "The input is not a valid email address.";
 		public const string URL = "The input is not a valid URL.";

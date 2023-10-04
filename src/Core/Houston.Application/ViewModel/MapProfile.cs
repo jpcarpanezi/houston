@@ -18,6 +18,7 @@
 				.ForMember(dest => dest.UpdatedBy, m => m.MapFrom(src => src.UpdatedByNavigation.Name));
 
 			CreateMap<ConnectorFunctionHistory, ConnectorFunctionHistoryDetailViewModel>()
+				.ForMember(dest => dest.Inputs, m => m.MapFrom(src => src.ConnectorFunctionInputs))
 				.ForMember(dest => dest.CreatedBy, m => m.MapFrom(src => src.CreatedByNavigation.Name))
 				.ForMember(dest => dest.UpdatedBy, m => m.MapFrom(src => src.UpdatedByNavigation.Name));
 

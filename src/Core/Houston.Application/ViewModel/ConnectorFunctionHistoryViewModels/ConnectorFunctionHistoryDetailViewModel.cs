@@ -10,6 +10,8 @@
 
 		public byte[] Package { get; set; } = null!;
 
+		public List<ConnectorFunctionInputViewModel> Inputs { get; set; } = new List<ConnectorFunctionInputViewModel>();
+
 		public BuildStatus BuildStatus { get; set; }
 
 		public byte[]? BuildStderr { get; set; }
