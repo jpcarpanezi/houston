@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace Houston.Application.CommandHandlers.ConnectorFunctionHistoryCommandHandlers.Update {
+﻿namespace Houston.Application.CommandHandlers.ConnectorFunctionHistoryCommandHandlers.Update {
 	public class UpdateConnectorFunctionHistoryCommandHandler : IRequestHandler<UpdateConnectorFunctionHistoryCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _claims;
