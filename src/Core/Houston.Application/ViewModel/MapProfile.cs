@@ -13,6 +13,7 @@
 				.ForMember(dest => dest.UpdatedBy, m => m.MapFrom(src => src.UpdatedByNavigation.Name));
 
 			CreateMap<ConnectorFunction, ConnectorFunctionViewModel>()
+				.ForMember(dest => dest.Versions, m => m.MapFrom(src => src.ConnectorFunctionHistories))
 				.ForMember(dest => dest.CreatedBy, m => m.MapFrom(src => src.CreatedByNavigation.Name))
 				.ForMember(dest => dest.UpdatedBy, m => m.MapFrom(src => src.UpdatedByNavigation.Name));
 
