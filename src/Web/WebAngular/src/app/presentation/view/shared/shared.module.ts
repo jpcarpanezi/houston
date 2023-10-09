@@ -15,9 +15,10 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { RouterModule } from '@angular/router';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ModalComponent } from './modal/modal.component';
-import {MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipModule} from '@angular/material/tooltip';
+import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipModule } from '@angular/material/tooltip';
 import { NgxJdenticonModule } from 'ngx-jdenticon';
 import { InfraModule } from 'src/app/infra/infra.module';
+import { PaginatorComponent } from './paginator/paginator.component';
 
 
 
@@ -30,7 +31,8 @@ import { InfraModule } from 'src/app/infra/infra.module';
 		SettingsComponent,
 		SearchBarComponent,
   		SidebarComponent,
-    	ModalComponent
+    	ModalComponent,
+     	PaginatorComponent
 	],
 	imports: [
 		CommonModule,
@@ -48,6 +50,7 @@ import { InfraModule } from 'src/app/infra/infra.module';
 		NgxLoaderIndicatorDirective,
 		SidebarComponent,
 		ModalComponent,
+		PaginatorComponent,
 		MatTooltipModule,
 		InfraModule
 	],

@@ -1,5 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { ColumnMode, DatatableComponent } from '@swimlane/ngx-datatable';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ConnectorFunctionUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-function-use-case.interface';
 import { ConnectorUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-use-case.interface';
 import { ConnectorFunctionViewModel } from 'src/app/domain/view-models/connector-function.view-model';
@@ -12,17 +11,14 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-connectors',
   templateUrl: './connectors.component.html',
-  styleUrls: ['./connectors.component.css']
+  styleUrls: ['./connectors.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ConnectorsComponent implements OnInit {
-	@ViewChild("connectorsTable") public connectorsTable?: DatatableComponent;
 	public page: PageViewModel = new PageViewModel();
-	public rows: ConnectorViewModel[] = [];
-	public expanded: ConnectorViewModel = {} as ConnectorViewModel;
-	public columns = [
-		{prop: "name", name: "Name"}
-	];
-	public columnMode: ColumnMode = ColumnMode.force;
+	public connectors: ConnectorViewModel[] = [];
+	public activeConnector?: string;
+	public connectorFunctions: ConnectorFunctionViewModel[] = [];
 	public isLoading: boolean = true;
 
 	constructor(
@@ -30,24 +26,32 @@ export class ConnectorsComponent implements OnInit {
 		private connectorFunctionUseCase: ConnectorFunctionUseCaseInterface
 	) { }
 
-	ngOnInit(): void {
-		this.page.pageSize = 10;
-		this.page.pageIndex = 0;
-		this.setPage({offset: 0});
-	}
+	ngOnInit(): void {	}
 
 	setPage(pageInfo: any): void {
 		this.isLoading = true;
-		this.page.pageIndex = pageInfo.offset;
+		this.page.pageIndex = pageInfo.currentPage == 0 ? pageInfo.currentPage : pageInfo.currentPage - 1;
+		this.page.pageSize = pageInfo.pageSize ?? 5;
 
 		this.connectorUseCase.getAll(this.page.pageSize, this.page.pageIndex).subscribe({
 			next: (response: PaginatedItemsViewModel<ConnectorViewModel>) => {
 				this.page.pageIndex = response.pageIndex;
 				this.page.pageSize = response.pageSize;
 				this.page.count = response.count;
-				this.rows = response.data;
+				this.connectors = response.data;
 			},
 			error: () => Swal.fire("Error", "An error has occurred while trying to get the connectors.", "error")
+		}).add(() => this.isLoading = false);
+	}
+
+	expandFunction(row: ConnectorViewModel, event: Event): void {
+		event.stopPropagation();
+		this.activeConnector = row.id;
+		this.isLoading = true;
+
+		this.connectorFunctionUseCase.getAll(row.id, 100, 0).subscribe({
+			next: (response: PaginatedItemsViewModel<ConnectorFunctionViewModel>) => this.connectorFunctions = response.data,
+			error: () => Swal.fire("Error", "An error has occurred while trying to get the connector functions.", "error")
 		}).add(() => this.isLoading = false);
 	}
 
@@ -78,10 +82,15 @@ export class ConnectorsComponent implements OnInit {
 			title: "Connector deleted"
 		});
 
-		this.setPage({ offset: this.page.pageIndex });
+		this.setPage({ currentPage: this.page.pageIndex });
 	}
 
-	deleteConnectorFunction(button: HTMLButtonElement, row: ConnectorViewModel, connectorFunctionId: string): void {
+	updateConnectorFunctionSubmit(row: ConnectorFunctionViewModel): void {
+		const index = this.connectorFunctions.findIndex(x => x.id == row.id);
+		this.connectorFunctions[index] = row;
+	}
+
+	deleteConnectorFunction(button: HTMLButtonElement, connectorFunctionId: string): void {
 		Swal.fire({
 			icon: "question",
 			title: "Are you sure?",
@@ -96,30 +105,12 @@ export class ConnectorsComponent implements OnInit {
 
 				this.connectorFunctionUseCase.delete(connectorFunctionId).subscribe({
 					next: () => Swal.fire("Deleted!", "The connector functions has been deleted.", "success").then(() => {
-						row.connectorFunctions = row.connectorFunctions.filter((connectorFunction: ConnectorFunctionViewModel) => connectorFunction.id !== connectorFunctionId);
+						const index = this.connectorFunctions.findIndex(x => x.id == connectorFunctionId);
+						this.connectorFunctions.splice(index, 1);
 					}),
 					error: () => Swal.fire("Error", "An error has occurred while trying to delete the connector function.", "error")
 				}).add(() => button.disabled = false);
 			}
 		});
-	}
-
-	toggleExpandRow(row: ConnectorViewModel, shrinked: boolean, rowIndex: number, button: HTMLButtonElement): void {
-		button.disabled = true;
-
-		if (shrinked) {
-			button.disabled = false;
-			this.rows[rowIndex].connectorFunctions = [];
-			this.connectorsTable?.rowDetail.toggleExpandRow(row);
-			return;
-		}
-
-		this.connectorFunctionUseCase.getAll(row.id, 100, 0).subscribe({
-			next: (response: PaginatedItemsViewModel<ConnectorFunctionViewModel>) => {
-				this.rows[rowIndex].connectorFunctions = response.data;
-				this.connectorsTable?.rowDetail.toggleExpandRow(row);
-			},
-			error: () => Swal.fire("Error", "An error has occurred while trying to get the connector functions.", "error")
-		}).add(() => button.disabled = false);
 	}
 }

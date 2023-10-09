@@ -5,6 +5,14 @@
 @import '~codemirror/lib/codemirror';
 @import '~codemirror/theme/material-darker';
 
+::-webkit-scrollbar {
+	@apply w-1 cursor-pointer h-2;
+}
+
+::-webkit-scrollbar-thumb {
+	@apply cursor-pointer bg-gray-300 hover:bg-gray-400 dark:bg-gray-900 dark:hover:bg-gray-950 rounded-lg;
+}
+
 .text-input {
 	@apply rounded-md shadow-sm dark:bg-gray-900 border-gray-300 focus:ring focus:border-indigo-300 focus:ring-indigo-200 focus:ring-opacity-50;
 }

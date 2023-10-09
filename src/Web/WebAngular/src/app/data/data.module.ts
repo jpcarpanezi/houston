@@ -17,6 +17,8 @@ import { PipelineInstructionRepositoryInterface } from '../domain/interfaces/rep
 import { PipelineInstructionRepositoryService } from './repositories/pipeline-instruction-repository.service';
 import { PipelineLogRepositoryInterface } from '../domain/interfaces/repositories/pipeline-log-repository.interface';
 import { PipelineLogRepositoryService } from './repositories/pipeline-log-repository.service';
+import { ConnectorFunctionHistoryRepositoryInterface } from '../domain/interfaces/repositories/connector-function-history-repository.interface';
+import { ConnectorFunctionHistoryRepositoryService } from './repositories/connector-function-history-repository.service';
 
 
 
@@ -31,6 +33,7 @@ import { PipelineLogRepositoryService } from './repositories/pipeline-log-reposi
 		{ provide: UserRepositoryInterface, useClass: UserRepositoryService },
 		{ provide: ConnectorRepositoryInterface, useClass: ConnectorRepositoryService },
 		{ provide: ConnectorFunctionRepositoryInterface, useClass: ConnectorFunctionRepositoryService },
+		{ provide: ConnectorFunctionHistoryRepositoryInterface, useClass: ConnectorFunctionHistoryRepositoryService },
 		{ provide: PipelineRepositoryInterface, useClass: PipelineRepositoryService },
 		{ provide: PipelineTriggerRepositoryInterface, useClass: PipelineTriggerRepositoryService },
 		{ provide: PipelineInstructionRepositoryInterface, useClass: PipelineInstructionRepositoryService },

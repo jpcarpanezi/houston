@@ -1,12 +1,13 @@
 import { InputType } from "../../enums/input-type.enum";
 
-export interface CreateConnectorFunctionInputCommand {
+export interface UpdateConnectorFunctionInputCommand {
+	id: string | null;
 	inputType: InputType;
 	name: string;
 	placeholder: string;
 	replace: string;
 	required: boolean;
-	defaultValue: string;
+	defaultValue : string | null;
 	values: string[];
-	advanced: boolean;
+	advancedOption: boolean;
 }

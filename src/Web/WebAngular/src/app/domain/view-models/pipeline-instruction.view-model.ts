@@ -3,8 +3,7 @@ import { PipelineInstructionInputViewModel } from "./pipeline-instruction-input.
 export interface PipelineInstructionViewModel {
 	id: string;
 	pipelineId: string;
-	connectorFunctionId: string;
-	connection: string;
-	script: string[];
+	connectorFunctionHistoryId: string;
+	connectedToArrayIndex: number | null;
 	pipelineInstructionInputs: PipelineInstructionInputViewModel[];
 }
