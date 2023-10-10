@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ConnectorFunctionHistoryUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-function-history-use-case.interface';
 import { ConnectorFunctionUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-function-use-case.interface';
 import { ConnectorUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-use-case.interface';
 import { ConnectorFunctionViewModel } from 'src/app/domain/view-models/connector-function.view-model';
@@ -25,7 +26,8 @@ export class ConnectorsComponent implements OnInit {
 
 	constructor(
 		private connectorUseCase: ConnectorUseCaseInterface,
-		private connectorFunctionUseCase: ConnectorFunctionUseCaseInterface
+		private connectorFunctionUseCase: ConnectorFunctionUseCaseInterface,
+		private connectorFunctionHistoryUseCase: ConnectorFunctionHistoryUseCaseInterface
 	) { }
 
 	ngOnInit(): void {	}
@@ -51,7 +53,7 @@ export class ConnectorsComponent implements OnInit {
 		this.activeConnector = row.id;
 		this.isConnectorFunctionsLoading = true;
 
-		this.connectorFunctionUseCase.getAll(row.id, 100, 0).subscribe({
+		this.connectorFunctionUseCase.getAll(row.id, 1000, 0).subscribe({
 			next: (response: PaginatedItemsViewModel<ConnectorFunctionViewModel>) => this.connectorFunctions = response.data,
 			error: () => Swal.fire("Error", "An error has occurred while trying to get the connector functions.", "error")
 		}).add(() => this.isConnectorFunctionsLoading = false);
@@ -119,6 +121,30 @@ export class ConnectorsComponent implements OnInit {
 				this.connectorFunctionUseCase.delete(connectorFunctionId).subscribe({
 					next: () => Swal.fire("Deleted!", "The connector functions has been deleted.", "success").then(() => {
 						const index = this.connectorFunctions.findIndex(x => x.id == connectorFunctionId);
+						this.connectorFunctions.splice(index, 1);
+					}),
+					error: () => Swal.fire("Error", "An error has occurred while trying to delete the connector function.", "error")
+				}).add(() => button.disabled = false);
+			}
+		});
+	}
+
+	deleteConnectorFunctionHistory(button: HTMLButtonElement, connectorFunctionHistoryId: string) {
+		Swal.fire({
+			icon: "question",
+			title: "Are you sure?",
+			text: "You won't be able to revert this!",
+			showDenyButton: true,
+			showConfirmButton: true,
+			confirmButtonText: "Yes, delete it",
+			denyButtonText: "No, cancel",
+		}).then((result) => {
+			if (result.isConfirmed) {
+				button.disabled = true;
+
+				this.connectorFunctionHistoryUseCase.delete(connectorFunctionHistoryId).subscribe({
+					next: () => Swal.fire("Deleted!", "The connector function version has been deleted.", "success").then(() => {
+						const index = this.connectorFunctions.findIndex(x => x.id == connectorFunctionHistoryId);
 						this.connectorFunctions.splice(index, 1);
 					}),
 					error: () => Swal.fire("Error", "An error has occurred while trying to delete the connector function.", "error")
