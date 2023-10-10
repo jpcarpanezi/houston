@@ -10,6 +10,9 @@ import { ConnectorFunctionViewModel } from 'src/app/domain/view-models/connector
 import { Toast } from 'src/app/infra/helpers/toast';
 import Swal from 'sweetalert2';
 import { ConnectorFunctionStderrComponent } from './connector-function-stderr/connector-function-stderr.component';
+import { ConnectorFunctionHistoryDetailViewModel } from 'src/app/domain/view-models/connector-function-history-detail.view-model';
+import { ConnectorFunctionHistoryUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-function-history-use-case.interface';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
 	selector: 'app-connector-function',
@@ -23,9 +26,9 @@ export class ConnectorFunctionComponent implements OnInit, OnDestroy {
 	public isLoading: boolean = false;
 	public connectorFunctionForm: FormGroup = this.initializeConnectorFunctionForm();
 
-	public connectorFunction?: ConnectorFunctionViewModel;
-	public connectorId?: string;
-	public connectorFunctionId?: string | null;
+	public connectorFunctionHistory?: ConnectorFunctionHistoryDetailViewModel;
+	public connectorFunctionId?: string;
+	public connectorFunctionHistoryId?: string | null;
 
 	public buildStatus?: BuildStatus;
 	public longPooling?: Subscription;
@@ -34,19 +37,19 @@ export class ConnectorFunctionComponent implements OnInit, OnDestroy {
 		private fb: FormBuilder,
 		private route: ActivatedRoute,
 		private router: Router,
-		private connectorFunctionUseCase: ConnectorFunctionUseCaseInterface
+		private connectorFunctionHistoryUseCase: ConnectorFunctionHistoryUseCaseInterface
 	) { }
 
 	ngOnInit(): void {
-		this.connectorId = this.route.snapshot.queryParams["connectorId"];
-		this.connectorFunctionId = this.route.snapshot.paramMap.get("id");
+		this.connectorFunctionId = this.route.snapshot.queryParams["connectorFunctionId"];
+		this.connectorFunctionHistoryId = this.route.snapshot.paramMap.get("id");
 
-		if (!this.connectorId && !this.connectorFunctionId) {
+		if (!this.connectorFunctionId && !this.connectorFunctionHistoryId) {
 			this.router.navigate(["/connectors"]);
 		}
 
-		if (this.connectorFunctionId) {
-			this.getConnectorFunction(this.connectorFunctionId);
+		if (this.connectorFunctionHistoryId) {
+			this.getConnectorFunction(this.connectorFunctionHistoryId);
 			this.triggerLongPooling();
 		}
 	}
@@ -58,22 +61,19 @@ export class ConnectorFunctionComponent implements OnInit, OnDestroy {
 	private triggerLongPooling(): void {
 		this.longPooling = interval(5000).pipe(
 			startWith(0),
-			switchMap(() => this.connectorFunctionUseCase.get(this.connectorFunctionId!)),
+			switchMap(() => this.connectorFunctionHistoryUseCase.get(this.connectorFunctionHistoryId!)),
 			takeWhile(x => x.buildStatus !== "Success" && x.buildStatus !== "Failed", true)
 		).subscribe({
-			next: (response: ConnectorFunctionViewModel) => this.buildStatus = response.buildStatus,
+			next: (response: ConnectorFunctionHistoryDetailViewModel) => this.buildStatus = response.buildStatus,
 			error: () => Swal.fire("Error", "An error has occurred while trying to get the connector function.", "error")
 		});
 	}
 
 	private initializeConnectorFunctionForm(): FormGroup {
 		return this.connectorFunctionForm = this.fb.group({
-			name: ["", [
+			version: ["", [
 				Validators.required,
-				Validators.maxLength(50)
-			]],
-			description: ["", [
-				Validators.maxLength(5000)
+				Validators.pattern(/^\d+\.\d+\.\d+$/)
 			]],
 			inputs: this.fb.array([]),
 		});
@@ -94,14 +94,14 @@ export class ConnectorFunctionComponent implements OnInit, OnDestroy {
 	private getConnectorFunction(connectorFunctionId: string): void {
 		this.isLoading = true;
 
-		this.connectorFunctionUseCase.get(connectorFunctionId).subscribe({
-			next: (response: ConnectorFunctionViewModel) => this.getConnectorFunctionNext(response),
+		this.connectorFunctionHistoryUseCase.get(connectorFunctionId).subscribe({
+			next: (response: ConnectorFunctionHistoryDetailViewModel) => this.getConnectorFunctionNext(response),
 			error: () => Swal.fire("Error", "An error has occurred while getting the connector function.", "error")
 		}).add(() => this.isLoading = false);
 	}
 
-	private getConnectorFunctionNext(response: ConnectorFunctionViewModel): void {
-		this.connectorFunction = response;
+	private getConnectorFunctionNext(response: ConnectorFunctionHistoryDetailViewModel): void {
+		this.connectorFunctionHistory = response;
 		this.buildStatus = response.buildStatus;
 
 		response.inputs?.forEach((input: ConnectorFunctionInputViewModel) => {
@@ -172,31 +172,36 @@ export class ConnectorFunctionComponent implements OnInit, OnDestroy {
 
 		const script: string | undefined = window.btoa(this.codeEditor?.codeMirror?.getDoc().getValue()!);
 		const packageJson: string | undefined = window.btoa(this.packageEditor?.codeMirror?.getDoc().getValue()!);
-		this.connectorFunctionForm.value["connectorId"] = this.connectorId;
+		this.connectorFunctionForm.value["connectorFunctionId"] = this.connectorFunctionId;
 		this.connectorFunctionForm.value["script"] = script;
 		this.connectorFunctionForm.value["package"] = packageJson;
-		this.connectorFunctionForm.value["version"] = "1.0.0";
 
-		if (this.connectorFunction) {
-			this.connectorFunctionForm.value["id"] = this.connectorFunction.id;
+		if (this.connectorFunctionHistory) {
+			this.connectorFunctionForm.value["id"] = this.connectorFunctionHistory.id;
 
-			this.connectorFunctionUseCase.update(this.connectorFunctionForm.value).subscribe({
-				next: (response: ConnectorFunctionViewModel) => {
+			this.connectorFunctionHistoryUseCase.update(this.connectorFunctionForm.value).subscribe({
+				next: (response: ConnectorFunctionHistoryDetailViewModel) => {
 					Toast.fire({
 						icon: "success",
 						title: "Updated successfully."
 					});
 
 					this.buildStatus = response.buildStatus;
-					this.connectorFunction = response;
+					this.connectorFunctionHistory = response;
 					this.triggerLongPooling();
 				},
 				error: () => Swal.fire("Error", "An error has occurred while updating the connector function.", "error")
 			}).add(() => this.connectorFunctionForm.enable());
 		} else {
-			this.connectorFunctionUseCase.create(this.connectorFunctionForm.value).subscribe({
-				next: (response: ConnectorFunctionViewModel) => this.router.navigate(["/connector-function", response.id]),
-				error: () => Swal.fire("Error", "An error has occurred while creating the connector function.", "error")
+			this.connectorFunctionHistoryUseCase.create(this.connectorFunctionForm.value).subscribe({
+				next: (response: ConnectorFunctionHistoryDetailViewModel) => this.router.navigate(["/connector-function", response.id]),
+				error: (error: HttpErrorResponse[]) => {
+					if (error[0].error["errorCode"] == "versionAlreadyExists") {
+						Swal.fire("Error", "A connector function with this version already exists.", "error");
+					} else {
+						Swal.fire("Error", "An error has occurred while creating the connector function.", "error");
+					}
+				}
 			}).add(() => this.connectorFunctionForm.enable());
 		}
 	}
@@ -214,7 +219,7 @@ export class ConnectorFunctionComponent implements OnInit, OnDestroy {
 			if (result.isConfirmed) {
 				this.isLoading = true;
 
-				this.connectorFunctionUseCase.delete(this.connectorFunctionId!).subscribe({
+				this.connectorFunctionHistoryUseCase.delete(this.connectorFunctionHistoryId!).subscribe({
 					next: () => Swal.fire("Deleted!", "The connector functions has been deleted.", "success").then(() => this.router.navigate(["/connectors"])),
 					error: () => Swal.fire("Error", "An error has occurred while trying to delete the connector function.", "error")
 				}).add(() => this.isLoading = false);
@@ -223,6 +228,6 @@ export class ConnectorFunctionComponent implements OnInit, OnDestroy {
 	}
 
 	openLogs(connectorFunctionStderr: ConnectorFunctionStderrComponent): void {
-		connectorFunctionStderr.open(this.connectorFunction?.buildStderr as string);
+		connectorFunctionStderr.open(this.connectorFunctionHistory?.buildStderr as string);
 	}
 }

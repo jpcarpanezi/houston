@@ -11,7 +11,7 @@ import { ConnectorFunctionStderrComponent } from './connector-function-stderr/co
 @NgModule({
 	declarations: [
 		ConnectorFunctionComponent,
-  ConnectorFunctionStderrComponent
+		ConnectorFunctionStderrComponent
 	],
 	imports: [
 		CommonModule,

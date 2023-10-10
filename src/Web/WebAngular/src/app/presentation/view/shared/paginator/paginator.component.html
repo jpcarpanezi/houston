@@ -1,0 +1,32 @@
+<ul *ngIf="pager.pages && pager.pages.length" class="flex justify-between">
+	<li [ngClass]="{ 'opacity-50 hover:!text-black hover:dark:!text-white !cursor-not-allowed !bg-transparent' : pager.currentPage === 1 }"
+		class="cursor-pointer px-2 py-1 rounded transition text-black hover:text-white dark:text-white hover:bg-indigo-600 dark:hover:bg-purple-600"
+		(click)="setPage(1)">
+		<a (click)="$event.preventDefault()">First</a>
+	</li>
+
+	<li [ngClass]="{ 'opacity-50 hover:!text-black hover:dark:!text-white !cursor-not-allowed !bg-transparent' : pager.currentPage === 1 }"
+		class="cursor-pointer px-2 py-1 rounded transition text-black hover:text-white dark:text-white hover:bg-indigo-600 dark:hover:bg-purple-600"
+		(click)="setPage(pager.currentPage - 1)">
+		<a (click)="$event.preventDefault()">Previous</a>
+	</li>
+
+	<li *ngFor="let page of pager.pages"
+		[ngClass]="{ 'bg-indigo-500 dark:bg-purple-500 !text-white' : pager.currentPage === page }"
+		class="cursor-pointer px-2 py-1 rounded transition text-black hover:text-white dark:text-white hover:bg-indigo-600 dark:hover:bg-purple-600"
+		(click)="setPage(page)">
+		<a (click)="$event.preventDefault()" class="page-link">{{ page }}</a>
+	</li>
+
+	<li [ngClass]="{ 'opacity-50 hover:!text-black hover:dark:!text-white !cursor-not-allowed !bg-transparent' : pager.currentPage === pager.totalPages }"
+		class="cursor-pointer px-2 py-1 rounded transition text-black hover:text-white dark:text-white hover:bg-indigo-600 dark:hover:bg-purple-600"
+		(click)="setPage(pager.currentPage + 1)">
+		<a (click)="$event.preventDefault()">Next</a>
+	</li>
+
+	<li [ngClass]="{ 'opacity-50 hover:!text-black hover:dark:!text-white !cursor-not-allowed !bg-transparent' : pager.currentPage === pager.totalPages }"
+		class="cursor-pointer px-2 py-1 rounded transition text-black hover:text-white dark:text-white hover:bg-indigo-600 dark:hover:bg-purple-600"
+		(click)="setPage(pager.totalPages)">
+		<a (click)="$event.preventDefault()">Last</a>
+	</li>
+</ul>

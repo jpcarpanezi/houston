@@ -35,41 +35,41 @@ export class PipelineComponent implements OnInit, OnDestroy {
 		this.runInterval?.unsubscribe();
 	}
 
-	savePipeline(): void {
-		this.pipelineDetails?.pipelineDetailsForm.markAllAsTouched();
-		this.pipelineTrigger?.pipelineTriggerForm.markAllAsTouched();
+	// savePipeline(): void {
+	// 	this.pipelineDetails?.pipelineDetailsForm.markAllAsTouched();
+	// 	this.pipelineTrigger?.pipelineTriggerForm.markAllAsTouched();
 
-		if (this.pipelineDetails?.pipelineDetailsForm.invalid) return;
-		if (this.pipelineTrigger?.pipelineTriggerForm.invalid) return;
+	// 	if (this.pipelineDetails?.pipelineDetailsForm.invalid) return;
+	// 	if (this.pipelineTrigger?.pipelineTriggerForm.invalid) return;
 
-		this.pipelineDetails?.savePipelineDetails();
-		this.pipelineTrigger?.savePipelineTrigger();
-		this.pipelineInstructions?.savePipelineInstructions();
-	}
+	// 	this.pipelineDetails?.savePipelineDetails();
+	// 	this.pipelineTrigger?.savePipelineTrigger();
+	// 	this.pipelineInstructions?.savePipelineInstructions();
+	// }
 
-	runPipeline(): void {
-		this.isRunning = true;
-		this.pipelineDetails!.isLoading = true;
-		this.pipelineTrigger!.isLoading = true;
-		this.pipelineInstructions!.isLoading = true;
+	// runPipeline(): void {
+	// 	this.isRunning = true;
+	// 	this.pipelineDetails!.isLoading = true;
+	// 	this.pipelineTrigger!.isLoading = true;
+	// 	this.pipelineInstructions!.isLoading = true;
 
-		this.checkPipelineStatus();
-	}
+	// 	this.checkPipelineStatus();
+	// }
 
-	private checkPipelineStatus(): void {
-		timer(10000).pipe(
-			switchMap(() => interval(5000).pipe(
-				startWith(0),
-				switchMap(() => this.pipelineUseCase.get(this.pipelineId!)),
-				takeWhile(x => x.status === "Running")
-			))
-		).subscribe({
-			error: () => Swal.fire("Error", "An error occurred while running the pipeline.", "error")
-		}).add(() => {
-			this.isRunning = false;
-			this.pipelineDetails!.isLoading = false;
-			this.pipelineTrigger!.isLoading = false;
-			this.pipelineInstructions!.isLoading = false;
-		});
-	}
+	// private checkPipelineStatus(): void {
+	// 	timer(10000).pipe(
+	// 		switchMap(() => interval(5000).pipe(
+	// 			startWith(0),
+	// 			switchMap(() => this.pipelineUseCase.get(this.pipelineId!)),
+	// 			takeWhile(x => x.status === "Running")
+	// 		))
+	// 	).subscribe({
+	// 		error: () => Swal.fire("Error", "An error occurred while running the pipeline.", "error")
+	// 	}).add(() => {
+	// 		this.isRunning = false;
+	// 		this.pipelineDetails!.isLoading = false;
+	// 		this.pipelineTrigger!.isLoading = false;
+	// 		this.pipelineInstructions!.isLoading = false;
+	// 	});
+	// }
 }

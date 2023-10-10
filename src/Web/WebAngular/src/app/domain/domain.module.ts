@@ -16,6 +16,8 @@ import { PipelineInstructionUseCaseInterface } from './interfaces/use-cases/pipe
 import { PipelineInstructionUseCaseService } from './use-cases/pipeline-instruction-use-case.service';
 import { PipelineLogUseCaseInterface } from './interfaces/use-cases/pipeline-log-use-case.interface';
 import { PipelineLogUseCaseService } from './use-cases/pipeline-log-use-case.service';
+import { ConnectorFunctionHistoryUseCaseInterface } from './interfaces/use-cases/connector-function-history-use-case.interface';
+import { ConnectorFunctionHistoryUseCaseService } from './use-cases/connector-function-history-use-case.service';
 
 
 
@@ -29,6 +31,7 @@ import { PipelineLogUseCaseService } from './use-cases/pipeline-log-use-case.ser
 		{ provide: UserUseCaseInterface, useClass: UserUseCaseService },
 		{ provide: ConnectorUseCaseInterface, useClass: ConnectorUseCaseService },
 		{ provide: ConnectorFunctionUseCaseInterface, useClass: ConnectorFunctionUseCaseService },
+		{ provide: ConnectorFunctionHistoryUseCaseInterface, useClass: ConnectorFunctionHistoryUseCaseService },
 		{ provide: PipelineUseCaseInterface, useClass: PipelineUseCaseService },
 		{ provide: PipelineTriggerUseCaseInterface, useClass: PipelineTriggerUseCaseService },
 		{ provide: PipelineInstructionUseCaseInterface, useClass: PipelineInstructionUseCaseService },
