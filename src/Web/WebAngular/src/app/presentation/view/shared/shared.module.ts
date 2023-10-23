@@ -16,9 +16,12 @@ import { RouterModule } from '@angular/router';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ModalComponent } from './modal/modal.component';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipModule } from '@angular/material/tooltip';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgxJdenticonModule } from 'ngx-jdenticon';
 import { InfraModule } from 'src/app/infra/infra.module';
 import { PaginatorComponent } from './paginator/paginator.component';
+import { ConnectorsCardComponent } from './connectors-card/connectors-card.component';
+import { ConnectorsModule } from '../pages/connectors/connectors.module';
 
 
 
@@ -30,9 +33,10 @@ import { PaginatorComponent } from './paginator/paginator.component';
 		NotificationsComponent,
 		SettingsComponent,
 		SearchBarComponent,
-  		SidebarComponent,
-    	ModalComponent,
-     	PaginatorComponent
+		SidebarComponent,
+		ModalComponent,
+		PaginatorComponent,
+		ConnectorsCardComponent
 	],
 	imports: [
 		CommonModule,
@@ -50,13 +54,19 @@ import { PaginatorComponent } from './paginator/paginator.component';
 		NgxLoaderIndicatorDirective,
 		SidebarComponent,
 		ModalComponent,
+		ConnectorsCardComponent,
 		PaginatorComponent,
 		MatTooltipModule,
+		DragDropModule,
 		InfraModule
 	],
 	providers: [
 		provideAnimations(),
-		provideNgxLoaderIndicator(),
+		provideNgxLoaderIndicator({
+			loaderStyles: {
+				background: 'rgb(0, 0, 0, 0.5)'
+			}
+		}),
 		{ provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: { position: "above" } }
 	]
 })
