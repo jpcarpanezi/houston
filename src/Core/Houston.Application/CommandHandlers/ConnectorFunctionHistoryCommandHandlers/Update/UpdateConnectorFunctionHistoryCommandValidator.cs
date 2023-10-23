@@ -40,7 +40,7 @@
 				.NotNull().WithMessage(ValidatorsModelErrorMessages.Null);
 
 			RuleFor(x => x.Required)
-				.NotNull().NotEmpty().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty);
+				.NotNull().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty);
 
 			RuleFor(x => x.AdvancedOption)
 				.NotNull().WithMessage(ValidatorsModelErrorMessages.Null);
