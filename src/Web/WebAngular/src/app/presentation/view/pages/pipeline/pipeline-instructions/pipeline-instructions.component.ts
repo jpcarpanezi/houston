@@ -1,21 +1,18 @@
-import { trigger, transition, style, animate, state } from '@angular/animations';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ColumnMode, DatatableComponent } from '@swimlane/ngx-datatable';
 import { lastValueFrom } from 'rxjs';
 import { PipelineInstructionCommand } from 'src/app/domain/commands/pipeline-instruction-commands/pipeline-instruction.command';
 import { SavePipelineInstructionCommand } from 'src/app/domain/commands/pipeline-instruction-commands/save-pipeline-instruction.command';
+import { ConnectorFunctionHistoryUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-function-history-use-case.interface';
 import { ConnectorFunctionUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-function-use-case.interface';
-import { ConnectorUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-use-case.interface';
 import { PipelineInstructionUseCaseInterface } from 'src/app/domain/interfaces/use-cases/pipeline-instruction-use-case.interface';
 import { ConnectorFunctionHistoryDetailViewModel } from 'src/app/domain/view-models/connector-function-history-detail.view-model';
-import { ConnectorViewModel } from 'src/app/domain/view-models/connector.view-model';
-import { PageViewModel } from 'src/app/domain/view-models/page.view-model';
-import { PaginatedItemsViewModel } from 'src/app/domain/view-models/paginated-items.view-model';
+import { ConnectorFunctionInputViewModel } from 'src/app/domain/view-models/connector-function-input.view-model';
+import { ConnectorFunctionViewModel } from 'src/app/domain/view-models/connector-function.view-model';
 import { PipelineInstructionViewModel } from 'src/app/domain/view-models/pipeline-instruction.view-model';
 import { Toast } from 'src/app/infra/helpers/toast';
 import Swal from 'sweetalert2';
-
 
 @Component({
 	selector: 'app-pipeline-instructions',
@@ -23,206 +20,195 @@ import Swal from 'sweetalert2';
 	styleUrls: ['./pipeline-instructions.component.css']
 })
 export class PipelineInstructionsComponent implements OnInit {
+	public pipelineInstructions: PipelineInstructionCommand[] = [];
+	public connectorFunctions: ConnectorFunctionViewModel[] = [];
+
+	public pipelineId?: string | null;
+	public selectedInstructionIndex?: number;
+	public selectedConnectorFunction?: ConnectorFunctionViewModel;
+	public selectedConnectorFunctionHistory?: ConnectorFunctionHistoryDetailViewModel;
+
+	public isLoading: boolean = false;
+	public isConnectorFunctionHistoryLoading: boolean = false;
+	public isConnectorsOpen: boolean = false;
+	public isInstructionExpanded: boolean = false;
+
+	constructor(
+		private connectorFunctionHistoryUseCase: ConnectorFunctionHistoryUseCaseInterface,
+		private pipelineInstructionUseCase: PipelineInstructionUseCaseInterface,
+		private connectorFunctionUseCase: ConnectorFunctionUseCaseInterface,
+		private route: ActivatedRoute
+	) { }
+
 	ngOnInit(): void {
-		throw new Error('Method not implemented.');
+		this.pipelineId = this.route.snapshot.paramMap.get("id");
+
+		if (this.pipelineId)
+			this.getPipelineInstructions(this.pipelineId);
 	}
-	// @ViewChild("connectorsTable") public connectorsTable?: DatatableComponent;
 
-	// public page: PageViewModel = new PageViewModel();
-	// public rows: ConnectorViewModel[] = [];
-	// public expanded: ConnectorViewModel = {} as ConnectorViewModel;
-	// public columns = [{prop: "name", name: "Name"}];
-	// public columnMode: ColumnMode = ColumnMode.force;
+	getPipelineInstructions(pipelineId: string): void {
+		this.isLoading = true;
 
-	// public pipelineId: string | null = null;
-	// public isConnectorPanelVisible: boolean = false;
-	// public isLoading: boolean = false;
+		this.pipelineInstructionUseCase.get(pipelineId).subscribe({
+			next: (response: PipelineInstructionViewModel[]) => this.getPipelineInstructionsNext(response),
+			error: () => {
+				Swal.fire("Error", "An error has occurred while trying to get the pipeline instructions. Please try again later.", "error")
+				this.isLoading = false;
+			}
+		}).add(() => this.isLoading = false);
+	}
 
-	// public pipelineInstructions: PipelineInstructionCommand[] = [];
-	// public connectorFunctions: ConnectorFunctionHistoryDetailViewModel[] = [];
+	private async getPipelineInstructionsNext(response: PipelineInstructionViewModel[]): Promise<void> {
+		for (let i = 0; i < response.length; i++) {
+			const element = response[i];
 
-	// constructor (
-	// 	private connectorUseCase: ConnectorUseCaseInterface,
-	// 	private connectorFunctionHistoryUseCase: ConnectorFunctionHistoryUseCaseInterface,
-	// 	private pipelineInstructionUseCase: PipelineInstructionUseCaseInterface,
-	// 	private route: ActivatedRoute
-	// ) { }
+			let command: PipelineInstructionCommand = {
+				connectorFunctionId: element.connectorFunctionId,
+				connectorFunctionHistoryId: element.connectorFunctionHistoryId,
+				connectedToArrayIndex: element.connectedToArrayIndex,
+				inputs: {}
+			}
 
-	// ngOnInit(): void {
-	// 	this.pipelineId = this.route.snapshot.paramMap.get("id");
+			if (command.inputs) {
+				for (let j = 0; j < element.pipelineInstructionInputs.length; j++) {
+					const input = element.pipelineInstructionInputs[j];
+					command["inputs"][input.inputId] = input.replaceValue;
+				}
+			}
 
-	// 	if (this.pipelineId)
-	// 		this.getPipelineInstructions(this.pipelineId);
+			let connectorFunction = this.connectorFunctions.find(x => x.id === element.connectorFunctionId);
+			if (!connectorFunction) {
+				try {
+					const connectorFunctionResponse = await lastValueFrom(this.connectorFunctionUseCase.get(command.connectorFunctionId));
+					this.connectorFunctions.push(connectorFunctionResponse)
+				} catch {
+					Swal.fire("Error", "An error has occurred while trying to get the pipeline instructions. Please try again later.", "error")
+				}
+			}
 
-	// 	this.page.pageSize = 10;
-	// 	this.page.pageIndex = 0;
-	// 	this.setPage({offset: 0});
-	// }
+			this.pipelineInstructions.push(command);
+		}
 
-	// toggleConnectorPanel(): void {
-	// 	this.isConnectorPanelVisible = !this.isConnectorPanelVisible;
-	// }
+		this.isLoading = false;
+	}
 
-	// setPage(pageInfo: any): void {
-	// 	this.isLoading = true;
-	// 	this.page.pageIndex = pageInfo.offset;
+	drop(event: CdkDragDrop<string[]>): void {
+		if (event.currentIndex === event.previousIndex) {
+			return;
+		}
 
-	// 	this.connectorUseCase.getAll(this.page.pageSize, this.page.pageIndex).subscribe({
-	// 		next: (response: PaginatedItemsViewModel<ConnectorViewModel>) => {
-	// 			this.page.pageIndex = response.pageIndex;
-	// 			this.page.pageSize = response.pageSize;
-	// 			this.page.count = response.count;
-	// 			this.rows = response.data;
-	// 		},
-	// 		error: () => Swal.fire("Error", "An error has occurred while trying to get the connectors.", "error")
-	// 	});
-	// }
+		if (event.previousIndex === this.selectedInstructionIndex) {
+			this.selectedInstructionIndex = event.currentIndex;
+		} else if (event.previousIndex < this.selectedInstructionIndex! && event.currentIndex >= this.selectedInstructionIndex!) {
+			this.selectedInstructionIndex!--;
+		} else if (event.previousIndex > this.selectedInstructionIndex! && event.currentIndex <= this.selectedInstructionIndex!) {
+			this.selectedInstructionIndex!++;
+		}
 
-	// toggleExpandRow(row: ConnectorViewModel, shrinked: boolean, rowIndex: number, button: HTMLButtonElement): void {
-	// 	button.disabled = true;
+		moveItemInArray(this.pipelineInstructions, event.previousIndex, event.currentIndex);
 
-	// 	if (shrinked) {
-	// 		button.disabled = false;
-	// 		this.rows[rowIndex].connectorFunctions = [];
-	// 		this.connectorsTable?.rowDetail.toggleExpandRow(row);
-	// 		return;
-	// 	}
+		this.pipelineInstructions.forEach((item, index) => {
+			item.connectedToArrayIndex = index == 0 ? null : index - 1;
+		});
+	}
 
-	// 	this.connectorFunctionUseCase.getAll(row.id, 100, 0).subscribe({
-	// 		next: (response: PaginatedItemsViewModel<ConnectorFunctionHistoryDetailViewModel>) => {
-	// 			this.rows[rowIndex].connectorFunctions = response.data;
-	// 			this.connectorsTable?.rowDetail.toggleExpandRow(row);
-	// 		},
-	// 		error: () => Swal.fire("Error", "An error has occurred while trying to get the connector functions.", "error")
-	// 	}).add(() => button.disabled = false);
-	// }
+	addFunction(connectorFunction: ConnectorFunctionViewModel) {
+		this.isConnectorsOpen = false;
 
-	// selectInstruction(connectorFunction: ConnectorFunctionHistoryDetailViewModel, event?: Event): void {
-	// 	event?.preventDefault();
+		const connectedToArrayIndex = this.pipelineInstructions.length > 0 ? this.pipelineInstructions.length - 1 : null;
+		var command: PipelineInstructionCommand = {
+			connectedToArrayIndex: connectedToArrayIndex,
+			connectorFunctionId: connectorFunction.id,
+			connectorFunctionHistoryId: "",
+			inputs: {}
+		}
 
-	// 	if (!this.connectorFunctions.includes(connectorFunction)) {
-	// 		this.connectorFunctions.push(connectorFunction);
-	// 	}
+		command['connectorFunctionHistoryId'] = connectorFunction.versions[0].id;
+		if (!this.connectorFunctions.some(x => x.id === connectorFunction.id)) {
+			this.connectorFunctions.push(connectorFunction);
+		}
 
-	// 	const connectedTo: number | null = this.pipelineInstructions.length == 0 ? null : this.pipelineInstructions.length - 1;
+		this.pipelineInstructions.push(command);
+		this.expandInstruction(command, this.pipelineInstructions.length - 1);
+	}
 
-	// 	const instruction: PipelineInstructionCommand = {
-	// 		connectorFunctionId: connectorFunction.id,
-	// 		connectedToArrayIndex: connectedTo,
-	// 		inputs: {}
-	// 	};
+	expandInstruction(instruction: PipelineInstructionCommand, instructionIndex: number): void {
+		this.isConnectorsOpen = false;
+		this.isInstructionExpanded = true;
+		this.selectedConnectorFunction = this.getConnectorFunctionById(instruction.connectorFunctionId);
+		this.selectedInstructionIndex = instructionIndex;
 
-	// 	connectorFunction.inputs?.forEach((element: any) => {
-	// 		instruction.inputs[element.id] = element.defaultValue;
-	// 	});
+		const connectorFunctionHistoryId = this.pipelineInstructions[instructionIndex].connectorFunctionHistoryId ?? this.selectedConnectorFunction?.versions[0].id;
+		this.changeInstructionVersion(connectorFunctionHistoryId, false);
+	}
 
-	// 	this.pipelineInstructions.push(instruction);
-	// }
+	changeInstructionVersion(connectorFunctionHistoryId: string, resetInputs: boolean): void {
+		this.isConnectorFunctionHistoryLoading = true;
 
-	// getConnectorFunctionById(connectorFunctionId: string): ConnectorFunctionHistoryDetailViewModel {
-	// 	return this.connectorFunctions.find(x => x.id == connectorFunctionId)!;
-	// }
+		this.connectorFunctionHistoryUseCase.get(connectorFunctionHistoryId).subscribe({
+			next: (response: ConnectorFunctionHistoryDetailViewModel) => {
+				this.selectedConnectorFunctionHistory = response;
 
-	// changeInputValue(index: number, inputId: string, value: string): void {
-	// 	let instruction = this.pipelineInstructions[index];
+				if (resetInputs) {
+					this.pipelineInstructions[this.selectedInstructionIndex!].inputs = {};
 
-	// 	if (value != "") {
-	// 		instruction.inputs[inputId] = value;
-	// 	} else {
-	// 		delete instruction.inputs[inputId];
-	// 	}
-	// }
+					response.inputs.forEach(input => {
+						this.pipelineInstructions[this.selectedInstructionIndex!]["inputs"][input.id] = input.defaultValue;
+					});
+				}
+			},
+			error: () => Swal.fire("Error", "An error has occurred while trying to get the connector function history", "error")
+		}).add(() => this.isConnectorFunctionHistoryLoading = false);
+	}
 
-	// savePipelineInstructions(): void {
-	// 	this.isLoading = true;
+	getConnectorFunctionById(connectorFunctionId: string): ConnectorFunctionViewModel | undefined {
+		return this.connectorFunctions.find(x => x.id === connectorFunctionId);
+	}
 
-	// 	const command: SavePipelineInstructionCommand = {
-	// 		pipelineId: this.pipelineId!,
-	// 		pipelineInstructions: this.pipelineInstructions
-	// 	};
+	getInputValue(connectorFunctionInput: ConnectorFunctionInputViewModel): string | null {
+		if (this.selectedInstructionIndex != undefined && this.pipelineInstructions[this.selectedInstructionIndex].inputs[connectorFunctionInput.id]) {
+			return this.pipelineInstructions[this.selectedInstructionIndex].inputs[connectorFunctionInput.id] ?? null;
+		}
 
-	// 	if (command.pipelineInstructions.length == 0) {
-	// 		this.isLoading = false;
-	// 		return;
-	// 	}
+		return connectorFunctionInput.defaultValue;
+	}
 
-	// 	this.pipelineInstructionUseCase.save(command).subscribe({
-	// 		next: () => Toast.fire({ icon: "success", title: "Saved successfully" }),
-	// 		error: () => Swal.fire("Error", "An error has occurred while trying to update the pipeline instructions. Please try again later.", "error")
-	// 	}).add(() => this.isLoading = false);
-	// }
+	changeInputValue(connectorFunctionInput: ConnectorFunctionInputViewModel, value: string): void {
+		let instruction = this.pipelineInstructions[this.selectedInstructionIndex!];
 
-	// private getPipelineInstructions(pipelineId: string): void {
-	// 	this.isLoading = true;
+		if (value != "") {
+			instruction.inputs[connectorFunctionInput.id] = value;
+		} else {
+			delete instruction.inputs[connectorFunctionInput.id];
+		}
+	}
 
-	// 	this.pipelineInstructionUseCase.get(pipelineId).subscribe({
-	// 		next: (response: PipelineInstructionViewModel[]) => this.getPipelineInstructionsNext(response),
-	// 		error: () => {
-	// 			Swal.fire("Error", "An error has occurred while trying to get the pipeline instructions. Please try again later.", "error")
-	// 			this.isLoading = false;
-	// 		}
-	// 	});
-	// }
+	removeInstruction(instructionIndex: number) {
+		if (this.selectedInstructionIndex == instructionIndex) {
+			this.isInstructionExpanded = false;
+			this.selectedInstructionIndex = undefined;
+		}
 
-	// private async getPipelineInstructionsNext(response: PipelineInstructionViewModel[]): Promise<void> {
-	// 	for (let i = 0; i < response.length; i++) {
-	// 		const instruction = response[i];
+		this.pipelineInstructions.splice(instructionIndex, 1);
+	}
 
-	// 		let command: PipelineInstructionCommand = {
-	// 			connectorFunctionId: instruction.connectorFunctionId,
-	// 			connectedToArrayIndex: i == 0 ? null : i - 1,
-	// 			inputs: {}
-	// 		};
+	savePipelineInstructions(): void {
+		this.isLoading = true;
 
-	// 		let connectorFunction = this.connectorFunctions.find(x => x.id == command.connectorFunctionId);
-	// 		if (!connectorFunction) {
-	// 			try {
-	// 				const connectorFunctionResponse = await lastValueFrom(this.connectorFunctionUseCase.get(command.connectorFunctionId));
-	// 				connectorFunction = connectorFunctionResponse;
-	// 				this.connectorFunctions.push(connectorFunctionResponse)
-	// 			} catch (error) {
-	// 				Swal.fire("Error", "An error has occurred while trying to get the pipeline instructions. Please try again later.", "error")
-	// 			}
-	// 		}
+		const command: SavePipelineInstructionCommand = {
+			pipelineId: this.pipelineId!,
+			pipelineInstructions: this.pipelineInstructions
+		}
 
-	// 		connectorFunction?.inputs?.forEach(element => {
-	// 			command.inputs[element.id] = null;
-	// 		});
+		if (command.pipelineInstructions.length == 0) {
+			this.isLoading = false;
+			return;
+		}
 
-	// 		for (let j = 0; j < instruction.pipelineInstructionInputs.length; j++) {
-	// 			const input = instruction.pipelineInstructionInputs[j];
-	// 			command.inputs[input.inputId] = input.replaceValue;
-	// 		}
-
-	// 		this.pipelineInstructions.push(command);
-	// 	}
-
-	// 	this.isLoading = false;
-	// }
-
-	// removeInstruction(index: number): void {
-	// 	this.pipelineInstructions.splice(index, 1);
-
-	// 	this.pipelineInstructions.forEach((element, i) => {
-	// 		element.connectedToArrayIndex = (i === 0) ? null : i - 1;
-	// 	});
-	// }
-
-	// movePipelineInstruction(index: number, direction: "up" | "down"): void {
-	// 	const newIndex = direction === 'up' ? index - 1 : index + 1;
-
-	// 	if (newIndex < 0 || newIndex >= this.pipelineInstructions.length) {
-	// 		return;
-	// 	}
-
-	// 	[this.pipelineInstructions[index], this.pipelineInstructions[newIndex]] = [this.pipelineInstructions[newIndex], this.pipelineInstructions[index]];
-
-	// 	this.pipelineInstructions.forEach((element, i) => {
-	// 		if (i === 0) {
-	// 			element.connectedToArrayIndex = null;
-	// 		} else {
-	// 			element.connectedToArrayIndex = i - 1;
-	// 		}
-	// 	});
-	// }
+		this.pipelineInstructionUseCase.save(command).subscribe({
+			next: () => Toast.fire({ icon: "success", title: "Saved successfully" }),
+			error: () => Swal.fire("Error", "An error has occurred while trying to update the pipeline instructions. Please try again later.", "error")
+		}).add(() => this.isLoading = false);
+	}
 }

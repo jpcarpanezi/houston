@@ -1,0 +1,103 @@
+<app-new-connector #newConnector (submitResponse)="setPage({ currentPage: page.pageIndex })"></app-new-connector>
+
+<app-update-connector #updateConnector (onUpdate)="setPage({ currentPage: page.pageIndex })"></app-update-connector>
+
+<app-new-connector-function #newConnectorFunction (onSubmit)="connectorFunctions.push($event)"></app-new-connector-function>
+
+<app-update-connector-function #updateConnectorFunction (onSubmit)="updateConnectorFunctionSubmit($event)"></app-update-connector-function>
+
+<div class="grid grid-cols-1 md:grid-cols-3 md:divide-x divide-gray-100 dark:divide-gray-900 h-screen md:h-[calc(100vh-12rem)]">
+	<!-- START: CONNECTORS -->
+	<div class="flex flex-col h-0 min-h-full" [loader]="isConnectorsLoading">
+		<div class="flex-none py-3 px-6 border-b border-b-gray-50 dark:border-b-gray-900">
+			<strong>Connectors</strong>
+		</div>
+
+		<div class="flex-1 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-900">
+			<div class="flex justify-between py-3 px-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-900" [ngClass]="{ 'bg-gray-50 dark:bg-slate-900': activeConnector == connector.id }" *ngFor="let connector of connectors" (click)="expandFunction(connector, $event)">
+				<span class="self-center">{{ connector.name }}</span>
+
+				<div class="self-center" *ngIf="displayActions">
+					<button type="button" class="btn-primary w-auto !py-0.5 !px-1 ml-3 text-sm" matTooltip="New function" (click)="newConnectorFunction.open(connector.id)"><fa-icon [icon]="['fas', 'plus']"></fa-icon></button>
+
+					<button type="button" class="btn-primary w-auto !py-0.5 !px-1 ml-3 text-sm" matTooltip="Edit" (click)="$event.stopPropagation(); updateConnector.open(connector)"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></button>
+
+					<button type="button" class="btn-danger w-auto !py-0.5 !px-1 ml-3 text-sm" [class.spinner]="deleteBtn.disabled" matTooltip="Delete" #deleteBtn (click)="$event.stopPropagation(); deleteConnector(deleteBtn, connector)">
+						<span class="spinner-text"><fa-icon [icon]="['fas', 'trash']"></fa-icon></span>
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="flex-none p-3 border-t border-t-gray-50 dark:border-t-gray-900">
+			<app-paginator
+				[serverSide]="true"
+				[totalItems]="page.count"
+				[initialPage]="1"
+				[pageSize]="50"
+				[maxPages]="5"
+				(changePage)="setPage($event)"
+			></app-paginator>
+		</div>
+	</div>
+	<!-- END: CONNECTORS -->
+
+	<!-- START: CONNECTOR FUNCTIONS -->
+	<div class="md:col-span-2 border-t md:border-t-0 overflow-y-auto h-0 min-h-full" [loader]="isConnectorFunctionsLoading">
+		<span class="flex justify-center items-center h-full" *ngIf="!activeConnector">
+			Select a connector to visualize its functions.
+		</span>
+
+		<span class="flex justify-center items-center h-full" *ngIf="activeConnector && connectorFunctions?.length == 0">
+			There's no functions for this connector.
+		</span>
+
+		<div class="divide-y divide-gray-100 dark:divide-gray-900">
+			<details class="group hover:bg-gray-50 dark:hover:bg-slate-900" [ngClass]="{ 'open:hover:bg-white dark:open:hover:bg-slate-800': displayVersions }" *ngFor="let connectorFunction of connectorFunctions" (click)="selectedFunction.emit(connectorFunction)">
+				<summary class="flex justify-between items-center font-medium cursor-pointer list-none px-6 py-3">
+					<span>{{ connectorFunction.name }}</span>
+
+					<div class="ml-auto mr-3" *ngIf="displayActions">
+						<button type="button" [routerLink]="['/connector-function']" [queryParams]="{connectorFunctionId: connectorFunction.id}" class="btn-primary w-auto !py-0.5 !px-1 ml-3 text-sm" matTooltip="New version"><fa-icon [icon]="['fas', 'plus']"></fa-icon></button>
+
+						<button type="button" class="btn-primary w-auto !py-0.5 !px-1 ml-3 text-sm" matTooltip="Edit function" (click)="updateConnectorFunction.open(connectorFunction)"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></button>
+
+						<button type="button" class="btn-danger w-auto !py-0.5 !px-1 ml-3 text-sm" [class.spinner]="deleteConnectorFunctionBtn.disabled" matTooltip="Delete function" #deleteConnectorFunctionBtn (click)="deleteConnectorFunction(deleteConnectorFunctionBtn, connectorFunction.id)">
+							<span class="spinner-text"><fa-icon [icon]="['fas', 'trash']"></fa-icon></span>
+						</button>
+					</div>
+
+					<span class="transition group-open:rotate-180" *ngIf="displayVersions"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></span>
+				</summary>
+
+				<div *ngIf="displayVersions">
+					<div class="py-3 pl-10 pr-6" *ngIf="connectorFunction.versions.length == 0">
+						No versions for this function.
+					</div>
+
+					<div class="divide-y divide-dashed divide-gray-100 dark:divide-gray-900">
+						<div class="flex justify-between hover:bg-gray-50 dark:hover:bg-slate-900 py-3 pl-10 pr-6" *ngFor="let version of connectorFunction.versions" [ngClass]="{ 'cursor-pointer': displayCursorSelect }" (click)="$event.stopPropagation(); selectedFunctionHistory.emit(version)">
+							<span class="self-center">
+								<span type="button" class="badge mr-1 w-20 select-none" matTooltip="Build status"
+									[class.badge-primary]="version.buildStatus == 'Running'"
+									[class.badge-success]="version.buildStatus == 'Success'"
+									[class.badge-danger]="version.buildStatus == 'Failed'"
+									[class.badge-secondary]="version.buildStatus == 'Unknown'">{{ version.buildStatus }}</span>
+								{{ version.version }}
+							</span>
+
+							<span class="mr-8" *ngIf="displayActions">
+								<a class="text-blue-600 dark:text-cyan-300 hover:text-blue-900 dark:hover:text-cyan-500 underline mr-5" [routerLink]="['/connector-function', version.id]">Edit</a>
+
+								<button type="button" class="text-blue-600 dark:text-cyan-300 hover:text-blue-900 dark:hover:text-cyan-500 underline" [class.spinner]="deleteConnectorFunctionHistoryBtn.disabled" (click)="deleteConnectorFunctionHistory(deleteConnectorFunctionHistoryBtn, version.id)" #deleteConnectorFunctionHistoryBtn>
+									<span class="spinner-text !text-blue-600 dark:!text-cyan-300">Delete</span>
+								</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</details>
+		</div>
+	</div>
+	<!-- END: CONNECTOR FUNCTIONS -->
+</div>
