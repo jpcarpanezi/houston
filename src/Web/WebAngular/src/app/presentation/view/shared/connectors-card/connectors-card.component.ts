@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { ConnectorFunctionHistoryUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-function-history-use-case.interface';
 import { ConnectorFunctionUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-function-use-case.interface';
 import { ConnectorUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-use-case.interface';
@@ -9,6 +9,7 @@ import { PageViewModel } from 'src/app/domain/view-models/page.view-model';
 import { PaginatedItemsViewModel } from 'src/app/domain/view-models/paginated-items.view-model';
 import { Toast } from 'src/app/infra/helpers/toast';
 import Swal from 'sweetalert2';
+import { NewConnectorComponent } from './new-connector/new-connector.component';
 
 @Component({
   selector: 'app-connectors-card',
@@ -24,6 +25,9 @@ export class ConnectorsCardComponent {
 
 	@Output("selectedFunction") public selectedFunction: EventEmitter<ConnectorFunctionViewModel> = new EventEmitter<ConnectorFunctionViewModel>();
 	@Output("selectedFunctionHistory") public selectedFunctionHistory: EventEmitter<ConnectorFunctionHistorySummaryViewModel> = new EventEmitter<ConnectorFunctionHistorySummaryViewModel>();
+	@Output("connectorLoading") public connectorLoading: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+	@ViewChild("newConnector") public newConnectorModal?: NewConnectorComponent;
 
 	public page: PageViewModel = new PageViewModel();
 	public connectors: ConnectorViewModel[] = [];
@@ -43,6 +47,7 @@ export class ConnectorsCardComponent {
 
 	setPage(pageInfo: any): void {
 		this.isConnectorsLoading = true;
+		this.connectorLoading.emit(true);
 		this.page.pageIndex = pageInfo.currentPage == 0 ? pageInfo.currentPage : pageInfo.currentPage - 1;
 		this.page.pageSize = pageInfo.pageSize ?? 5;
 
@@ -54,7 +59,10 @@ export class ConnectorsCardComponent {
 				this.connectors = response.data;
 			},
 			error: () => Swal.fire("Error", "An error has occurred while trying to get the connectors.", "error")
-		}).add(() => this.isConnectorsLoading = false);
+		}).add(() => {
+			this.isConnectorsLoading = false;
+			this.connectorLoading.emit(false);
+		});
 	}
 
 	expandFunction(row: ConnectorViewModel, event: Event): void {
@@ -88,6 +96,7 @@ export class ConnectorsCardComponent {
 				button.disabled = true;
 				this.isConnectorFunctionsLoading = true;
 				this.isConnectorsLoading = true;
+				this.connectorLoading.emit(true);
 
 				this.connectorUseCase.delete(row.id).subscribe({
 					next: () => this.deleteConnectorNext(row),
@@ -95,6 +104,7 @@ export class ConnectorsCardComponent {
 				}).add(() => {
 					this.isConnectorFunctionsLoading = false;
 					this.isConnectorsLoading = false;
+					this.connectorLoading.emit(false);
 					button.disabled = false;
 				});
 			}
@@ -166,5 +176,9 @@ export class ConnectorsCardComponent {
 				}).add(() => button.disabled = false);
 			}
 		});
+	}
+
+	newConnector() {
+		this.newConnectorModal?.open();
 	}
 }

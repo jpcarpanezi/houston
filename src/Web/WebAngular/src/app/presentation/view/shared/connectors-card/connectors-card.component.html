@@ -1,3 +1,11 @@
+<app-new-connector #newConnector (submitResponse)="setPage({ currentPage: page.pageIndex })"></app-new-connector>
+
+<app-update-connector #updateConnector (onUpdate)="setPage({ currentPage: page.pageIndex })"></app-update-connector>
+
+<app-new-connector-function #newConnectorFunction (onSubmit)="connectorFunctions.push($event)"></app-new-connector-function>
+
+<app-update-connector-function #updateConnectorFunction (onSubmit)="updateConnectorFunctionSubmit($event)"></app-update-connector-function>
+
 <div class="grid grid-cols-1 md:grid-cols-3 md:divide-x divide-gray-100 dark:divide-gray-900 h-screen md:h-[calc(100vh-12rem)]">
 	<!-- START: CONNECTORS -->
 	<div class="flex flex-col h-0 min-h-full" [loader]="isConnectorsLoading">
@@ -10,9 +18,9 @@
 				<span class="self-center">{{ connector.name }}</span>
 
 				<div class="self-center" *ngIf="displayActions">
-					<button type="button" class="btn-primary w-auto !py-0.5 !px-1 ml-3 text-sm" matTooltip="New function"><fa-icon [icon]="['fas', 'plus']"></fa-icon></button>
+					<button type="button" class="btn-primary w-auto !py-0.5 !px-1 ml-3 text-sm" matTooltip="New function" (click)="newConnectorFunction.open(connector.id)"><fa-icon [icon]="['fas', 'plus']"></fa-icon></button>
 
-					<button type="button" class="btn-primary w-auto !py-0.5 !px-1 ml-3 text-sm" matTooltip="Edit"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></button>
+					<button type="button" class="btn-primary w-auto !py-0.5 !px-1 ml-3 text-sm" matTooltip="Edit" (click)="$event.stopPropagation(); updateConnector.open(connector)"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></button>
 
 					<button type="button" class="btn-danger w-auto !py-0.5 !px-1 ml-3 text-sm" [class.spinner]="deleteBtn.disabled" matTooltip="Delete" #deleteBtn (click)="$event.stopPropagation(); deleteConnector(deleteBtn, connector)">
 						<span class="spinner-text"><fa-icon [icon]="['fas', 'trash']"></fa-icon></span>
@@ -52,7 +60,7 @@
 					<div class="ml-auto mr-3" *ngIf="displayActions">
 						<button type="button" [routerLink]="['/connector-function']" [queryParams]="{connectorFunctionId: connectorFunction.id}" class="btn-primary w-auto !py-0.5 !px-1 ml-3 text-sm" matTooltip="New version"><fa-icon [icon]="['fas', 'plus']"></fa-icon></button>
 
-						<button type="button" class="btn-primary w-auto !py-0.5 !px-1 ml-3 text-sm" matTooltip="Edit function"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></button>
+						<button type="button" class="btn-primary w-auto !py-0.5 !px-1 ml-3 text-sm" matTooltip="Edit function" (click)="updateConnectorFunction.open(connectorFunction)"><fa-icon [icon]="['fas', 'pencil']"></fa-icon></button>
 
 						<button type="button" class="btn-danger w-auto !py-0.5 !px-1 ml-3 text-sm" [class.spinner]="deleteConnectorFunctionBtn.disabled" matTooltip="Delete function" #deleteConnectorFunctionBtn (click)="deleteConnectorFunction(deleteConnectorFunctionBtn, connectorFunction.id)">
 							<span class="spinner-text"><fa-icon [icon]="['fas', 'trash']"></fa-icon></span>

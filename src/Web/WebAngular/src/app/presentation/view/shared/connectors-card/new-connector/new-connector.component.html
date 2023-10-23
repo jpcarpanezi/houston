@@ -1,0 +1,26 @@
+<app-modal #newConnector (onHide)="createConnectorForm.reset()">
+	<span title>Create connector</span>
+
+	<span subhead>Create a new connector to use in the pipelines.</span>
+
+	<form [formGroup]="createConnectorForm" (submit)="createConnector()">
+		<div class="block mt-4">
+			<label for="name">Name</label>
+			<input type="text" name="name" id="name" formControlName="name" placeholder="Enter connector name" maxlength="50" class="w-full mb-2 text-input">
+			<app-form-errors controlName="name" error="required">Connector name required.</app-form-errors>
+			<app-form-errors controlName="name" error="maxlength">Maximum characters are 50.</app-form-errors>
+		</div>
+
+		<div class="block mt-4">
+			<label for="description">Description</label>
+			<textarea name="description" id="description" formControlName="description" rows="3" placeholder="Enter connector description" maxlength="5000" class="w-full mb-2 text-input"></textarea>
+			<app-form-errors controlName="description" error="maxlength">Maximum characters are 5000.</app-form-errors>
+		</div>
+
+		<div class="block mt-4">
+			<button type="submit" class="w-full btn-primary" [class.spinner]="createConnectorForm.disabled" [disabled]="createConnectorForm.disabled">
+				<span class="spinner-text">Create <fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
+			</button>
+		</div>
+	</form>
+</app-modal>
