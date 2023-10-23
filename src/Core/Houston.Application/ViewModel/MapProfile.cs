@@ -40,7 +40,8 @@
 
 			CreateMap<PipelineInstructionInput, PipelineInstructionInputViewModel>();
 
-			CreateMap<PipelineInstruction, PipelineInstructionViewModel>();
+			CreateMap<PipelineInstruction, PipelineInstructionViewModel>()
+				.ForMember(dest => dest.ConnectorFunctionId, m => m.MapFrom(src => src.ConnectorFunctionHistory.ConnectorFunctionId));
 
 			CreateMap<PipelineLog, PipelineLogViewModel>()
 				.ForMember(dest => dest.InstructionWithErrorId, m => m.MapFrom(src => src.InstructionWithError))

@@ -10,6 +10,7 @@
 
 		public async Task<ConnectorFunction?> GetActive(Guid id) {
 			return await Context.ConnectorFunction
+								   .Include(x => x.ConnectorFunctionHistories)
 								   .Include(x => x.UpdatedByNavigation)
 								   .Include(x => x.CreatedByNavigation)
 								   .Where(x => x.Id == id && x.Active)
@@ -20,7 +21,7 @@
 			return await Context.ConnectorFunction.Include(x => x.CreatedByNavigation)
 								 .Include(x => x.UpdatedByNavigation)
 								 .Include(x => x.Connector)
-								 .Include(x => x.ConnectorFunctionHistories)
+								 .Include(x => x.ConnectorFunctionHistories.OrderByDescending(x => x.Version).Where(x => x.Active))
 								 .OrderBy(x => x.Name)
 								 .Where(x => x.ConnectorId == connectorId && x.Active && x.Connector.Active)
 								 .Skip(pageSize * pageIndex)

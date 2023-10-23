@@ -24,7 +24,7 @@
 
 			connectorFunctionHistory.Script = request.Script;
 			connectorFunctionHistory.Package = request.Package;
-			connectorFunctionHistory.BuildStatus = BuildStatus.Unknown;
+			connectorFunctionHistory.BuildStatus = buildScript ? BuildStatus.Unknown : BuildStatus.Success;
 			connectorFunctionHistory.UpdatedBy = _claims.Id;
 			connectorFunctionHistory.LastUpdate = DateTime.UtcNow;
 
