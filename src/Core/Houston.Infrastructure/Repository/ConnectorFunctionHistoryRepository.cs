@@ -14,6 +14,8 @@
 		public async Task<ConnectorFunctionHistory?> GetActive(Guid id) {
 			return await Context.ConnectorFunctionHistory.Include(x => x.ConnectorFunction)
 												.Include(x => x.ConnectorFunctionInputs)
+												.Include(x => x.CreatedByNavigation)
+												.Include(x => x.UpdatedByNavigation)
 												.Where(x => x.Id == id && x.Active && x.ConnectorFunction.Active)
 												.FirstOrDefaultAsync();
 		}
