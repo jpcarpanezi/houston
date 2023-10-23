@@ -31,7 +31,7 @@
 				FirstAccess = false,
 				Active = true,
 				CreatedBy = userId,
-				CreationDate = DateTime.MinValue,
+				CreationDate = DateTime.UtcNow,
 				UpdatedBy = userId,
 				LastUpdate = DateTime.UtcNow
 			};
