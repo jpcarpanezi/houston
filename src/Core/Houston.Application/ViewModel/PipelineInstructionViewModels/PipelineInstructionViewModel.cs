@@ -4,6 +4,8 @@
 
 		public Guid PipelineId { get; set; }
 
+		public Guid ConnectorFunctionId { get; set; }
+
 		public Guid ConnectorFunctionHistoryId { get; set; }
 
 		public int? ConnectedToArrayIndex { get; set; }

@@ -4,6 +4,8 @@
 
 		public async Task<List<PipelineInstruction>> GetByPipelineId(Guid pipelineId) {
 			return await Context.PipelineInstruction.Include(x => x.Pipeline)
+										   .Include(x => x.ConnectorFunctionHistory)
+												.ThenInclude(x => x.ConnectorFunction)
 										   .Include(x => x.PipelineInstructionInputs)
 										   .OrderBy(x => x.ConnectedToArrayIndex == null ? 0 : 1)
 										   .ThenBy(x => x.ConnectedToArrayIndex)
