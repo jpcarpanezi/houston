@@ -20,11 +20,8 @@ global using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 global using Swashbuckle.AspNetCore.SwaggerGen;
 global using Swashbuckle.AspNetCore.SwaggerUI;
 global using FluentValidation;
-global using FluentValidation.Results;
-global using FluentValidation.AspNetCore;
 global using MediatR;
 global using MassTransit;
-global using Autofac;
 global using Serilog;
 global using Serilog.Events;
 
