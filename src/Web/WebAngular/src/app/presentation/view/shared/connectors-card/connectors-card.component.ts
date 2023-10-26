@@ -70,7 +70,7 @@ export class ConnectorsCardComponent {
 		this.activeConnector = row.id;
 		this.isConnectorFunctionsLoading = true;
 
-		this.connectorFunctionUseCase.getAll(row.id, 1000, 0).subscribe({
+		this.connectorFunctionUseCase.getAll(row.id, 100, 0).subscribe({
 			next: (response: PaginatedItemsViewModel<ConnectorFunctionViewModel>) => {
 				if (!this.hideEmptyFunctions) {
 					this.connectorFunctions = response.data
