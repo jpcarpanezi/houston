@@ -184,6 +184,10 @@ export class PipelineInstructionsComponent implements OnInit {
 		}
 	}
 
+	hasAdvancedInputs(): boolean | undefined {
+		return this.selectedConnectorFunctionHistory?.inputs.some(x => x.advancedOption);
+	}
+
 	removeInstruction(instructionIndex: number) {
 		if (this.selectedInstructionIndex == instructionIndex) {
 			this.isInstructionExpanded = false;
