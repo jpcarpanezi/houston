@@ -52,7 +52,8 @@ import { UpdateConnectorFunctionComponent } from './connectors-card/update-conne
 		NgxLoaderIndicatorDirective,
 		RouterModule,
 		NgxJdenticonModule,
-		ReactiveFormsModule
+		ReactiveFormsModule,
+		MatTooltipModule
 	],
 	exports: [
 		ReactiveFormsModule,
