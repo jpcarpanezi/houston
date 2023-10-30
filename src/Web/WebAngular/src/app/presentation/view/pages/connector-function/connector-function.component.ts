@@ -167,6 +167,22 @@ export class ConnectorFunctionComponent implements OnInit, OnDestroy {
 	}
 
 	saveConnectorFunction(): void {
+		Swal.fire({
+			icon: "question",
+			title: "Are you sure?",
+			text: "Updating a connector may cause unexpected behavior in active pipelines.",
+			showDenyButton: true,
+			showConfirmButton: true,
+			confirmButtonText: "Yes, save it",
+			denyButtonText: "No, cancel",
+		}).then((result) => {
+			if (result.isConfirmed) {
+				this.saveConnectorFunctionNext();
+			}
+		});
+	}
+
+	private saveConnectorFunctionNext(): void {
 		if (this.connectorFunctionForm.invalid) return;
 		this.connectorFunctionForm.disable();
 
