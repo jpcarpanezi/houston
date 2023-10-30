@@ -93,8 +93,13 @@
 
 			foreach (var instruction in pipeline.PipelineInstructions) {
 				foreach (var input in instruction.PipelineInstructionInputs) {
-					var env = new StringBuilder().Append(input.ConnectorFunctionInput.Replace)
-								  .Append("=INPUT_")
+					if (string.IsNullOrEmpty(input.ConnectorFunctionInput.Replace)) {
+						continue;
+					}
+
+					var env = new StringBuilder().Append("INPUT_")
+								  .Append(input.ConnectorFunctionInput.Replace)
+								  .Append('=')
 								  .Append(input.ReplaceValue)
 								  .ToString();
 
