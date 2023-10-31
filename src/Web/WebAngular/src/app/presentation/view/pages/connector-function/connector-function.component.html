@@ -17,14 +17,16 @@
 	</div>
 </div>
 
-<div class="alert alert-secondary mb-5"
+<div class="alert alert-secondary mb-5 space-x-6"
 	[class.alert-primary]="buildStatus == 'Running'"
 	[class.alert-success]="buildStatus == 'Success'"
 	[class.alert-danger]="buildStatus == 'Failed'"
 	[class.alert-secondary]="buildStatus == 'Unknown'"
 	*ngIf="buildStatus"
 >
-	<div class="flex justify-between">
+	<span class="spinner spinner-text" *ngIf="buildStatus == 'Running'"></span>
+
+	<div class="justify-between" [class.inline-block]="buildStatus == 'Running'" [class.flex]="buildStatus != 'Running'">
 		<span>Connector function build status: <strong>{{ buildStatus }}</strong></span>
 		<span *ngIf="buildStatus == 'Failed'" class="underline cursor-pointer" (click)="openLogs(connectorFunctionStderrModal)">Build logs</span>
 	</div>
@@ -60,7 +62,7 @@
 		<details class="group" #inputDetails>
 			<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
 				<span>
-					<button type="button" class="w-auto !py-0.5 !px-1 mr-1 btn-primary" (click)="addInput(); inputDetails.open = true" matTooltip="Add input">
+					<button type="button" class="w-auto !py-0.5 !px-1 mr-1 btn-primary" (click)="addInput(null); inputDetails.open = true" matTooltip="Add input">
 						<span class="spinner-text"><fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
 					</button>
 
