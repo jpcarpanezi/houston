@@ -10,7 +10,7 @@
 				.HasConstraintName("User_id_created_by_fk");
 
 			builder.HasOne(d => d.ConnectorFunctionInput).WithMany(p => p.PipelineInstructionInputs)
-				.OnDelete(DeleteBehavior.ClientSetNull)
+				.OnDelete(DeleteBehavior.Cascade)
 				.HasConstraintName("ConnectorFunctionInput_id_input_id_fk");
 
 			builder.HasOne(d => d.PipelineInstruction).WithMany(p => p.PipelineInstructionInputs)
