@@ -25,7 +25,7 @@
 			_unitOfWork.PipelineTriggerRepository.Update(pipelineTrigger);
 			await _unitOfWork.Commit();
 
-			return ResultCommand.Ok<PipelineTrigger, PipelineTriggerViewModel>(pipelineTrigger);
+			return ResultCommand.Ok<PipelineTrigger, PipelineTriggerKeysViewModel>(pipelineTrigger);
 		}
 	}
 }
