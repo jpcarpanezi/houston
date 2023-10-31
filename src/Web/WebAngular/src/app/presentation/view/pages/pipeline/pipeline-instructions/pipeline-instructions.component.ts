@@ -129,6 +129,7 @@ export class PipelineInstructionsComponent implements OnInit {
 			this.connectorFunctions.push(connectorFunction);
 		}
 
+		this.changeInstructionVersion(connectorFunction.versions[0].id, true);
 		this.pipelineInstructions.push(command);
 		this.expandInstruction(command, this.pipelineInstructions.length - 1);
 	}
