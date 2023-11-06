@@ -64,9 +64,9 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineTriggerCommandHandlers {
 			_mockUnitOfWork.Verify(x => x.PipelineTriggerRepository.Update(It.IsAny<PipelineTrigger>()), Times.Once);
 			_mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
 
-			result.Should().BeOfType<SuccessResultCommand<PipelineTrigger, PipelineTriggerViewModel>>();
+			result.Should().BeOfType<SuccessResultCommand<PipelineTrigger, PipelineTriggerKeysViewModel>>();
 
-			var successResult = result as SuccessResultCommand<PipelineTrigger, PipelineTriggerViewModel>;
+			var successResult = result as SuccessResultCommand<PipelineTrigger, PipelineTriggerKeysViewModel>;
 			successResult?.StatusCode.Should().Be(HttpStatusCode.OK);
 			successResult?.Response.Should().BeSameAs(pipelineTrigger);
 		}
