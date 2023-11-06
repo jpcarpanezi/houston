@@ -15,6 +15,8 @@ export class MenuComponent implements OnInit {
 	) { }
 
 	ngOnInit(): void {
-		this.user = this.authService.userInfo;
+		this.authService.userInfoSubject.subscribe((userInfo: UserSessionViewModel | null) => {
+			this.user = userInfo;
+		});
 	}
 }
