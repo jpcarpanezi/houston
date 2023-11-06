@@ -4,6 +4,8 @@
 		
 		IConnectorRepository ConnectorRepository { get; }
 
+		IConnectorFunctionHistoryRepository ConnectorFunctionHistoryRepository { get; }
+
 		IConnectorFunctionInputRepository ConnectorFunctionInputRepository { get; }
 
 		IPipelineRepository PipelineRepository { get; }

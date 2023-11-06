@@ -6,11 +6,9 @@
 
 		public Guid ConnectorFunctionId { get; set; }
 
-		public Guid? Connection { get; set; }
+		public Guid ConnectorFunctionHistoryId { get; set; }
 
 		public int? ConnectedToArrayIndex { get; set; }
-
-		public string[] Script { get; set; } = null!;
 
 		public List<PipelineInstructionInputViewModel> PipelineInstructionInputs { get; set; } = new();
 	}

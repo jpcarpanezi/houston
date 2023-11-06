@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
-import { ModalComponent } from '../../../shared/modal/modal.component';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ConnectorViewModel } from 'src/app/domain/view-models/connector.view-model';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ConnectorUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-use-case.interface';
-import Swal from 'sweetalert2';
+import { ConnectorViewModel } from 'src/app/domain/view-models/connector.view-model';
 import { Toast } from 'src/app/infra/helpers/toast';
+import Swal from 'sweetalert2';
+import { ModalComponent } from '../../modal/modal.component';
 
 @Component({
 	selector: 'app-new-connector',

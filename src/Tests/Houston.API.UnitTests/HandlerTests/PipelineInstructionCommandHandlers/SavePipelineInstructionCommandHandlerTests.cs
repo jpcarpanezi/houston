@@ -13,8 +13,8 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineInstructionCommandHandlers 
 			var handler = new SavePipelineInstructionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<SavePipelineInstructionCommand>();
 			var databasePipelineInstructions = _fixture.Build<PipelineInstruction>().OmitAutoProperties().CreateMany().ToList();
-			var databaseConnectorFunctions = _fixture.Build<ConnectorFunction>().OmitAutoProperties().CreateMany().ToList();
-			_mockUnitOfWork.Setup(x => x.ConnectorFunctionRepository.GetByIdList(It.IsAny<List<Guid>>())).ReturnsAsync(databaseConnectorFunctions);
+			var databaseConnectorFunctions = _fixture.Build<ConnectorFunctionHistory>().OmitAutoProperties().CreateMany().ToList();
+			_mockUnitOfWork.Setup(x => x.ConnectorFunctionHistoryRepository.GetByIdList(It.IsAny<List<Guid>>())).ReturnsAsync(databaseConnectorFunctions);
 			_mockUnitOfWork.Setup(x => x.PipelineInstructionRepository.GetByPipelineId(It.IsAny<Guid>())).ReturnsAsync(databasePipelineInstructions);
 
 			// Act
@@ -36,7 +36,7 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineInstructionCommandHandlers 
 			var handler = new SavePipelineInstructionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			Guid connectorFunctionId = Guid.NewGuid();
 			var pipelineInstructions = _fixture.Build<SavePipelineInstruction>()
-									  .With(x => x.ConnectorFunctionId, connectorFunctionId)
+									  .With(x => x.ConnectorFunctionHistoryId, connectorFunctionId)
 									  .With(x => x.Inputs, new Dictionary<Guid, string?>())
 									  .CreateMany(1)
 									  .ToList();
@@ -44,14 +44,14 @@ namespace Houston.API.UnitTests.HandlerTests.PipelineInstructionCommandHandlers 
 
 			var databasePipelineInstructions = _fixture.Build<PipelineInstruction>().OmitAutoProperties().CreateMany().ToList();
 			var connectorFunctionInputs = _fixture.Build<ConnectorFunctionInput>().OmitAutoProperties().CreateMany(1).ToList();
-			var databaseConnectorFunctions = _fixture.Build<ConnectorFunction>()
+			var databaseConnectorFunctions = _fixture.Build<ConnectorFunctionHistory>()
 											.OmitAutoProperties()
 											.With(x => x.ConnectorFunctionInputs, connectorFunctionInputs)
 											.With(x => x.Id, connectorFunctionId)
 											.CreateMany(1)
 											.ToList();
 
-			_mockUnitOfWork.Setup(x => x.ConnectorFunctionRepository.GetByIdList(It.IsAny<List<Guid>>())).ReturnsAsync(databaseConnectorFunctions);
+			_mockUnitOfWork.Setup(x => x.ConnectorFunctionHistoryRepository.GetByIdList(It.IsAny<List<Guid>>())).ReturnsAsync(databaseConnectorFunctions);
 			_mockUnitOfWork.Setup(x => x.PipelineInstructionRepository.GetByPipelineId(It.IsAny<Guid>())).ReturnsAsync(databasePipelineInstructions);
 
 			// Act

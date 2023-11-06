@@ -6,8 +6,8 @@ public partial class ConnectorFunctionInput {
 	[Column("id")]
 	public Guid Id { get; set; }
 
-	[Column("connector_function_id")]
-	public Guid ConnectorFunctionId { get; set; }
+	[Column("connector_function_history_id")]
+	public Guid ConnectorFunctionHistoryId { get; set; }
 
 	[Column("name", TypeName = "character varying")]
 	public string Name { get; set; } = null!;
@@ -46,9 +46,9 @@ public partial class ConnectorFunctionInput {
 	[Column("last_update", TypeName = "timestamp(3) with time zone")]
 	public DateTime LastUpdate { get; set; }
 
-	[ForeignKey(nameof(ConnectorFunctionId))]
-	[InverseProperty(nameof(Postgres.ConnectorFunction.ConnectorFunctionInputs))]
-	public virtual ConnectorFunction ConnectorFunction { get; set; } = null!;
+	[ForeignKey(nameof(ConnectorFunctionHistoryId))]
+	[InverseProperty(nameof(Postgres.ConnectorFunctionHistory.ConnectorFunctionInputs))]
+	public virtual ConnectorFunctionHistory ConnectorFunctionHistory { get; set; } = null!;
 
 	[ForeignKey(nameof(CreatedBy))]
 	[InverseProperty(nameof(User.ConnectorFunctionInputCreatedByNavigation))]

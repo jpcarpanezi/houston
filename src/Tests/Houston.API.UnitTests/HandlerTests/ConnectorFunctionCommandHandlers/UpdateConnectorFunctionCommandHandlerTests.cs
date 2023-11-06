@@ -11,7 +11,7 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorFunctionCommandHandlers {
 		[Test]
 		public async Task Handle_WithConnectorFunctionNotFound_ShouldReturnNotFoundObject() {
 			// Arrange
-			var handler = new UpdateConnectorFunctionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object, _mockPublishEndpoint.Object);
+			var handler = new UpdateConnectorFunctionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
 			var command = _fixture.Create<UpdateConnectorFunctionCommand>();
 			_mockUnitOfWork.Setup(x => x.ConnectorFunctionRepository.GetByIdWithInputs(It.IsAny<Guid>())).ReturnsAsync((ConnectorFunction?)null);
 
@@ -29,40 +29,12 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorFunctionCommandHandlers {
 		}
 
 		[Test]
-		public async Task Handle_WithBuildScript_ShouldReturnOkObject() {
-			// Arrange
-			var handler = new UpdateConnectorFunctionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object, _mockPublishEndpoint.Object);
-			var commandScript = _fixture.CreateMany<byte>().ToArray();
-			var commandPackage = _fixture.CreateMany<byte>().ToArray();
-			var connectorFunctionScript = _fixture.CreateMany<byte>().ToArray();
-			var connectorFunctionPackage = _fixture.CreateMany<byte>().ToArray();
-			var command = _fixture.Build<UpdateConnectorFunctionCommand>().With(x => x.Script, commandScript).With(x => x.Package, commandPackage).Create();
-			var connectorFunction = _fixture.Build<ConnectorFunction>().With(x => x.Script, connectorFunctionScript).With(x => x.Package, connectorFunctionPackage).OmitAutoProperties().Create();
-			_mockUnitOfWork.Setup(x => x.ConnectorFunctionRepository.GetByIdWithInputs(It.IsAny<Guid>())).ReturnsAsync(connectorFunction);
-			_mockClaims.Setup(x => x.Id).Returns(It.IsAny<Guid>());
-
-			// Act
-			var result = await handler.Handle(command, default);
-
-			// Assert
-			_mockUnitOfWork.Verify(x => x.ConnectorFunctionRepository.Update(It.IsAny<ConnectorFunction>()), Times.Once);
-			_mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
-			_mockPublishEndpoint.Verify(x => x.Publish(It.IsAny<BuildConnectorFunctionMessage>(), default), Times.Once);
-
-			result.Should().BeOfType<SuccessResultCommand<ConnectorFunction, ConnectorFunctionViewModel>>();
-
-			var successResult = result as SuccessResultCommand<ConnectorFunction, ConnectorFunctionViewModel>;
-			successResult?.StatusCode.Should().Be(HttpStatusCode.OK);
-			successResult?.Response.Should().BeSameAs(connectorFunction);
-		}
-
-		[Test]
 		public async Task Handle_WithValidRequest_ShouldReturnOkObject() {
 			// Arrange
-			var handler = new UpdateConnectorFunctionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object, _mockPublishEndpoint.Object);
-			var command = _fixture.Build<UpdateConnectorFunctionCommand>().With(x => x.Script, It.IsAny<byte[]>()).With(x => x.Package, It.IsAny<byte[]>()).Create();
-			var connectorFunction = _fixture.Build<ConnectorFunction>().With(x => x.Script, It.IsAny<byte[]>()).With(x => x.Package, It.IsAny<byte[]>).OmitAutoProperties().Create();
-			_mockUnitOfWork.Setup(x => x.ConnectorFunctionRepository.GetByIdWithInputs(It.IsAny<Guid>())).ReturnsAsync(connectorFunction);
+			var handler = new UpdateConnectorFunctionCommandHandler(_mockUnitOfWork.Object, _mockClaims.Object);
+			var command = _fixture.Create<UpdateConnectorFunctionCommand>();
+			var connectorFunction = _fixture.Build<ConnectorFunction>().OmitAutoProperties().Create();
+			_mockUnitOfWork.Setup(x => x.ConnectorFunctionRepository.GetActive(It.IsAny<Guid>())).ReturnsAsync(connectorFunction);
 			_mockClaims.Setup(x => x.Id).Returns(It.IsAny<Guid>());
 
 			// Act
@@ -71,7 +43,6 @@ namespace Houston.API.UnitTests.HandlerTests.ConnectorFunctionCommandHandlers {
 			// Assert
 			_mockUnitOfWork.Verify(x => x.ConnectorFunctionRepository.Update(It.IsAny<ConnectorFunction>()));
 			_mockUnitOfWork.Verify(x => x.Commit());
-			_mockPublishEndpoint.Verify(x => x.Publish(It.IsAny<BuildConnectorFunctionMessage>(), default));
 
 			result.Should().BeOfType<SuccessResultCommand<ConnectorFunction, ConnectorFunctionViewModel>>();
 

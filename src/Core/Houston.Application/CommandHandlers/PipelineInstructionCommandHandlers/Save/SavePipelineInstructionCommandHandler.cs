@@ -12,14 +12,14 @@
 			var orderedPipelineInstructions = request.PipelineInstructions.OrderBy(x => x.ConnectedToArrayIndex);
 			var databasePipelineInstructions = await _unitOfWork.PipelineInstructionRepository.GetByPipelineId(request.PipelineId);
 
-			var requestConnectorFunctionIds = orderedPipelineInstructions.Select(x => x.ConnectorFunctionId).ToList();
-			var databaseConnectorFunctions = await _unitOfWork.ConnectorFunctionRepository.GetByIdList(requestConnectorFunctionIds);
+			var requestConnectorFunctionHistoryIds = orderedPipelineInstructions.Select(x => x.ConnectorFunctionHistoryId).ToList();
+			var databaseConnectorHistoryFunctions = await _unitOfWork.ConnectorFunctionHistoryRepository.GetByIdList(requestConnectorFunctionHistoryIds);
 
 			var instructionsIndexes = orderedPipelineInstructions.Select((el, index) => new { el, index }).ToDictionary(x => x.index, x => Guid.NewGuid());
 
 			var newInstructions = new List<PipelineInstruction>();
 			foreach (var instruction in request.PipelineInstructions) {
-				var connectorFunction = databaseConnectorFunctions.FirstOrDefault(x => x.Id == instruction.ConnectorFunctionId);
+				var connectorFunction = databaseConnectorHistoryFunctions.FirstOrDefault(x => x.Id == instruction.ConnectorFunctionHistoryId);
 
 				if (connectorFunction is null) {
 					return ResultCommand.Conflict("Could not complete request due to a foreign key constraint violation.", "foreignKeyViolation");
@@ -48,7 +48,7 @@
 				var pipelineInstruction = new PipelineInstruction {
 					Id = pipelineInstructionId,
 					PipelineId = request.PipelineId,
-					ConnectorFunctionId = instruction.ConnectorFunctionId,
+					ConnectorFunctionHistoryId = instruction.ConnectorFunctionHistoryId,
 					ConnectedToArrayIndex = instruction.ConnectedToArrayIndex,
 					CreatedBy = _claims.Id,
 					CreationDate = DateTime.UtcNow,

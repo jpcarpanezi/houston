@@ -63,13 +63,15 @@ namespace Houston.API.Controllers.V1 {
 		public async Task<IActionResult> Get(Guid connectorFunctionId) => await _mediator.Send(new GetConnectorFunctionCommand(connectorFunctionId));
 
 		/// <summary>
-		/// List all active connector function with inputs
+		/// Retrieve a paginated list of active connector functions for a specific connector.
 		/// </summary>
-		/// <param name="command">URL query optional query parameters</param>
-		/// <response code="200">List of all active connector functions</response>
+		/// <param name="connectorId">The unique identifier of the connector.</param>
+		/// <param name="pageSize">The number of items to include per page.</param>
+		/// <param name="pageIndex">The page index (starting from 0).</param>
+		/// <response code="200">Returns a paginated list of active connector functions.</response>
 		[HttpGet("{connectorId:guid}")]
 		[Authorize]
 		[ProducesResponseType(typeof(PaginatedItemsViewModel<ConnectorFunctionViewModel>), (int)HttpStatusCode.OK)]
-		public async Task<IActionResult> GetAll([FromQuery] GetAllConnectorFunctionCommand command, Guid connectorId) => await _mediator.Send(command);
+		public async Task<IActionResult> GetAll(Guid connectorId, [FromQuery] int pageSize, [FromQuery] int pageIndex) => await _mediator.Send(new GetAllConnectorFunctionCommand(connectorId, pageSize, pageIndex));
 	}
 }

@@ -95,6 +95,12 @@ public partial class User {
 	[InverseProperty(nameof(PipelineLog.TriggeredByNavigation))]
 	public virtual ICollection<PipelineLog> PipelineLogTriggeredByNavigation { get; } = new List<PipelineLog>();
 
+	[InverseProperty(nameof(ConnectorFunctionHistory.CreatedByNavigation))]
+	public virtual ICollection<ConnectorFunctionHistory> ConnectorFunctionHistoryCreatedByNavigation { get; } = new List<ConnectorFunctionHistory>();
+
+	[InverseProperty(nameof(ConnectorFunctionHistory.UpdatedByNavigation))]
+	public virtual ICollection<ConnectorFunctionHistory> ConnectorFunctionHistoryUpdatedByNavigation { get; } = new List<ConnectorFunctionHistory>();
+
 	[ForeignKey(nameof(UpdatedBy))]
 	[InverseProperty(nameof(InverseUpdatedByNavigation))]
 	public virtual User UpdatedByNavigation { get; set; } = null!;

@@ -29,7 +29,8 @@
 				Env = request.Env,
 				HostConfig = new HostConfig {
 					Privileged = true,
-					NetworkMode = networkMode
+					NetworkMode = networkMode,
+					Binds = new List<string> { "/var/run/docker.sock:/var/run/docker.sock" }
 				}
 			}, cancellationToken);
 

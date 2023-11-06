@@ -18,7 +18,7 @@
 		public async Task<List<PipelineLog>> GetAllByPipelineId(Guid pipelineId, int pageSize, int pageIndex) {
 			return await Context.PipelineLog.Include(x => x.TriggeredByNavigation)
 								   .Include(x => x.PipelineInstruction)
-								   .ThenInclude(x => x.ConnectorFunction)
+								   .ThenInclude(x => x.ConnectorFunctionHistory)
 								   .Where(x => x.PipelineId == pipelineId)
 								   .OrderByDescending(x => x.StartTime)
 								   .Skip(pageSize * pageIndex)
@@ -29,7 +29,7 @@
 		public async Task<PipelineLog?> GetByIdWithInverseProperties(Guid id) {
 			return await Context.PipelineLog.Include(x => x.TriggeredByNavigation)
 								   .Include(x => x.PipelineInstruction)
-								   .ThenInclude(x => x.ConnectorFunction)
+								   .ThenInclude(x => x.ConnectorFunctionHistory)
 								   .Where(x => x.Id == id)
 								   .FirstOrDefaultAsync();
 		}

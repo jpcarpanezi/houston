@@ -22,7 +22,7 @@
 									.ThenInclude(x => x.PipelineInstructionInputs)
 										.ThenInclude(x => x.ConnectorFunctionInput)
 								.Include(x => x.PipelineInstructions)
-									.ThenInclude(x => x.ConnectorFunction)
+									.ThenInclude(x => x.ConnectorFunctionHistory)
 								.Include(x => x.PipelineTrigger)
 								.Where(x => x.Id == id && x.Active)
 								.FirstOrDefaultAsync();

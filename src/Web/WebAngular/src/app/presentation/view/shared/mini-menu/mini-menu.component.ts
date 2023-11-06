@@ -7,9 +7,9 @@ import { SettingsComponent } from '../settings/settings.component';
 import { UserSessionViewModel } from 'src/app/domain/view-models/user-session.view-model';
 
 @Component({
-  selector: 'app-mini-menu',
-  templateUrl: './mini-menu.component.html',
-  styleUrls: ['./mini-menu.component.css']
+	selector: 'app-mini-menu',
+	templateUrl: './mini-menu.component.html',
+	styleUrls: ['./mini-menu.component.css']
 })
 export class MiniMenuComponent implements OnInit {
 	@Input("notificationsPanelRef") notificationsRef?: NotificationsComponent;
@@ -26,7 +26,9 @@ export class MiniMenuComponent implements OnInit {
 	) { }
 
 	ngOnInit(): void {
-		this.userInfo = this.authService.userInfo;
+		this.authService.userInfoSubject.subscribe((userInfo: UserSessionViewModel | null) => {
+			this.userInfo = userInfo;
+		});
 	}
 
 	@HostListener("document:click", ["$event.target"])

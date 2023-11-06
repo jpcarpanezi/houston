@@ -34,13 +34,13 @@
 			return JsonSerializer.Deserialize<SystemConfiguration>(redisConfigurations)!;
 		}
 
-		private async Task<ConnectorFunction> GetConnectorFunction(Guid connectorFunctionId) {
-			var connectorFunction = await _unitOfWork.ConnectorFunctionRepository.GetByIdWithInputs(connectorFunctionId);
+		private async Task<ConnectorFunctionHistory> GetConnectorFunction(Guid connectorFunctionId) {
+			var connectorFunction = await _unitOfWork.ConnectorFunctionHistoryRepository.GetByIdWithInputs(connectorFunctionId);
 
 			return connectorFunction ?? throw new Exception($"Could not find a connector function with the provided ID: {connectorFunctionId}.");
 		}
 
-		private static WorkerBuildConnectorFunctionCommand CreateWorkerBuildConnectorFunctionCommand(SystemConfiguration systemConfiguration, ConnectorFunction connectorFunction) {
+		private static WorkerBuildConnectorFunctionCommand CreateWorkerBuildConnectorFunctionCommand(SystemConfiguration systemConfiguration, ConnectorFunctionHistory connectorFunction) {
 			var containerName = $"houston-runner-{Guid.NewGuid()}";
 
 			return new WorkerBuildConnectorFunctionCommand(
@@ -56,7 +56,7 @@
 			);
 		}
 
-		private async Task<BuildConnectorFunctionViewModel> ExecuteBuildCommand(WorkerBuildConnectorFunctionCommand command, ConnectorFunction connectorFunction) {
+		private async Task<BuildConnectorFunctionViewModel> ExecuteBuildCommand(WorkerBuildConnectorFunctionCommand command, ConnectorFunctionHistory connectorFunction) {
 			var response = new BuildConnectorFunctionViewModel();
 
 			try {
@@ -73,7 +73,7 @@
 			return response;
 		}
 
-		private void UpdateConnectorFunctionWithResponse(ConnectorFunction connectorFunction, BuildConnectorFunctionViewModel response) {
+		private void UpdateConnectorFunctionWithResponse(ConnectorFunctionHistory connectorFunction, BuildConnectorFunctionViewModel response) {
 			if (response.ExitCode == 0) {
 				_logger.LogDebug("Build command for connector function: {ConnectorFunctionId} executed successfully.", connectorFunction.Id);
 				connectorFunction.ScriptDist = response.Dist;
@@ -86,10 +86,10 @@
 			}
 		}
 
-		private async Task UpdateBuildStatus(ConnectorFunction connectorFunction, BuildStatus buildStatus) {
+		private async Task UpdateBuildStatus(ConnectorFunctionHistory connectorFunction, BuildStatus buildStatus) {
 			connectorFunction.BuildStatus = buildStatus;
 
-			_unitOfWork.ConnectorFunctionRepository.Update(connectorFunction);
+			_unitOfWork.ConnectorFunctionHistoryRepository.Update(connectorFunction);
 			await _unitOfWork.Commit();
 		}
 	}

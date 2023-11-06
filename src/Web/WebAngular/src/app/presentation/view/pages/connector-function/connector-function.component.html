@@ -11,20 +11,22 @@
 			<span class="spinner-text">Save <fa-icon [icon]="['fas', 'floppy-disk']"></fa-icon></span>
 		</button>
 
-		<button type="button" class="w-full md:w-auto md:ml-5 mt-5 md:mt-0 btn-danger" [class.spinner]="isLoading || connectorFunctionForm.disabled" [disabled]="isLoading || connectorFunctionForm.disabled" *ngIf="connectorFunctionId" (click)="deleteConnectorFunction()">
+		<button type="button" class="w-full md:w-auto md:ml-5 mt-5 md:mt-0 btn-danger" [class.spinner]="isLoading || connectorFunctionForm.disabled" [disabled]="isLoading || connectorFunctionForm.disabled" *ngIf="connectorFunctionHistoryId" (click)="deleteConnectorFunction()">
 			<span class="spinner-text">Delete <fa-icon [icon]="['fas', 'trash']"></fa-icon></span>
 		</button>
 	</div>
 </div>
 
-<div class="alert alert-secondary mb-5"
+<div class="alert alert-secondary mb-5 space-x-6"
 	[class.alert-primary]="buildStatus == 'Running'"
 	[class.alert-success]="buildStatus == 'Success'"
 	[class.alert-danger]="buildStatus == 'Failed'"
 	[class.alert-secondary]="buildStatus == 'Unknown'"
 	*ngIf="buildStatus"
 >
-	<div class="flex justify-between">
+	<span class="spinner spinner-text" *ngIf="buildStatus == 'Running'"></span>
+
+	<div class="justify-between" [class.inline-block]="buildStatus == 'Running'" [class.flex]="buildStatus != 'Running'">
 		<span>Connector function build status: <strong>{{ buildStatus }}</strong></span>
 		<span *ngIf="buildStatus == 'Failed'" class="underline cursor-pointer" (click)="openLogs(connectorFunctionStderrModal)">Build logs</span>
 	</div>
@@ -33,7 +35,7 @@
 <form [formGroup]="connectorFunctionForm" id="connectorFunctionForm" (submit)="saveConnectorFunction()">
 	<!-- DETAILS -->
 	<div class="card" [loader]="isLoading">
-		<details class="group">
+		<details class="group" [open]="!connectorFunctionHistoryId">
 			<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
 				<span>Details</span>
 
@@ -46,16 +48,10 @@
 				</p>
 
 				<div class="block mt-4">
-					<label for="name">Name</label>
-					<input type="text" name="name" id="name" formControlName="name" placeholder="Enter connector function name" maxlength="50" class="w-full mb-2 text-input">
-					<app-form-errors controlName="name" error="required">Connector function name required.</app-form-errors>
-					<app-form-errors controlName="name" error="maxlength">Maximum characters are 50.</app-form-errors>
-				</div>
-
-				<div class="block mt-4">
-					<label for="description">Description</label>
-					<textarea name="description" id="description" formControlName="description" rows="3" placeholder="Enter connector function description" maxlength="5000" class="w-full mb-2 text-input"></textarea>
-					<app-form-errors controlName="description" error="maxlength">Maximum characters are 5000.</app-form-errors>
+					<label for="name">Version</label>
+					<input type="text" name="version" id="version" formControlName="version" placeholder="Enter connector function version" maxlength="50" mask="0.0.0" class="w-full mb-2 text-input" [readonly]="connectorFunctionHistoryId">
+					<app-form-errors controlName="version" error="required">Connector function version required.</app-form-errors>
+					<app-form-errors controlName="version" error="pattern">The version must be in the format of 'x.x.x'.</app-form-errors>
 				</div>
 			</div>
 		</details>
@@ -66,7 +62,7 @@
 		<details class="group" #inputDetails>
 			<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
 				<span>
-					<button type="button" class="w-auto !py-0.5 !px-1 mr-1 btn-primary" (click)="addInput(); inputDetails.open = true" matTooltip="Add input">
+					<button type="button" class="w-auto !py-0.5 !px-1 mr-1 btn-primary" (click)="addInput(null); inputDetails.open = true" matTooltip="Add input">
 						<span class="spinner-text"><fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
 					</button>
 

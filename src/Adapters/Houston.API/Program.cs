@@ -17,6 +17,10 @@ builder.Services.ConfigureCors();
 builder.Services.AddControllers(ExtensionOptions.ConfigureControllers)
 				.AddJsonOptions(ExtensionOptions.ConfigureJson);
 
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddValidatorsFromAssembly(AppDomain.CurrentDomain.Load("Houston.Application"));
+
 builder.Services.AddSwaggerGen();
 
 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
@@ -31,17 +35,9 @@ builder.Services.AddRedis(builder.Configuration);
 
 builder.Services.AddMassTransit(x => ExtensionOptions.ConfigureMassTransit(x, builder.Configuration));
 
-builder.Services.AddHttpContextAccessor();
-
 builder.Services.AddPostgres(builder.Configuration, builder.Environment);
 
 builder.Services.AddRepositories();
-
-builder.Services.AddValidatorsFromAssembly(AppDomain.CurrentDomain.Load("Houston.Application"));
-
-builder.Services.AddFluentValidationAutoValidation();
-
-builder.Services.AddFluentValidationClientsideAdapters();
 
 builder.Services.AddFluentValidationRulesToSwagger();
 

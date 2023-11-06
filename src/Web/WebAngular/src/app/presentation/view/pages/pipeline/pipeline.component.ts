@@ -6,7 +6,6 @@ import { PipelineUseCaseInterface } from 'src/app/domain/interfaces/use-cases/pi
 import { ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Subscription, interval, startWith, switchMap, takeWhile, timer } from 'rxjs';
-import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 
 @Component({
 	selector: 'app-pipeline',

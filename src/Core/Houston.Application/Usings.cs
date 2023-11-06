@@ -1,4 +1,5 @@
 ﻿global using System.Net;
+global using System.Collections;
 global using System.Globalization;
 global using System.Text.Json;
 global using System.Text;
@@ -46,6 +47,7 @@ global using Houston.Application.ViewModel.PipelineInstructionInputViewModels;
 global using Houston.Application.ViewModel.ConnectorFunctionInputViewModels;
 global using Houston.Application.ViewModel.PipelineTriggerFilterViewModels;
 global using Houston.Application.ViewModel.PipelineTriggerEventViewModels;
+global using Houston.Application.ViewModel.ConnectorFunctionHistoryViewModels;
 global using Houston.Application.CommandHandlers.WorkerCommandHandlers.RunPipeline;
 
 global using Houston.Core.Interfaces.Repository;
