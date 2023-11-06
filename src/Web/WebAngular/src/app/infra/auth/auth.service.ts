@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
-import { Observable, catchError, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, of, switchMap } from 'rxjs';
 import { AuthUseCaseInterface } from 'src/app/domain/interfaces/use-cases/auth-use-case.interface';
 import { BearerTokenViewModel } from 'src/app/domain/view-models/bearer-token.view-model';
 import { UserSessionViewModel } from 'src/app/domain/view-models/user-session.view-model';
@@ -14,6 +14,8 @@ const USER_INFO = "user_info";
 	providedIn: 'root'
 })
 export class AuthService {
+	public userInfoSubject: BehaviorSubject<UserSessionViewModel | null> = new BehaviorSubject<UserSessionViewModel | null>(null);
+
 	private _accessToken: string | null = null;
 	private _refreshToken: string | null = null;
 	private _userInfo: UserSessionViewModel | null = null;
@@ -64,6 +66,7 @@ export class AuthService {
 		this._accessToken = token.accessToken;
 		this._refreshToken = token.refreshToken;
 		this._userInfo = payload;
+		this.userInfoSubject.next(payload);
 
 		if (token) {
 			this.setRefreshTokenCookie(token.refreshToken);

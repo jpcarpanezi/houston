@@ -64,7 +64,10 @@ export class ConnectorFunctionComponent implements OnInit, OnDestroy {
 			switchMap(() => this.connectorFunctionHistoryUseCase.get(this.connectorFunctionHistoryId!)),
 			takeWhile(x => x.buildStatus !== "Success" && x.buildStatus !== "Failed", true)
 		).subscribe({
-			next: (response: ConnectorFunctionHistoryDetailViewModel) => this.buildStatus = response.buildStatus,
+			next: (response: ConnectorFunctionHistoryDetailViewModel) => {
+				this.buildStatus = response.buildStatus;
+				this.connectorFunctionHistory = response;
+			},
 			error: () => Swal.fire("Error", "An error has occurred while trying to get the connector function.", "error")
 		});
 	}
@@ -105,7 +108,7 @@ export class ConnectorFunctionComponent implements OnInit, OnDestroy {
 		this.buildStatus = response.buildStatus;
 
 		response.inputs?.forEach((input: ConnectorFunctionInputViewModel) => {
-			this.addInput();
+			this.addInput(input.id);
 
 			input.values?.forEach(() => {
 				this.addInputValue(this.inputs.controls[this.inputs.controls.length - 1]);
@@ -117,8 +120,11 @@ export class ConnectorFunctionComponent implements OnInit, OnDestroy {
 		this.packageEditor?.codeMirror?.getDoc().setValue(window.atob(response.package as string));
 	}
 
-	addInput(): void {
+	addInput(inputId: string | null): void {
 		const inputFormGroup = this.fb.group({
+			id: [inputId, [
+				Validators.maxLength(36)
+			]],
 			inputType: ["", [
 				Validators.required
 			]],
@@ -167,19 +173,23 @@ export class ConnectorFunctionComponent implements OnInit, OnDestroy {
 	}
 
 	saveConnectorFunction(): void {
-		Swal.fire({
-			icon: "question",
-			title: "Are you sure?",
-			text: "Updating a connector may cause unexpected behavior in active pipelines.",
-			showDenyButton: true,
-			showConfirmButton: true,
-			confirmButtonText: "Yes, save it",
-			denyButtonText: "No, cancel",
-		}).then((result) => {
-			if (result.isConfirmed) {
-				this.saveConnectorFunctionNext();
-			}
-		});
+		if (this.connectorFunctionHistoryId) {
+			Swal.fire({
+				icon: "question",
+				title: "Are you sure?",
+				text: "Updating a connector may cause unexpected behavior in active pipelines.",
+				showDenyButton: true,
+				showConfirmButton: true,
+				confirmButtonText: "Yes, save it",
+				denyButtonText: "No, cancel",
+			}).then((result) => {
+				if (result.isConfirmed) {
+					this.saveConnectorFunctionNext();
+				}
+			});
+		} else {
+			this.saveConnectorFunctionNext();
+		}
 	}
 
 	private saveConnectorFunctionNext(): void {
