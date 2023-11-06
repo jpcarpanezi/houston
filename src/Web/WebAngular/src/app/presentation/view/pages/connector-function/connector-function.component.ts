@@ -64,7 +64,10 @@ export class ConnectorFunctionComponent implements OnInit, OnDestroy {
 			switchMap(() => this.connectorFunctionHistoryUseCase.get(this.connectorFunctionHistoryId!)),
 			takeWhile(x => x.buildStatus !== "Success" && x.buildStatus !== "Failed", true)
 		).subscribe({
-			next: (response: ConnectorFunctionHistoryDetailViewModel) => this.buildStatus = response.buildStatus,
+			next: (response: ConnectorFunctionHistoryDetailViewModel) => {
+				this.buildStatus = response.buildStatus;
+				this.connectorFunctionHistory = response;
+			},
 			error: () => Swal.fire("Error", "An error has occurred while trying to get the connector function.", "error")
 		});
 	}
