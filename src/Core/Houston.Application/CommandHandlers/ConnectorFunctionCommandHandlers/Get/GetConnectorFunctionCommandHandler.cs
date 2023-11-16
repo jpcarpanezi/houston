@@ -13,7 +13,7 @@
 				return ResultCommand.NotFound("The requested connector function could not be found.", "connectorFunctionNotFound");
 			}
 
-			return ResultCommand.Ok<ConnectorFunction, ConnectorFunctionViewModel>(connectorFunction);
+			return ResultCommand.Ok<ConnectorFunction, ConnectorFunctionDetailViewModel>(connectorFunction);
 		}
 	}
 }
