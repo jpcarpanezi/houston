@@ -1,49 +1,31 @@
-﻿namespace Houston.Core.Entities.Postgres;
+﻿namespace Houston.Core.Entities.Postgres {
+	public class Pipeline {
+		public Guid Id { get; set; }
 
-[Table("Pipeline", Schema = "houston")]
-public partial class Pipeline {
-	[Key]
-	[Column("id")]
-	public Guid Id { get; set; }
+		public string Name { get; set; } = null!;
 
-	[Column("name", TypeName = "character varying")]
-	public string Name { get; set; } = null!;
+		public string? Description { get; set; }
 
-	[Column("description", TypeName = "character varying")]
-	public string? Description { get; set; }
+		public bool Active { get; set; }
 
-	[Column("active")]
-	public bool Active { get; set; }
+		public PipelineStatus Status { get; set; }
 
-	[Column("status")]
-	public PipelineStatus Status { get; set; }
+		public Guid CreatedBy { get; set; }
 
-	[Column("created_by")]
-	public Guid CreatedBy { get; set; }
+		public DateTime CreationDate { get; set; }
 
-	[Column("creation_date", TypeName = "timestamp(3) with time zone")]
-	public DateTime CreationDate { get; set; }
+		public Guid UpdatedBy { get; set; }
 
-	[Column("updated_by")]
-	public Guid UpdatedBy { get; set; }
+		public DateTime LastUpdate { get; set; }
 
-	[Column("last_update", TypeName = "timestamp(3) with time zone")]
-	public DateTime LastUpdate { get; set; }
+		public byte[] SpecFile { get; set; } = null!;
 
-	[ForeignKey(nameof(CreatedBy))]
-	[InverseProperty(nameof(User.PipelineCreatedByNavigation))]
-	public virtual User CreatedByNavigation { get; set; } = null!;
+		public virtual User CreatedByNavigation { get; set; } = null!;
 
-	[InverseProperty(nameof(PipelineLog.Pipeline))]
-	public virtual ICollection<PipelineLog> PipelineLogs { get; } = new List<PipelineLog>();
+		public virtual ICollection<PipelineLog> PipelineLogs { get; set; } = new List<PipelineLog>();
 
-	[InverseProperty(nameof(PipelineInstruction.Pipeline))]
-	public virtual ICollection<PipelineInstruction> PipelineInstructions { get; } = new List<PipelineInstruction>();
+		public virtual PipelineTrigger? PipelineTrigger { get; set; }
 
-	[InverseProperty(nameof(Postgres.PipelineTrigger.Pipeline))]
-	public virtual PipelineTrigger PipelineTrigger { get; set; } = null!;
-
-	[ForeignKey(nameof(UpdatedBy))]
-	[InverseProperty(nameof(User.PipelineUpdatedByNavigation))]
-	public virtual User UpdatedByNavigation { get; set; } = null!;
+		public virtual User UpdatedByNavigation { get; set; } = null!;
+	}
 }

@@ -1,44 +1,25 @@
-﻿namespace Houston.Core.Entities.Postgres;
+﻿namespace Houston.Core.Entities.Postgres {
+	public class PipelineLog {
+		public Guid Id { get; set; }
 
-[Table("PipelineLog", Schema = "houston")]
-public partial class PipelineLog {
-	[Key]
-	[Column("id")]
-	public Guid Id { get; set; }
+		public Guid PipelineId { get; set; }
 
-	[Column("pipeline_id")]
-	public Guid PipelineId { get; set; }
+		public long ExitCode { get; set; }
 
-	[Column("exit_code")]
-	public long ExitCode { get; set; }
+		public string? Stdout { get; set; }
 
-	[Column("run_n")]
-	public long RunN { get; set; }
+		public Guid? TriggeredBy { get; set; }
 
-	[Column("stdout")]
-	public string? Stdout { get; set; }
+		public DateTime StartTime { get; set; }
 
-	[Column("instruction_with_error")]
-	public Guid? InstructionWithError { get; set; }
+		public TimeOnly Duration { get; set; }
 
-	[Column("triggered_by")]
-	public Guid? TriggeredBy { get; set; }
+		public byte[] SpecFile { get; set; } = null!;
 
-	[Column("start_time", TypeName = "timestamp(3) with time zone")]
-	public DateTime StartTime { get; set; }
+		public int StepError { get; set; }
 
-	[Column("duration", TypeName = "time without time zone")]
-	public TimeSpan Duration { get; set; }
+		public virtual Pipeline Pipeline { get; set; } = null!;
 
-	[ForeignKey(nameof(PipelineId))]
-	[InverseProperty(nameof(Postgres.Pipeline.PipelineLogs))]
-	public virtual Pipeline Pipeline { get; set; } = null!;
-
-	[ForeignKey(nameof(TriggeredBy))]
-	[InverseProperty(nameof(User.PipelineLogTriggeredByNavigation))]
-	public virtual User? TriggeredByNavigation { get; set; } = null!;
-
-	[ForeignKey(nameof(InstructionWithError))]
-	[InverseProperty(nameof(Postgres.PipelineInstruction.PipelineLogs))]
-	public virtual PipelineInstruction? PipelineInstruction { get; set; } = null!;
+		public virtual User? TriggeredByNavigation { get; set; }
+	}
 }

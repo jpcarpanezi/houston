@@ -1,40 +1,27 @@
-﻿namespace Houston.Core.Entities.Postgres;
+﻿namespace Houston.Core.Entities.Postgres {
+	public class Connector {
+		public Guid Id { get; set; }
 
-[Table("Connector", Schema = "houston")]
-public partial class Connector {
-	[Key]
-	[Column("id")]
-	public Guid Id { get; set; }
+		public string Name { get; set; } = null!;
 
-	[Column("name", TypeName = "character varying")]
-	public string Name { get; set; } = null!;
+		public string? Description { get; set; }
 
-	[Column("description")]
-	public string? Description { get; set; }
+		public bool Active { get; set; }
 
-	[Column("active")]
-	public bool Active { get; set; }
+		public Guid CreatedBy { get; set; }
 
-	[Column("created_by")]
-	public Guid CreatedBy { get; set; }
+		public DateTime CreationDate { get; set; }
 
-	[Column("creation_date", TypeName = "timestamp(3) with time zone")]
-	public DateTime CreationDate { get; set; }
+		public Guid UpdatedBy { get; set; }
 
-	[Column("updated_by")]
-	public Guid UpdatedBy { get; set; }
+		public DateTime LastUpdate { get; set; }
 
-	[Column("last_update", TypeName = "timestamp(3) with time zone")]
-	public DateTime LastUpdate { get; set; }
+		public string FriendlyName { get; set; } = null!;
 
-	[InverseProperty(nameof(Postgres.ConnectorFunction.Connector))]
-	public virtual ICollection<ConnectorFunction> ConnectorFunction { get; } = new List<ConnectorFunction>();
+		public virtual ICollection<ConnectorFunction> ConnectorFunctions { get; set; } = new List<ConnectorFunction>();
 
-	[ForeignKey(nameof(CreatedBy))]
-	[InverseProperty(nameof(User.ConnectorCreatedByNavigation))]
-	public virtual User CreatedByNavigation { get; set; } = null!;
+		public virtual User CreatedByNavigation { get; set; } = null!;
 
-	[ForeignKey(nameof(UpdatedBy))]
-	[InverseProperty(nameof(User.ConnectorUpdatedByNavigation))]
-	public virtual User UpdatedByNavigation { get; set; } = null!;
+		public virtual User UpdatedByNavigation { get; set; } = null!;
+	}
 }

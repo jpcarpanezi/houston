@@ -1,54 +1,31 @@
-﻿namespace Houston.Core.Entities.Postgres;
+﻿namespace Houston.Core.Entities.Postgres {
+	public class PipelineTrigger {
+		public Guid Id { get; set; }
 
-[Table("PipelineTrigger", Schema = "houston")]
-public partial class PipelineTrigger {
-	[Key]
-	[Column("id")]
-	public Guid Id { get; set; }
+		public Guid PipelineId { get; set; }
 
-	[Column("pipeline_id")]
-	public Guid PipelineId { get; set; }
+		public string SourceGit { get; set; } = null!;
 
-	[Column("source_git", TypeName = "character varying")]
-	public string SourceGit { get; set; } = null!;
+		public string PrivateKey { get; set; } = null!;
 
-	[Column("private_key", TypeName = "character varying")]
-	public string PrivateKey { get; set; } = null!;
+		public string PublicKey { get; set; } = null!;
 
-	[Column("public_key", TypeName = "character varying")]
-	public string PublicKey { get; set; } = null!;
+		public bool KeyRevealed { get; set; }
 
-	[Column("key_revealed")]
-	public bool KeyRevealed { get; set; }
+		public string Secret { get; set; } = null!;
 
-	[Column("secret")]
-	[StringLength(256)]
-	public string Secret { get; set; } = null!;
+		public Guid CreatedBy { get; set; }
 
-	[Column("created_by")]
-	public Guid CreatedBy { get; set; }
+		public DateTime CreationDate { get; set; }
 
-	[Column("creation_date", TypeName = "timestamp(3) with time zone")]
-	public DateTime CreationDate { get; set; }
+		public Guid UpdatedBy { get; set; }
 
-	[Column("updated_by")]
-	public Guid UpdatedBy { get; set; }
+		public DateTime LastUpdate { get; set; }
 
-	[Column("last_update", TypeName = "timestamp(3) with time zone")]
-	public DateTime LastUpdate { get; set; }
+		public virtual User CreatedByNavigation { get; set; } = null!;
 
-	[ForeignKey(nameof(CreatedBy))]
-	[InverseProperty(nameof(User.PipelineTriggerCreatedByNavigation))]
-	public virtual User CreatedByNavigation { get; set; } = null!;
+		public virtual Pipeline Pipeline { get; set; } = null!;
 
-	[ForeignKey(nameof(PipelineId))]
-	[InverseProperty(nameof(Postgres.Pipeline.PipelineTrigger))]
-	public virtual Pipeline Pipeline { get; set; } = null!;
-
-	[InverseProperty(nameof(PipelineTriggerEvent.PipelineTrigger))]
-	public virtual ICollection<PipelineTriggerEvent> PipelineTriggerEvents { get; set; } = new List<PipelineTriggerEvent>();
-
-	[ForeignKey(nameof(UpdatedBy))]
-	[InverseProperty(nameof(User.PipelineTriggerUpdatedByNavigation))]
-	public virtual User UpdatedByNavigation { get; set; } = null!;
+		public virtual User UpdatedByNavigation { get; set; } = null!;
+	}
 }

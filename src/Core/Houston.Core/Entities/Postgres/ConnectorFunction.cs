@@ -1,47 +1,45 @@
-﻿namespace Houston.Core.Entities.Postgres;
+﻿namespace Houston.Core.Entities.Postgres {
+	public class ConnectorFunction {
+		public Guid Id { get; set; }
 
-[Table("ConnectorFunction", Schema = "houston")]
-public partial class ConnectorFunction {
-	[Key]
-	[Column("id")]
-	public Guid Id { get; set; }
+		public string Name { get; set; } = null!;
 
-	[Column("name", TypeName = "character varying")]
-	public string Name { get; set; } = null!;
+		public string? Description { get; set; }
 
-	[Column("description")]
-	public string? Description { get; set; }
+		public bool Active { get; set; }
+		
+		public string FriendlyName { get; set; } = null!;
 
-	[Column("active")]
-	public bool Active { get; set; }
+		public string Version { get; set; } = null!;
 
-	[Column("connector_id")]
-	public Guid ConnectorId { get; set; }
+		public byte[] SpecsFile { get; set; } = null!;
 
-	[Column("created_by")]
-	public Guid CreatedBy { get; set; }
+		public byte[] Script { get; set; } = null!;
 
-	[Column("creation_date", TypeName = "timestamp(3) with time zone")]
-	public DateTime CreationDate { get; set; }
+		public byte[] Package { get; set; } = null!;
 
-	[Column("updated_by")]
-	public Guid UpdatedBy { get; set; }
+		public BuildStatus BuildStatus { get; set; }
 
-	[Column("last_update", TypeName = "timestamp(3) with time zone")]
-	public DateTime LastUpdate { get; set; }
+		public string? BuildStderr { get; set; }
 
-	[ForeignKey(nameof(ConnectorId))]
-	[InverseProperty(nameof(Postgres.Connector.ConnectorFunction))]
-	public virtual Connector Connector { get; set; } = null!;
+		public byte[]? ScriptDist { get; set; }
 
-	[ForeignKey(nameof(CreatedBy))]
-	[InverseProperty(nameof(User.ConnectorFunctionCreatedByNavigation))]
-	public virtual User CreatedByNavigation { get; set; } = null!;
+		public PackageType? PackageType { get; set; }
 
-	[ForeignKey(nameof(UpdatedBy))]
-	[InverseProperty(nameof(User.ConnectorFunctionUpdatedByNavigation))]
-	public virtual User UpdatedByNavigation { get; set; } = null!;
+		public Guid ConnectorId { get; set; }
 
-	[InverseProperty(nameof(ConnectorFunctionHistory.ConnectorFunction))]
-	public virtual ICollection<ConnectorFunctionHistory> ConnectorFunctionHistories { get; } = new List<ConnectorFunctionHistory>();
+		public Guid CreatedBy { get; set; }
+
+		public DateTime CreationDate { get; set; }
+
+		public Guid UpdatedBy { get; set; }
+
+		public DateTime LastUpdate { get; set; }
+
+		public virtual Connector Connector { get; set; } = null!;
+
+		public virtual User CreatedByNavigation { get; set; } = null!;
+
+		public virtual User UpdatedByNavigation { get; set; } = null!;
+	}
 }

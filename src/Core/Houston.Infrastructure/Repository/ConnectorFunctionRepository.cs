@@ -4,29 +4,34 @@
 
 		public async Task<long> CountActivesByConnectorId(Guid connectorId) {
 			return await Context.ConnectorFunction.Include(x => x.Connector)
-										 .Where(x => x.ConnectorId == connectorId && x.Active && x.Connector.Active)
-										 .LongCountAsync();
+								.Where(x => x.ConnectorId == connectorId && x.Active && x.Connector.Active)
+								.GroupBy(x => new { x.Name, x.ConnectorId })
+								.LongCountAsync();
 		}
 
 		public async Task<ConnectorFunction?> GetActive(Guid id) {
+			return await Context.ConnectorFunction.Include(x => x.Connector)
+								.Include(x => x.UpdatedByNavigation)
+								.Include(x => x.CreatedByNavigation)
+								.Where(x => x.Id == id && x.Active)
+								.FirstOrDefaultAsync();
+		}
+
+		public async Task<bool> AnyActive(Guid connectorId, string name, string version) {
 			return await Context.ConnectorFunction
-								   .Include(x => x.ConnectorFunctionHistories)
-								   .Include(x => x.UpdatedByNavigation)
-								   .Include(x => x.CreatedByNavigation)
-								   .Where(x => x.Id == id && x.Active)
-								   .FirstOrDefaultAsync();
+								   .Where(x => x.ConnectorId == connectorId && x.Name == name && x.Version == version && x.Active)
+								   .AnyAsync();
 		}
 
 		public async Task<List<ConnectorFunction>> GetAllActivesByConnectorId(Guid connectorId, int pageSize, int pageIndex) {
 			return await Context.ConnectorFunction.Include(x => x.CreatedByNavigation)
-								 .Include(x => x.UpdatedByNavigation)
-								 .Include(x => x.Connector)
-								 .Include(x => x.ConnectorFunctionHistories.OrderByDescending(x => x.Version).Where(x => x.Active))
-								 .OrderBy(x => x.Name)
-								 .Where(x => x.ConnectorId == connectorId && x.Active && x.Connector.Active)
-								 .Skip(pageSize * pageIndex)
-								 .Take(pageSize)
-								 .ToListAsync();
+								.Include(x => x.UpdatedByNavigation)
+								.Include(x => x.Connector)
+								.OrderBy(x => x.Name)
+								.Where(x => x.ConnectorId == connectorId && x.Active && x.Connector.Active)
+								.Skip(pageSize * pageIndex)
+								.Take(pageSize)
+								.ToListAsync();
 		}
 
 		public async Task<List<ConnectorFunction>> GetByIdList(List<Guid> ids) {
