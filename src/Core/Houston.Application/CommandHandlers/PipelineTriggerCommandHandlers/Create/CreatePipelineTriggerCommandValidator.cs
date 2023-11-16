@@ -11,8 +11,6 @@
 				.MinimumLength(8).WithMessage(ValidatorsModelErrorMessages.MinLength)
 				.Matches("[0-9]").WithMessage(ValidatorsModelErrorMessages.PasswordNumbers)
 				.Matches("[A-Z]").WithMessage(ValidatorsModelErrorMessages.PasswordCapitalLetters);
-
-			RuleForEach(x => x.Events).SetValidator(new CreatePipelineTriggerEventsValidator());
 		}
 	}
 }

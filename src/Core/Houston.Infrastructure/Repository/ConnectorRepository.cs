@@ -6,6 +6,12 @@
 			return await Context.Connector.Where(x => x.Active).LongCountAsync();
 		}
 
+		public async Task<Connector?> GetActiveByName(string name) {
+			return await Context.Connector
+								.Where(x => x.Active && x.Name == name)
+								.FirstOrDefaultAsync();
+		}
+
 		public async Task<Connector?> GetActive(Guid id) {
 			return await Context.Connector.Include(x => x.CreatedByNavigation)
 						   .Include(x => x.UpdatedByNavigation)

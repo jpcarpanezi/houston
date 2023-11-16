@@ -14,28 +14,7 @@
 				return ResultCommand.NotFound("The requested pipeline trigger could not be found.", "pipelineTriggerNotFound");
 			}
 
-			var pipelineTriggerEvents = new List<PipelineTriggerEvent>();
-
-			foreach (var @event in request.Events) {
-				Guid pipelineTriggerEventId = Guid.NewGuid();
-
-				var pipelineTriggerEvent = new PipelineTriggerEvent {
-					Id = pipelineTriggerEventId,
-					PipelineTriggerId = request.PipelineTriggerId,
-					TriggerEventId = @event.TriggerEventId,
-					PipelineTriggerFilters = @event.EventFilters.Select(x => new PipelineTriggerFilter {
-						Id = Guid.NewGuid(),
-						PipelineTriggerEventId = pipelineTriggerEventId,
-						TriggerFilterId = x.TriggerFilterId,
-						FilterValues = x.FilterValues
-					}).ToList()
-				};
-
-				pipelineTriggerEvents.Add(pipelineTriggerEvent);
-			}
-
 			pipelineTrigger.SourceGit = request.SourceGit;
-			pipelineTrigger.PipelineTriggerEvents = pipelineTriggerEvents;
 			pipelineTrigger.UpdatedBy = _claims.Id;
 			pipelineTrigger.LastUpdate = DateTime.UtcNow;
 

@@ -7,7 +7,5 @@
 		public string SourceGit { get; set; } = null!;
 
 		public bool KeyRevealed { get; set; }
-
-		public List<PipelineTriggerEventViewModel> PipelineTriggerEvents { get; set; } = new List<PipelineTriggerEventViewModel>();
 	}
 }

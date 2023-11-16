@@ -14,27 +14,8 @@
 				return ResultCommand.Forbidden("The request pipeline already has a trigger.", "alreadyRegistered");
 			}
 
-			Guid pipelineTriggerId = Guid.NewGuid();
+			var pipelineTriggerId = Guid.NewGuid();
 			var deployKeys = DeployKeysService.Create($"houston-{pipelineTriggerId}");
-			var PipelineTriggerEvents = new List<PipelineTriggerEvent>();
-
-			foreach (var @event in request.Events) {
-				Guid pipelineTriggerEventId = Guid.NewGuid();
-
-				var pipelineTriggerEvent = new PipelineTriggerEvent {
-					Id = pipelineTriggerEventId,
-					PipelineTriggerId = pipelineTriggerId,
-					TriggerEventId = @event.TriggerEventId,
-					PipelineTriggerFilters = @event.EventFilters.Select(x => new PipelineTriggerFilter {
-						Id = Guid.NewGuid(),
-						PipelineTriggerEventId = pipelineTriggerEventId,
-						TriggerFilterId = x.TriggerFilterId,
-						FilterValues = x.FilterValues
-					}).ToList()
-				};
-
-				PipelineTriggerEvents.Add(pipelineTriggerEvent);
-			}
 
 			var pipelineTrigger = new PipelineTrigger {
 				Id = pipelineTriggerId,
@@ -47,8 +28,7 @@
 				CreatedBy = _claims.Id,
 				CreationDate = DateTime.UtcNow,
 				UpdatedBy = _claims.Id,
-				LastUpdate = DateTime.UtcNow,
-				PipelineTriggerEvents = PipelineTriggerEvents
+				LastUpdate = DateTime.UtcNow
 			};
 
 			_unitOfWork.PipelineTriggerRepository.Add(pipelineTrigger);

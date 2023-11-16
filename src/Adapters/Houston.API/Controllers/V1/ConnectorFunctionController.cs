@@ -23,20 +23,21 @@ namespace Houston.API.Controllers.V1 {
 		/// <response code="201">Successfully created connector function</response>
 		[HttpPost]
 		[Authorize]
-		[ProducesResponseType(typeof(ConnectorFunctionViewModel), (int)HttpStatusCode.Created)]
-		public async Task<IActionResult> Create([FromBody] CreateConnectorFunctionCommand command) => await _mediator.Send(command);
-
+		[ProducesResponseType(typeof(ConnectorFunctionDetailViewModel), (int)HttpStatusCode.Created)]
+		public async Task<IActionResult> Create([FromForm] CreateConnectorFunctionCommand command) => await _mediator.Send(command);
+		
 		/// <summary>
 		/// Updates a connector function with inputs
 		/// </summary>
-		/// <param name="command">Connector function with inputs if necessary</param>
-		/// <response code="200">Successfully updated connector function</response>
-		/// <response code="404">The requested connector function could not be found</response>
-		[HttpPut]
+		/// <param name="connectorId">The unique identifier of the connector function to be updated.</param>
+		/// <param name="command">The command containing updated information for the connector function.</param>
+		/// <response code="200">The connector function was successfully updated.</response>
+		/// <response code="404">The requested connector function could not be found.</response>
+		[HttpPut("{connectorId:guid}")]
 		[Authorize]
-		[ProducesResponseType(typeof(ConnectorFunctionViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ConnectorFunctionDetailViewModel), (int)HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(MessageViewModel), (int)HttpStatusCode.NotFound)]
-		public async Task<IActionResult> Update([FromBody] UpdateConnectorFunctionCommand command) => await _mediator.Send(command);
+		public async Task<IActionResult> Update(Guid connectorId, [FromForm] UpdateConnectorFunctionFilesCommand command) => await _mediator.Send(new UpdateConnectorFunctionCommand(connectorId, command.SpecFile, command.Script, command.Package));
 
 		/// <summary>
 		/// Logically deletes a connector function with inputs
@@ -58,7 +59,7 @@ namespace Houston.API.Controllers.V1 {
 		/// <response code="404">The requested connector function could not be found</response>
 		[HttpGet("item/{connectorFunctionId:guid}")]
 		[Authorize]
-		[ProducesResponseType(typeof(ConnectorFunctionViewModel), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(ConnectorFunctionDetailViewModel), (int)HttpStatusCode.OK)]
 		[ProducesResponseType((int)HttpStatusCode.NotFound)]
 		public async Task<IActionResult> Get(Guid connectorFunctionId) => await _mediator.Send(new GetConnectorFunctionCommand(connectorFunctionId));
 
@@ -71,7 +72,7 @@ namespace Houston.API.Controllers.V1 {
 		/// <response code="200">Returns a paginated list of active connector functions.</response>
 		[HttpGet("{connectorId:guid}")]
 		[Authorize]
-		[ProducesResponseType(typeof(PaginatedItemsViewModel<ConnectorFunctionViewModel>), (int)HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(PaginatedItemsViewModel<ConnectorFunctionGroupedViewModel>), (int)HttpStatusCode.OK)]
 		public async Task<IActionResult> GetAll(Guid connectorId, [FromQuery] int pageSize, [FromQuery] int pageIndex) => await _mediator.Send(new GetAllConnectorFunctionCommand(connectorId, pageSize, pageIndex));
 	}
 }
