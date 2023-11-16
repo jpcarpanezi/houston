@@ -32,6 +32,7 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="YamlDotNet" Version="13.7.1" />
 
   </ItemGroup>
 
@@ -39,6 +40,10 @@
     <Protobuf Include="Proto\Houston\v1\git.proto" GrpcServices="Client" ProtoRoot="Proto\Houston\v1" />
     <Protobuf Include="Proto\Houston\v1\pipeline.proto" GrpcServices="Client" ProtoRoot="Proto\Houston\v1" />
 	<Protobuf Include="Proto\Houston\v1\houston.proto" GrpcServices="None" ProtoRoot="Proto\Houston\v1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\YamlSpecs\ConnectorFunctionInputsSpec.cs" />
   </ItemGroup>
 	
 </Project>

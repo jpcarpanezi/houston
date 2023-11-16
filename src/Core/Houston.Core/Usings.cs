@@ -8,6 +8,7 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Mvc;
 
 global using BCrypt.Net;
+global using YamlDotNet.Serialization;
 
 global using Houston.Core.Enums;
 global using Houston.Core.Models;

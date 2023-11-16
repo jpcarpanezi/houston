@@ -3,6 +3,7 @@ global using FluentAssertions;
 global using AutoFixture;
 global using Moq;
 global using MassTransit;
+global using FluentValidation;
 
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Caching.Distributed;
@@ -20,14 +21,13 @@ global using Houston.Core.Enums;
 global using Houston.Core.Services;
 global using Houston.Core.Messages;
 global using Houston.Core.Models.Options;
+global using Houston.Core.Models.YamlSpecs;
 
 global using Houston.Application.Results;
 global using Houston.Application.Security;
 global using Houston.Application.ViewModel;
 global using Houston.Application.ViewModel.ConnectorViewModels;
 global using Houston.Application.ViewModel.ConnectorFunctionViewModels;
-global using Houston.Application.ViewModel.ConnectorFunctionHistoryViewModels;
-global using Houston.Application.ViewModel.PipelineInstructionViewModels;
 global using Houston.Application.ViewModel.PipelineLogViewModels;
 global using Houston.Application.ViewModel.PipelineViewModels;
 global using Houston.Application.ViewModel.PipelineTriggerViewModels;
