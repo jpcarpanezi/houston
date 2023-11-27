@@ -1,5 +1,5 @@
 export interface CreateConnectorFunctionCommand {
-	name: string;
-	description: string | null;
-	connectorId: string;
+	specFile: File;
+	script: File;
+	package: File;
 }

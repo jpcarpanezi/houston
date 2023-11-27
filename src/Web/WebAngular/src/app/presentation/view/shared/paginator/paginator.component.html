@@ -1,4 +1,4 @@
-<ul *ngIf="pager.pages && pager.pages.length" class="flex justify-between">
+<ul class="flex justify-between">
 	<li [ngClass]="{ 'opacity-50 hover:!text-black hover:dark:!text-white !cursor-not-allowed !bg-transparent' : pager.currentPage === 1 }"
 		class="cursor-pointer px-2 py-1 rounded transition text-black hover:text-white dark:text-white hover:bg-indigo-600 dark:hover:bg-purple-600"
 		(click)="setPage(1)">

@@ -25,9 +25,14 @@ export class UpdateConnectorComponent {
 
 	initializeUpdateConnectorForm(): FormGroup {
 		return this.updateConnectorForm = this.fb.group({
-			name: ["", [
+			friendlyName: ["", [
 				Validators.required,
 				Validators.maxLength(50)
+			]],
+			name: [this.connector?.name, [
+				Validators.required,
+				Validators.maxLength(64),
+				Validators.pattern("^[a-z][a-z0-9-]*$")
 			]],
 			description: ["", [
 				Validators.maxLength(5000)

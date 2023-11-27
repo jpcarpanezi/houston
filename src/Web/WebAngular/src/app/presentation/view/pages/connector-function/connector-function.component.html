@@ -11,7 +11,7 @@
 			<span class="spinner-text">Save <fa-icon [icon]="['fas', 'floppy-disk']"></fa-icon></span>
 		</button>
 
-		<button type="button" class="w-full md:w-auto md:ml-5 mt-5 md:mt-0 btn-danger" [class.spinner]="isLoading || connectorFunctionForm.disabled" [disabled]="isLoading || connectorFunctionForm.disabled" *ngIf="connectorFunctionHistoryId" (click)="deleteConnectorFunction()">
+		<button type="button" class="w-full md:w-auto md:ml-5 mt-5 md:mt-0 btn-danger" [class.spinner]="isLoading || connectorFunctionForm.disabled" [disabled]="isLoading || connectorFunctionForm.disabled" *ngIf="connectorFunctionId" (click)="deleteConnectorFunction()">
 			<span class="spinner-text">Delete <fa-icon [icon]="['fas', 'trash']"></fa-icon></span>
 		</button>
 	</div>
@@ -35,7 +35,7 @@
 <form [formGroup]="connectorFunctionForm" id="connectorFunctionForm" (submit)="saveConnectorFunction()">
 	<!-- DETAILS -->
 	<div class="card" [loader]="isLoading">
-		<details class="group" [open]="!connectorFunctionHistoryId">
+		<details class="group" open>
 			<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
 				<span>Details</span>
 
@@ -48,10 +48,47 @@
 				</p>
 
 				<div class="block mt-4">
-					<label for="name">Version</label>
-					<input type="text" name="version" id="version" formControlName="version" placeholder="Enter connector function version" maxlength="50" mask="0.0.0" class="w-full mb-2 text-input" [readonly]="connectorFunctionHistoryId">
+					<label for="friendlyName">Friendly name</label>
+					<input type="text" name="friendlyName" id="friendlyName" formControlName="friendlyName" placeholder="Enter connector function friendly name" maxlength="50" class="w-full mb-2 text-input">
+					<app-form-errors controlName="friendlyName" error="required">Connector function version required.</app-form-errors>
+					<app-form-errors controlName="friendlyName" error="maxlength">Maximum characters are 50.</app-form-errors>
+				</div>
+
+				<div class="block mt-4">
+					<label for="function">Function name</label>
+					<input type="text" name="function" id="function" formControlName="function" placeholder="Enter connector function name" maxlength="50" [readOnly]="connectorFunctionId || function" class="w-full mb-2 text-input">
+					<app-form-errors controlName="function" error="required">Connector function version required.</app-form-errors>
+					<app-form-errors controlName="function" error="maxlength">Maximum characters are 64.</app-form-errors>
+					<app-form-errors controlName="function" error="pattern">Connector name should be in kebab case pattern.</app-form-errors>
+				</div>
+
+				<div class="block mt-4">
+					<label for="version">Version</label>
+					<input type="text" name="version" id="version" formControlName="version" placeholder="Enter connector function version" maxlength="10" [readOnly]="connectorFunctionId" class="w-full mb-2 text-input">
 					<app-form-errors controlName="version" error="required">Connector function version required.</app-form-errors>
 					<app-form-errors controlName="version" error="pattern">The version must be in the format of 'x.x.x'.</app-form-errors>
+				</div>
+
+				<div class="block mt-4">
+					<label for="using">Using (Node version)</label>
+					<select name="using" id="using" formControlName="using" class="w-full mb-2 text-input">
+						<option	value="node20">node20</option>
+					</select>
+					<app-form-errors controlName="using" controlName="using">Using is required.</app-form-errors>
+				</div>
+
+				<div class="block mt-4">
+					<label for="connector">Connector name</label>
+					<input type="text" name="connector" id="connector" formControlName="connector" placeholder="Enter connector name" maxlength="50" [value]="connector" readonly class="w-full mb-2 text-input">
+					<app-form-errors controlName="connector" error="required">Connector name required.</app-form-errors>
+					<app-form-errors controlName="connector" error="maxlength">Maximum characters are 64.</app-form-errors>
+					<app-form-errors controlName="connector" error="pattern">Connector name should be in kebab case pattern.</app-form-errors>
+				</div>
+
+				<div class="block mt-4">
+					<label for="description">Description</label>
+					<textarea name="description" id="description" formControlName="description" rows="3" placeholder="Enter connector function description" maxlength="5000" class="mb-2 w-full text-input"></textarea>
+					<app-form-errors controlName="connector" error="maxlength">Maximum characters are 5000.</app-form-errors>
 				</div>
 			</div>
 		</details>
@@ -62,7 +99,7 @@
 		<details class="group" #inputDetails>
 			<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
 				<span>
-					<button type="button" class="w-auto !py-0.5 !px-1 mr-1 btn-primary" (click)="addInput(null); inputDetails.open = true" matTooltip="Add input">
+					<button type="button" class="w-auto !py-0.5 !px-1 mr-1 btn-primary" (click)="addInput(); inputDetails.open = true" matTooltip="Add input">
 						<span class="spinner-text"><fa-icon [icon]="['fas', 'plus']"></fa-icon></span>
 					</button>
 
@@ -91,20 +128,28 @@
 					</summary>
 
 					<div class="block mt-4">
-						<label for="inputType">Input type</label>
-						<select name="inputType" id="inputType" formControlName="inputType" class="w-full mb-2 text-input" (change)="inputType.value == 'List' ? addInputValue(input) : removeAllInputValues(input)" #inputType>
+						<label for="replace">Replace string</label>
+						<input type="text" name="replace" id="replace" formControlName="replace" placeholder="Enter input replace string" maxlength="25" class="w-full mb-2 text-input">
+						<app-form-errors [control]="input" controlName="replace" error="required">Replace string required.</app-form-errors>
+						<app-form-errors [control]="input" controlName="replace" error="maxlength">Maximum characters are 25.</app-form-errors>
+						<app-form-errors [control]="input" controlName="replace" error="pattern">Connector replace string should be in kebab case pattern.</app-form-errors>
+					</div>
+
+					<div class="block mt-4">
+						<label for="type">Input type</label>
+						<select name="type" id="type" formControlName="type" class="w-full mb-2 text-input" (change)="inputType.value == 'List' ? addInputValue(input) : removeAllInputValues(input)" #inputType>
 							<option	value>Select an option</option>
 							<option value="String">String</option>
 							<option value="List">List</option>
 						</select>
-						<app-form-errors [control]="input" controlName="inputType">Input type is required.</app-form-errors>
+						<app-form-errors [control]="input" controlName="type">Input type is required.</app-form-errors>
 					</div>
 
 					<div class="block mt-4">
-						<label for="name">Name</label>
-						<input type="text" name="name" id="name" formControlName="name" placeholder="Enter input name" maxlength="25" class="w-full mb-2 text-input">
-						<app-form-errors [control]="input" controlName="name" error="required">Input name required.</app-form-errors>
-						<app-form-errors [control]="input" controlName="name" error="maxlength">Maximum characters are 25.</app-form-errors>
+						<label for="label">Name</label>
+						<input type="text" name="label" id="label" formControlName="label" placeholder="Enter input name" maxlength="25" class="w-full mb-2 text-input">
+						<app-form-errors [control]="input" controlName="label" error="required">Input name required.</app-form-errors>
+						<app-form-errors [control]="input" controlName="label" error="maxlength">Maximum characters are 25.</app-form-errors>
 					</div>
 
 					<div class="block mt-4">
@@ -114,15 +159,8 @@
 						<app-form-errors [control]="input" controlName="placeholder" error="maxlength">Maximum characters are 50.</app-form-errors>
 					</div>
 
-					<div class="block mt-4">
-						<label for="replace">Replace string</label>
-						<input type="text" name="replace" id="replace" formControlName="replace" placeholder="Enter input replace string" maxlength="25" class="w-full mb-2 text-input">
-						<app-form-errors [control]="input" controlName="replace" error="required">Replace string required.</app-form-errors>
-						<app-form-errors [control]="input" controlName="replace" error="maxlength">Maximum characters are 25.</app-form-errors>
-					</div>
-
 					<!-- LIST VALUES -->
-					<div class="px-6 py-4 mt-5 bg-white dark:bg-slate-800 border dark:border-0 rounded-md" *ngIf="input.value.inputType == 'List'">
+					<div class="px-6 py-4 mt-5 bg-white dark:bg-slate-800 border dark:border-0 rounded-md" *ngIf="input.value.type == 'List'">
 						<details class="group" open>
 							<summary class="flex justify-between items-center font-medium cursor-pointer list-none">
 								<span>Values</span>
@@ -149,9 +187,9 @@
 					</div>
 
 					<div class="block mt-4">
-						<label for="defaultValue">Default value</label>
-						<input type="text" name="defaultValue" id="defaultValue" formControlName="defaultValue" placeholder="Enter input default value" maxlength="25" class="w-full mb-2 text-input">
-						<app-form-errors [control]="input" controlName="defaultValue" error="maxlength">Maximum characters are 25.</app-form-errors>
+						<label for="default">Default value</label>
+						<input type="text" name="default" id="default" formControlName="default" placeholder="Enter input default value" maxlength="25" class="w-full mb-2 text-input">
+						<app-form-errors [control]="input" controlName="default" error="maxlength">Maximum characters are 25.</app-form-errors>
 					</div>
 
 					<div class="mt-4">
@@ -163,7 +201,7 @@
 
 					<div class="mt-0">
 						<label class="inline-flex items-center mt-3">
-							<input type="checkbox" name="advancedOption" id="advancedOption" formControlName="advancedOption" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50">
+							<input type="checkbox" name="advanced" id="advanced" formControlName="advanced" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50">
 							<span class="ml-2">Advanced option?</span>
 						</label>
 					</div>

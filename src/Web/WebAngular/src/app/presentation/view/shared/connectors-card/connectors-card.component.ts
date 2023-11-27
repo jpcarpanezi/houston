@@ -1,15 +1,15 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { ConnectorFunctionHistoryUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-function-history-use-case.interface';
 import { ConnectorFunctionUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-function-use-case.interface';
 import { ConnectorUseCaseInterface } from 'src/app/domain/interfaces/use-cases/connector-use-case.interface';
-import { ConnectorFunctionHistorySummaryViewModel } from 'src/app/domain/view-models/connector-function-history-summary.view-model';
-import { ConnectorFunctionViewModel } from 'src/app/domain/view-models/connector-function.view-model';
 import { ConnectorViewModel } from 'src/app/domain/view-models/connector.view-model';
 import { PageViewModel } from 'src/app/domain/view-models/page.view-model';
 import { PaginatedItemsViewModel } from 'src/app/domain/view-models/paginated-items.view-model';
 import { Toast } from 'src/app/infra/helpers/toast';
 import Swal from 'sweetalert2';
 import { NewConnectorComponent } from './new-connector/new-connector.component';
+import { ConnectorFunctionGroupedViewModel } from 'src/app/domain/view-models/connector-function-grouped.view-model';
+import { ConnectorFunctionSummaryViewModel } from 'src/app/domain/view-models/connector-function-summary.view-model';
+import { ConnectorFunctionHistorySummaryViewModel } from 'src/app/domain/view-models/connector-function-history-summary.view-model';
 
 @Component({
   selector: 'app-connectors-card',
@@ -23,7 +23,8 @@ export class ConnectorsCardComponent {
 	@Input("displayVersions") public displayVersions: boolean = true;
 	@Input("hideEmptyFunctions") public hideEmptyFunctions: boolean = false;
 
-	@Output("selectedFunction") public selectedFunction: EventEmitter<ConnectorFunctionViewModel> = new EventEmitter<ConnectorFunctionViewModel>();
+	@Output("selectedFunction") public selectedFunction: EventEmitter<ConnectorFunctionGroupedViewModel> = new EventEmitter<ConnectorFunctionGroupedViewModel>();
+	@Output("selectedVersion") public selectedVersion: EventEmitter<ConnectorFunctionSummaryViewModel> = new EventEmitter<ConnectorFunctionSummaryViewModel>();
 	@Output("selectedFunctionHistory") public selectedFunctionHistory: EventEmitter<ConnectorFunctionHistorySummaryViewModel> = new EventEmitter<ConnectorFunctionHistorySummaryViewModel>();
 	@Output("connectorLoading") public connectorLoading: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -32,15 +33,15 @@ export class ConnectorsCardComponent {
 	public page: PageViewModel = new PageViewModel();
 	public connectors: ConnectorViewModel[] = [];
 	public activeConnector?: string;
-	public connectorFunctions: ConnectorFunctionViewModel[] = [];
+	public activeConnectorName?: string;
+	public connectorFunctions: ConnectorFunctionGroupedViewModel[] = [];
 
 	public isConnectorsLoading: boolean = true;
 	public isConnectorFunctionsLoading: boolean = false;
 
 	constructor(
 		private connectorUseCase: ConnectorUseCaseInterface,
-		private connectorFunctionUseCase: ConnectorFunctionUseCaseInterface,
-		private connectorFunctionHistoryUseCase: ConnectorFunctionHistoryUseCaseInterface
+		private connectorFunctionUseCase: ConnectorFunctionUseCaseInterface
 	) { }
 
 	ngOnInit(): void {	}
@@ -68,10 +69,11 @@ export class ConnectorsCardComponent {
 	expandFunction(row: ConnectorViewModel, event: Event): void {
 		event.stopPropagation();
 		this.activeConnector = row.id;
+		this.activeConnectorName = row.name;
 		this.isConnectorFunctionsLoading = true;
 
 		this.connectorFunctionUseCase.getAll(row.id, 100, 0).subscribe({
-			next: (response: PaginatedItemsViewModel<ConnectorFunctionViewModel>) => {
+			next: (response: PaginatedItemsViewModel<ConnectorFunctionGroupedViewModel>) => {
 				if (!this.hideEmptyFunctions) {
 					this.connectorFunctions = response.data
 				} else {
@@ -125,12 +127,7 @@ export class ConnectorsCardComponent {
 		this.setPage({ currentPage: this.page.pageIndex });
 	}
 
-	updateConnectorFunctionSubmit(row: ConnectorFunctionViewModel): void {
-		const index = this.connectorFunctions.findIndex(x => x.id == row.id);
-		this.connectorFunctions[index] = row;
-	}
-
-	deleteConnectorFunction(button: HTMLButtonElement, connectorFunctionId: string): void {
+	deleteConnectorFunctionVersion(button: HTMLButtonElement, connectorFunctionId: string, connectorFunction: string) {
 		Swal.fire({
 			icon: "question",
 			title: "Are you sure?",
@@ -144,34 +141,11 @@ export class ConnectorsCardComponent {
 				button.disabled = true;
 
 				this.connectorFunctionUseCase.delete(connectorFunctionId).subscribe({
-					next: () => Swal.fire("Deleted!", "The connector functions has been deleted.", "success").then(() => {
-						const index = this.connectorFunctions.findIndex(x => x.id == connectorFunctionId);
-						this.connectorFunctions.splice(index, 1);
-					}),
-					error: () => Swal.fire("Error", "An error has occurred while trying to delete the connector function.", "error")
-				}).add(() => button.disabled = false);
-			}
-		});
-	}
-
-	deleteConnectorFunctionHistory(button: HTMLButtonElement, connectorFunctionHistoryId: string) {
-		Swal.fire({
-			icon: "question",
-			title: "Are you sure?",
-			text: "You won't be able to revert this!",
-			showDenyButton: true,
-			showConfirmButton: true,
-			confirmButtonText: "Yes, delete it",
-			denyButtonText: "No, cancel",
-		}).then((result) => {
-			if (result.isConfirmed) {
-				button.disabled = true;
-
-				this.connectorFunctionHistoryUseCase.delete(connectorFunctionHistoryId).subscribe({
-					next: () => Swal.fire("Deleted!", "The connector function version has been deleted.", "success").then(() => {
-						const index = this.connectorFunctions.findIndex(x => x.id == connectorFunctionHistoryId);
-						this.connectorFunctions.splice(index, 1);
-					}),
+					next: () => {
+						Swal.fire("Deleted!", "The connector function version has been deleted.", "success")
+						const connectorIndex = this.connectorFunctions.findIndex(x => x.name == connectorFunction);
+						this.connectorFunctions[connectorIndex].versions = this.connectorFunctions[connectorIndex].versions.filter(x => x.id != connectorFunctionId);
+					},
 					error: () => Swal.fire("Error", "An error has occurred while trying to delete the connector function.", "error")
 				}).add(() => button.disabled = false);
 			}

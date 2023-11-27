@@ -21,11 +21,8 @@ import { NgxJdenticonModule } from 'ngx-jdenticon';
 import { InfraModule } from 'src/app/infra/infra.module';
 import { PaginatorComponent } from './paginator/paginator.component';
 import { ConnectorsCardComponent } from './connectors-card/connectors-card.component';
-import { ConnectorsModule } from '../pages/connectors/connectors.module';
 import { NewConnectorComponent } from './connectors-card/new-connector/new-connector.component';
-import { NewConnectorFunctionComponent } from './connectors-card/new-connector-function/new-connector-function.component';
 import { UpdateConnectorComponent } from './connectors-card/update-connector/update-connector.component';
-import { UpdateConnectorFunctionComponent } from './connectors-card/update-connector-function/update-connector-function.component';
 
 
 
@@ -42,9 +39,7 @@ import { UpdateConnectorFunctionComponent } from './connectors-card/update-conne
 		PaginatorComponent,
 		ConnectorsCardComponent,
 		NewConnectorComponent,
-		NewConnectorFunctionComponent,
-		UpdateConnectorComponent,
-		UpdateConnectorFunctionComponent
+		UpdateConnectorComponent
 	],
 	imports: [
 		CommonModule,
