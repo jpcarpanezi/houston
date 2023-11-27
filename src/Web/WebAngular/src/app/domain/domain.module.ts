@@ -12,12 +12,12 @@ import { PipelineUseCaseInterface } from './interfaces/use-cases/pipeline-use-ca
 import { PipelineUseCaseService } from './use-cases/pipeline-use-case.service';
 import { PipelineTriggerUseCaseInterface } from './interfaces/use-cases/pipeline-trigger-use-case.interface';
 import { PipelineTriggerUseCaseService } from './use-cases/pipeline-trigger-use-case.service';
-import { PipelineInstructionUseCaseInterface } from './interfaces/use-cases/pipeline-instruction-use-case.interface';
-import { PipelineInstructionUseCaseService } from './use-cases/pipeline-instruction-use-case.service';
 import { PipelineLogUseCaseInterface } from './interfaces/use-cases/pipeline-log-use-case.interface';
 import { PipelineLogUseCaseService } from './use-cases/pipeline-log-use-case.service';
 import { ConnectorFunctionHistoryUseCaseInterface } from './interfaces/use-cases/connector-function-history-use-case.interface';
 import { ConnectorFunctionHistoryUseCaseService } from './use-cases/connector-function-history-use-case.service';
+import { PipelineInstructionUseCaseInterface } from './interfaces/use-cases/pipeline-instruction-use-case.interface';
+import { PipelineInstructionUseCaseService } from './use-cases/pipeline-instruction-use-case.service';
 
 
 
@@ -32,9 +32,9 @@ import { ConnectorFunctionHistoryUseCaseService } from './use-cases/connector-fu
 		{ provide: ConnectorUseCaseInterface, useClass: ConnectorUseCaseService },
 		{ provide: ConnectorFunctionUseCaseInterface, useClass: ConnectorFunctionUseCaseService },
 		{ provide: ConnectorFunctionHistoryUseCaseInterface, useClass: ConnectorFunctionHistoryUseCaseService },
+		{ provide: PipelineInstructionUseCaseInterface, useClass: PipelineInstructionUseCaseService },
 		{ provide: PipelineUseCaseInterface, useClass: PipelineUseCaseService },
 		{ provide: PipelineTriggerUseCaseInterface, useClass: PipelineTriggerUseCaseService },
-		{ provide: PipelineInstructionUseCaseInterface, useClass: PipelineInstructionUseCaseService },
 		{ provide: PipelineLogUseCaseInterface, useClass: PipelineLogUseCaseService }
 	]
 })

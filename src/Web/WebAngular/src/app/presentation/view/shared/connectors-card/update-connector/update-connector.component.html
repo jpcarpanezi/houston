@@ -5,10 +5,18 @@
 
 	<form [formGroup]="updateConnectorForm" (submit)="updateConnector()">
 		<div class="block mt-4">
-			<label for="name">Name</label>
-			<input type="text" name="name" id="name" formControlName="name" placeholder="Enter connector name" maxlength="50" class="w-full mb-2 text-input">
+			<label for="friendlyName">Friendly name</label>
+			<input type="text" name="friendlyName" id="friendlyName" formControlName="friendlyName" placeholder="Enter connector name" maxlength="50" class="w-full mb-2 text-input">
+			<app-form-errors controlName="friendlyName" error="required">Connector name required.</app-form-errors>
+			<app-form-errors controlName="friendlyName" error="maxlength">Maximum characters are 50.</app-form-errors>
+		</div>
+
+		<div class="block mt-4">
+			<label for="name">Name (Kebab case)</label>
+			<input type="text" name="name" id="name" formControlName="name" placeholder="Enter connector name" maxlength="64" class="w-full mb-2 text-input" readonly>
 			<app-form-errors controlName="name" error="required">Connector name required.</app-form-errors>
-			<app-form-errors controlName="name" error="maxlength">Maximum characters are 50.</app-form-errors>
+			<app-form-errors controlName="name" error="maxlength">Maximum characters are 64.</app-form-errors>
+			<app-form-errors controlName="name" error="pattern">Connector name should be in kebab case pattern.</app-form-errors>
 		</div>
 
 		<div class="block mt-4">

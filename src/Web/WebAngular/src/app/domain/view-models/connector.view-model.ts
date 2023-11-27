@@ -3,6 +3,7 @@ import { ConnectorFunctionViewModel } from "./connector-function.view-model";
 export interface ConnectorViewModel {
 	id: string;
 	name: string;
+	friendlyName: string;
 	description: string;
 	connectorFunctions: ConnectorFunctionViewModel[];
 	createdBy: string;
