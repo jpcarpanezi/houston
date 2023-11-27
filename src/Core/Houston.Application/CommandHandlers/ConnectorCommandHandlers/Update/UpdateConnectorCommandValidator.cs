@@ -3,9 +3,9 @@
 		public UpdateConnectorCommandValidator() {
 			RuleFor(x => x.ConnectorId)
 				.NotNull().WithMessage(ValidatorsModelErrorMessages.Null);
-
-			RuleFor(x => x.Name)
-				.NotNull().NotEmpty().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty)
+			
+			RuleFor(x => x.FriendlyName)
+				.NotEmpty().NotNull().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty)
 				.MaximumLength(50).WithMessage(ValidatorsModelErrorMessages.MaxLength);
 
 			RuleFor(x => x.Description)

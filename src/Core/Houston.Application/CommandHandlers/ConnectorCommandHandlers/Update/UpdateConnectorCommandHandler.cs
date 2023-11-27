@@ -13,8 +13,8 @@
 			if (connector is null || !connector.Active) {
 				return ResultCommand.NotFound("The requested connector could not be found.", "connectorNotFound");
 			}
-
-			connector.Name = request.Name;
+			
+			connector.FriendlyName = request.FriendlyName;
 			connector.Description = request.Description;
 			connector.UpdatedBy = _claims.Id;
 			connector.LastUpdate = DateTime.UtcNow;
