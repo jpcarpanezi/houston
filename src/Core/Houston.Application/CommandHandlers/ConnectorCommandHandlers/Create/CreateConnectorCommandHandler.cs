@@ -13,6 +13,7 @@
 			Connector connector = new() {
 				Id = connectorId,
 				Name = request.Name,
+				FriendlyName = request.FriendlyName,
 				Description = request.Description,
 				Active = true,
 				CreatedBy = _claims.Id,
