@@ -14,6 +14,8 @@ namespace Houston.Application.ViewModel.ConnectorFunctionViewModels {
 
 		public byte[] Package { get; set; } = null!;
 
+		public byte[] SpecsFile { get; set; } = null!;
+
 		public BuildStatus BuildStatus { get; set; }
 
 		public byte[]? BuildStderr { get; set; }
