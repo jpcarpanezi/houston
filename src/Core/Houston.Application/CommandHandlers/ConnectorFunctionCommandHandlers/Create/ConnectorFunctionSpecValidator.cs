@@ -3,11 +3,12 @@ namespace Houston.Application.CommandHandlers.ConnectorFunctionCommandHandlers.C
 		public ConnectorFunctionSpecValidator() {
 			RuleFor(x => x.Connector)
 				.NotEmpty().NotNull().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty)
-				.MaximumLength(50).WithMessage(ValidatorsModelErrorMessages.MaxLength)
+				.MaximumLength(64).WithMessage(ValidatorsModelErrorMessages.MaxLength)
 				.Must(IsKebabCase).WithMessage("Connector name must be in kebab case");
 			
 			RuleFor(x => x.Function)
 				.NotEmpty().NotNull().WithMessage(ValidatorsModelErrorMessages.NullOrEmpty)
+				.MaximumLength(64).WithMessage(ValidatorsModelErrorMessages.MaxLength)
 				.Must(IsKebabCase).WithMessage("Function name must be in kebab case");
 
 			RuleFor(x => x.Version)

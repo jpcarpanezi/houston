@@ -1,5 +1,7 @@
 ﻿namespace Houston.Application.ViewModel.ConnectorFunctionViewModels {
 	public class ConnectorFunctionGroupedViewModel {
+		public string FriendlyName { get; set; } = null!;
+		
 		public string Name { get; set; } = null!;
 
 		public string Connector { get; set; } = null!;

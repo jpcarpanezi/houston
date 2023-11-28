@@ -22,6 +22,7 @@
 																	  .Select(group => new ConnectorFunctionGroupedViewModel {
 																		  Name = group.Name,
 																		  Connector = group.Connector.Name,
+																		  FriendlyName = group.FriendlyName,
 																		  Versions = connectorFunctionSummaryViewModel.Where(x => x.Name == group.Name).OrderByDescending(x => x.Version).ToList(),
 																		  CreatedBy = group.CreatedByNavigation.Name,
 																		  CreationDate = group.CreationDate,

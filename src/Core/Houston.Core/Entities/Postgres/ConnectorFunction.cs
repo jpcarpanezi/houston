@@ -20,7 +20,7 @@
 
 		public BuildStatus BuildStatus { get; set; }
 
-		public string? BuildStderr { get; set; }
+		public byte[]? BuildStderr { get; set; }
 
 		public byte[]? ScriptDist { get; set; }
 

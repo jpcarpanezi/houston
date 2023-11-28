@@ -21,9 +21,7 @@
 
 			entity.Property(e => e.BuildStatus).HasColumnName("build_status");
 
-			entity.Property(e => e.BuildStderr)
-				.HasColumnType("character varying")
-				.HasColumnName("build_stderr");
+			entity.Property(e => e.BuildStderr).HasColumnName("build_stderr");
 
 			entity.Property(e => e.ConnectorId).HasColumnName("connector_id");
 
