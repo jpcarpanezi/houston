@@ -88,7 +88,14 @@ export class LoginComponent implements OnInit {
 	}
 
 	private signInResponse(response: BearerTokenViewModel): void {
+		const returnUrl = this.router.parseUrl(this.router.url).queryParams["returnUrl"];
+
 		this.authService.setSession(response);
-		this.router.navigateByUrl("/home");
+
+		if (returnUrl) {
+			this.router.navigateByUrl(returnUrl);
+		} else {
+			this.router.navigateByUrl("/home");
+		}
 	}
 }
