@@ -14,35 +14,36 @@
 
 		public async Task Consume(ConsumeContext<BuildConnectorFunctionMessage> context) {
 			var systemConfiguration = await GetSystemConfiguration();
-
+			
 			var connectorFunction = await GetConnectorFunction(context.Message.ConnectorFunctionId);
-
+			
 			await UpdateBuildStatus(connectorFunction, BuildStatus.Running);
-
+			
 			var command = CreateWorkerBuildConnectorFunctionCommand(systemConfiguration, connectorFunction);
-
+			
 			var response = await ExecuteBuildCommand(command, connectorFunction);
-
+			
 			UpdateConnectorFunctionWithResponse(connectorFunction, response);
-
+			
 			var buildStatus = response.ExitCode == 0 ? BuildStatus.Success : BuildStatus.Failed;
 			await UpdateBuildStatus(connectorFunction, buildStatus);
+			throw new NotImplementedException();
 		}
 
 		private async Task<SystemConfiguration> GetSystemConfiguration() {
 			var redisConfigurations = await _cache.GetStringAsync("configurations") ?? throw new Exception("Cannot retrieve configurations file from Redis.");
 			return JsonSerializer.Deserialize<SystemConfiguration>(redisConfigurations)!;
 		}
-
-		private async Task<ConnectorFunctionHistory> GetConnectorFunction(Guid connectorFunctionId) {
-			var connectorFunction = await _unitOfWork.ConnectorFunctionHistoryRepository.GetByIdWithInputs(connectorFunctionId);
-
+		
+		private async Task<ConnectorFunction> GetConnectorFunction(Guid connectorFunctionId) {
+			var connectorFunction = await _unitOfWork.ConnectorFunctionRepository.GetByIdWithInputs(connectorFunctionId);
+		
 			return connectorFunction ?? throw new Exception($"Could not find a connector function with the provided ID: {connectorFunctionId}.");
 		}
-
-		private static WorkerBuildConnectorFunctionCommand CreateWorkerBuildConnectorFunctionCommand(SystemConfiguration systemConfiguration, ConnectorFunctionHistory connectorFunction) {
+		
+		private static WorkerBuildConnectorFunctionCommand CreateWorkerBuildConnectorFunctionCommand(SystemConfiguration systemConfiguration, ConnectorFunction connectorFunction) {
 			var containerName = $"houston-runner-{Guid.NewGuid()}";
-
+		
 			return new WorkerBuildConnectorFunctionCommand(
 				connectorFunction.Script,
 				connectorFunction.Package,
@@ -55,10 +56,10 @@
 				new List<string>()
 			);
 		}
-
-		private async Task<BuildConnectorFunctionViewModel> ExecuteBuildCommand(WorkerBuildConnectorFunctionCommand command, ConnectorFunctionHistory connectorFunction) {
+		
+		private async Task<BuildConnectorFunctionViewModel> ExecuteBuildCommand(WorkerBuildConnectorFunctionCommand command, ConnectorFunction connectorFunction) {
 			var response = new BuildConnectorFunctionViewModel();
-
+		
 			try {
 				_logger.LogDebug("Executing build command for connector function: {ConnectorFunctionId}.", connectorFunction.Id);
 				response = await _mediator.Send(command);
@@ -69,11 +70,11 @@
 				connectorFunction.BuildStderr = Encoding.ASCII.GetBytes(errorMessage);
 				response.Stderr = errorMessage;
 			}
-
+		
 			return response;
 		}
-
-		private void UpdateConnectorFunctionWithResponse(ConnectorFunctionHistory connectorFunction, BuildConnectorFunctionViewModel response) {
+		
+		private void UpdateConnectorFunctionWithResponse(ConnectorFunction connectorFunction, BuildConnectorFunctionViewModel response) {
 			if (response.ExitCode == 0) {
 				_logger.LogDebug("Build command for connector function: {ConnectorFunctionId} executed successfully.", connectorFunction.Id);
 				connectorFunction.ScriptDist = response.Dist;
@@ -85,11 +86,11 @@
 				connectorFunction.BuildStderr = Encoding.ASCII.GetBytes(response.Stderr ?? "");
 			}
 		}
-
-		private async Task UpdateBuildStatus(ConnectorFunctionHistory connectorFunction, BuildStatus buildStatus) {
+		
+		private async Task UpdateBuildStatus(ConnectorFunction connectorFunction, BuildStatus buildStatus) {
 			connectorFunction.BuildStatus = buildStatus;
-
-			_unitOfWork.ConnectorFunctionHistoryRepository.Update(connectorFunction);
+		
+			_unitOfWork.ConnectorFunctionRepository.Update(connectorFunction);
 			await _unitOfWork.Commit();
 		}
 	}
