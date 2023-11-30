@@ -9,7 +9,7 @@
 		}
 
 		public async Task Handle(TRequest request, TException exception, RequestExceptionHandlerState<TResponse> state, CancellationToken cancellationToken) {
-			_logger.LogDebug("Stopping and removing container {ContainerId}", request.ContainerId);
+			_logger.LogDebug(exception, "Stopping and removing container {ContainerId}", request.ContainerId);
 
 			if (request.ContainerId is null) return;
 
